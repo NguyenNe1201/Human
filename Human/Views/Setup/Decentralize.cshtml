@@ -1,0 +1,275 @@
+﻿@model Human.Models.SetupModel
+@{
+    ViewBag.Title = "Decentralize";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 9;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="decentralize setup" />
+    <meta name="author" content="" />
+    <style>
+        .col-form-label {
+            padding: 7px 15px 7px 15px !important;
+            /*text-align:center;*/
+        }
+
+        .col-lg-9 {
+            padding: 0px 15px !important;
+        }
+
+        select {
+            -webkit-appearance: auto !important;
+        }
+
+        .dropdown-menu-mid {
+            overflow-y: auto;
+            height: 300px !important;
+            right: 0 !important;
+        }
+
+        .notifi-select {
+            background-color: var(--nav-link-hover-color);
+            position: absolute;
+            margin-left: 5px;
+        }
+
+        label {
+            font-weight: bolder !important;
+            font-size: 14px;
+        }
+    </style>
+
+}
+@section LoadJs{
+    <script src="~/Assets/js/admin/Decentralize.js?v=1.1"></script>
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Decentralize</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class=" main-color-web font-weight-bold">@Human.Resource.Language.Setup</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Decentralize</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    Swal.fire({
+                        position: 'center-center',
+                        icon: '@TempData["AlertType"]',
+                        title: '@TempData["AlertMessage"]',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+            </script>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12 font-13">
+            <div class="card" style="border-radius:15px;">
+                <div class="card-body" style="padding:1.5rem;">
+                    <form id="power_form" method="post" action="/Setup/Insert_power">
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="col-xl-7">
+                                <div class="form-group row">
+                                    <label for="code_emp" class="col-lg-3 col-form-label">@Human.Resource.Language.Employee_code</label>
+                                    <div class="col-lg-6" style="padding-left:13px;">
+                                        <input type="text" class="form-control" id="code_emp" name="code_emp" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="form-group row">
+                                    <label class="col-lg-2 col-form-label ">Chọn phòng ban/bộ phận</label>
+                                    <div class="edit-form-group col-lg-10 row " style="border: 1px solid rgba(0, 0, 0, 0.125);">
+                                        <div class="col-lg-4">
+                                            <div class="text-center">
+                                                <label style="margin: 5px 0px 0px 0px;">@Human.Resource.Language.Division </label>
+                                            </div>
+                                            <select class="form-control" style="margin:10px 0px;" name="selectedDivision">
+                                                @foreach (var item_d in Model.LST_DIVISION)
+                                                {
+                                                    <option value="@item_d.DIVISION_ID">@item_d.DIVISION_NAME_EN</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="text-center">
+                                                <label style="margin: 5px 0px 0px 0px;">@Human.Resource.Language.Department</label>
+                                            </div>
+                                            <div class="form-group" style="margin:10px 0px;">
+                                                <div class="nav-item dropdown has-arrow flag-nav form-control">
+                                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" id="navbarDropdown2" aria-expanded="false">
+                                                        <span class="font-13" style="color:black; display:inline-block; width:95%;">@Human.Resource.Language.Select_department - <span id="count_select_department" class="badge badge-pill notifi-select" style="border-radius: 10rem;">0</span></span>
+                                                    </a>
+                                                    <div style="padding:10px;" class="dropdown-menu dropdown-menu-mid" aria-labelledby="navbarDropdown2">
+                                                        <div class="dropdown-item">
+                                                            <input type="checkbox" class="form-check-input" id="chk_all_department" name="chk_all_department"> <label class="ml-1">@Human.Resource.Language.All_department</label>
+                                                        </div>
+                                                        @foreach (var item in Model.List_DEPARTMENT)
+                                                        {
+                                                            <div class="dropdown-item" style="padding:0.25rem 2.5rem;">
+                                                                <input class="department-checkbox form-check-input" type="checkbox" value="@item.DEPARTMENT_ID" name="selectedDepartments"> <label class="ml-1">@item.DEPARTMENT_NAME_EN </label>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="text-center">
+                                                <label style="margin: 5px 0px 0px 0px;">@Human.Resource.Language.Section</label>
+                                            </div>
+                                            <div class="form-group" style="margin:10px 0px;">
+                                                <div class="nav-item dropdown has-arrow flag-nav form-control">
+                                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" id="navbarDropdown3" aria-expanded="false">
+
+                                                        <span class="font-13" style="color:black; display:inline-block; width:95%;">@Human.Resource.Language.Select_section - <span id="count_select_section" class="badge badge-pill notifi-select" style="border-radius: 10rem;">0</span></span>
+                                                    </a>
+                                                    <div style="padding:10px;" class="dropdown-menu dropdown-menu-mid" aria-labelledby="navbarDropdown3">
+                                                        <div class="dropdown-item">
+                                                            <input type="checkbox" class="form-check-input" id="check_all_section"> <label class="ml-1">@Human.Resource.Language.All_section</label>
+                                                        </div>
+                                                        @foreach (var item_s in Model.LST_SECTION)
+                                                        {
+                                                            <div class="dropdown-item" style="padding:0.25rem 2.5rem;">
+                                                                <input data-department-id="@item_s.DEPARTMENT_ID" name="selectedSections" class="section-checkbox form-check-input" type="checkbox" value="@($"{item_s.SECTION_ID}_{item_s.DEPARTMENT_ID}")"> <label class="ml-1">@item_s.SECTION_NAME_EN</label>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12">
+                                <div class="form-group row">
+                                    <label class="col-lg-2 col-form-label font-13">@Human.Resource.Language.Admin_menu_settings</label>
+                                    <div class="col-lg-10 edit-form-table" style=" border: 1px solid rgba(0, 0, 0, 0.125);padding:0px;overflow-y:auto;white-space:nowrap;">
+                                        <table>
+                                            <thead style="background-color: rgb(243 236 236);" class="main-color-web">
+                                                <tr>
+                                                    <th>
+                                                        STT/No.
+                                                    </th>
+                                                    <th>
+                                                        Menu items <br />(Mục)
+                                                    </th>
+                                                    <th>
+                                                        Add Button <br />(Thêm nút)
+                                                    </th>
+                                                    <th>
+                                                        Edit/Read <br />(Chỉnh sửa/đọc)
+                                                    </th>
+                                                    <th>Read <br />(Đọc)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>@Human.Resource.Language.Timekeeping</td>
+                                                    <td>@Human.Resource.Language.Enabled</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="timekeep_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="timekeep_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>@Human.Resource.Language.Leave</td>
+                                                    <td>@Human.Resource.Language.Enabled</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="leave_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="leave_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                               <tr>
+                                                    <td>3</td>
+                                                    <td>Nhân viên theo bộ phận</td>
+                                                    <td>@Human.Resource.Language.Enabled</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" id="staffBySection_cb" type="radio" name="check_input" value="staffBySection_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="radio" name="check_input" value="staffBySection_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Tất cả nhân viên</td>
+                                                    <td>@Human.Resource.Language.Enabled</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="allEmployee_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="allEmployee_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5</td>
+                                                    <td>@Human.Resource.Language.Contract</td>
+                                                    <td>@Human.Resource.Language.Enabled</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input mb-3" type="checkbox" name="check_input" value="contract_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input mb-3" type="checkbox" name="check_input" value="contract_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button style="min-width:140px;" type="submit" class="btn">@Human.Resource.Language.btn_Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,671 @@
+﻿@model Human.Models.ManageBySectionModel
+@{
+    ViewBag.Title = "Edit Employee By Department";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = ViewBag.activecontrol;
+}﻿
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="chỉnh sửa nhân viên" />
+    <meta name="author" content="" />
+    <style>
+        #layoutSidenav #layoutSidenav_content {
+            display: flow !important;
+        }
+        .select {
+            -webkit-appearance: auto !important;
+            font-size: 14px !important;
+        }
+        .btn-cancel {
+            background-color: darkorange;
+        }
+        input {
+            font-size: 14px !important;
+        }
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+        #working_table table thead tr th,
+        #salary_history_table thead tr th {
+            text-align: center;
+        }
+        .table-caption {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            color: #0faef9;
+            text-align: left;
+        }
+        label {
+            font-weight: bolder !important;
+            font-size: 14px !important;
+        }
+        textarea {
+            font-size: 14px !important;
+        }
+        input[type="radio"] {
+            /* Kích thước mong muốn */
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+}
+@section LoadJs{
+    <script type="text/javascript" src="~/Assets/js/admin/Jquery_AddEmp.js?v=1.1"></script>
+    <script type="text/javascript" src="~/Assets/js/admin/UpdateEmp.js?v=1.1"></script>
+    <script>
+         // xử lý sự kiện khi click vào phòng ban thì show các bộ phận tương ứng
+        document.getElementById('departmentSelect').addEventListener('change', function () {
+            var departmentId = this.value; // Lấy giá trị ID của phòng ban đã chọn
+            var sectionDropdown = document.getElementById('sectionSelect');
+            sectionDropdown.innerHTML = '<option value="">@Human.Resource.Language.Section</option>'; // Xóa các option cũ trong dropdown "Bộ phận"
+            var lstSections = @Html.Raw(Json.Encode(Model.LST_SECTION)); // Lấy dữ liệu LST_SECTION từ Model
+            for (var i = 0; i < lstSections.length; i++) {
+                var item_s = lstSections[i];
+                if (item_s.DEPARTMENT_ID == departmentId) {
+                    var option = document.createElement('option');
+                    option.value = item_s.SECTION_ID;
+                    option.textContent = item_s.SECTION_NAME_EN;
+                    sectionDropdown.appendChild(option);
+                }
+            }
+        });
+    </script>
+}
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="Authority">
+        <script>
+            document.addEventListener("DOMContentLoaded", function (event) {
+                Swal.fire({
+                    position: 'center-center',
+                    icon: '@TempData["AlertType"]',
+                    title: '@TempData["AlertMessage"]',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+        </script>
+    </div>
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Edit_emp_info</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                    <li class="breadcrumb-item"><a href="/Employees/Index" class="font-weight-bold">@Human.Resource.Language.Employee</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Log_list</li>
+                </ul>
+                <div class="btn-edit-emp" id="btn-fieldset1">
+                    <button id="btn-edit-fieldset1" class="btn color-blue" type="button"><i class="fa-solid fa-pen-to-square"></i> @Human.Resource.Language.btn_Edit</button>
+                    <button id="btn-cancel-fieldset1" class="btn color-orange" type="button"><i class="fa-solid fa-rotate-right"></i> @Human.Resource.Language.btn_Cancel</button>
+                </div>
+                <div class="btn-edit-emp" id="btn-fieldset2">
+                    <button class="btn color-green" type="button" id="btn-add-fieldset2"><i class="fa-solid fa-plus"></i> @Human.Resource.Language.btn_Add</button>
+                    <button class="btn color-blue" type="button" id="btn-edit-fieldset2"><i class="fa-solid fa-pen-to-square"></i> @Human.Resource.Language.btn_Edit</button>
+                    <button class="btn color-orange" type="button" id="btn-cancel-fieldset2"><i class="fa-solid fa-rotate-right"></i> @Human.Resource.Language.btn_Cancel</button>
+                    <button id="btnDel_EmpHistory" class="btn color-redpale" type="button"><i class="fa-solid fa-trash"></i> @Human.Resource.Language.btn_Delete</button>
+                </div>
+                <div class="btn-edit-emp" id="btn-fieldset3">
+                    <button class="btn color-green" type="button" id="btn-add-fieldset3"><i class="fa-solid fa-plus"></i> @Human.Resource.Language.btn_Add</button>
+                    <button class="btn color-blue" type="button" id="btn-edit-fieldset3"><i class="fa-solid fa-pen-to-square"></i> @Human.Resource.Language.btn_Edit</button>
+                    <button class="btn color-orange" type="button" id="btn-cancel-fieldset3"><i class="fa-solid fa-rotate-right"></i> @Human.Resource.Language.btn_Cancel</button>
+                    <button id="btn_del_salary" class="btn color-redpale" type="button"><i class="fa-solid fa-trash"></i> @Human.Resource.Language.btn_Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-5" style="border-radius:15px;">
+                <div class="card-body" style="padding:2rem 2.5rem;">
+                    <!-- progressbar -->
+                    <ul id="progressbar" style="font-weight:bolder;padding-left:0px;">
+                        <li onclick="prevFieldset()" type="button" class="step1 active"> @Human.Resource.Language.General_info</li>
+                        <li onclick="nextFieldset()" type="button" class="step2"> @Human.Resource.Language.Working_process</li>
+                        <li onclick="nextFieldset_Salary()" type="button" class="step3"> @Human.Resource.Language.Salary_basic</li>
+                    </ul>
+                    <fieldset id="fieldset1">
+                        <form id="msform" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="ID_EMP" value="@Model.EMP_PROFILE.EMPLOYEE_ID" />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- thông tin cá nhân -->
+                                    <div style=" margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-info-circle"></i> @Human.Resource.Language.Personal_Info</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Employee_code <span class="text-danger">*</span></label>
+                                                <input id="emp_code" disabled type="text" class="form-control" value="@(Model.EMP_PROFILE.EMP_CODE != null?Model.EMP_PROFILE.EMP_CODE:"")" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.ID_card <span class="text-danger">*</span></label>
+                                                <input id="emp_id" disabled type="text" class="form-control" value="@Model.EMP_PROFILE.EMPLOYEE_ID">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Fullname <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="FIRSTNAME" value="@(Model.EMP_PROFILE.FULLNAME != null?Model.EMP_PROFILE.FULLNAME:"")" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Date_of_join <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="HIRE_DAY" value="@(Model.EMP_PROFILE.HIRE_DAY.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.HIRE_DAY.ToString("yyyy-MM-dd"):"")" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Birthday <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="DATE_OF_BIRTH" value="@(Model.EMP_PROFILE.DATE_OF_BIRTH.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.DATE_OF_BIRTH.ToString("yyyy-MM-dd"):"")" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Gender <span class="text-danger">*</span></label>
+
+                                                <select class="form-control select" name="SEX">
+                                                    <option>@Human.Resource.Language.choose_gender</option>
+                                                    <option @Html.Raw(Model.EMP_PROFILE.SEX == "Nam" ? "selected" : "") value="0">@Human.Resource.Language.Male</option>
+                                                    <option @Html.Raw(Model.EMP_PROFILE.SEX == "Nữ" ? "selected" : "") value="1">@Human.Resource.Language.Female</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Phone 1 <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="PHONE_NUMBER" value="@(Model.EMP_PROFILE.PHONE_NUMBER !=null ? Model.EMP_PROFILE.PHONE_NUMBER:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Phone 2 <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="MOBILE_NUMBER" value="@(Model.EMP_PROFILE.MOBILE_NUMBER !=null ? Model.EMP_PROFILE.MOBILE_NUMBER:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Email <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" name="EMAIL" value="@(Model.EMP_PROFILE.EMAIL !=null ? Model.EMP_PROFILE.EMAIL:"")">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Address <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="PERMANENT_ADDRESS" value="@(Model.EMP_PROFILE.PERMANENT_ADDRESS !=null ? Model.EMP_PROFILE.PERMANENT_ADDRESS:"")" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Temporary_addres <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="TEMPORARY_ADDRESS" value="@(Model.EMP_PROFILE.TEMPORARY_ADDRESS !=null ? Model.EMP_PROFILE.TEMPORARY_ADDRESS:"")" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- CCCD group-->
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px; "><i class="fas fa-id-card-alt"></i> CCCD</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Identity_card <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="ID_CARDNUMBER" value="@(Model.EMP_PROFILE.ID_CARDNUMBER !=null ? Model.EMP_PROFILE.ID_CARDNUMBER:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Date_Issue <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="DATE_ISSUE" value="@(Model.EMP_PROFILE.DATE_ISSUE.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.DATE_ISSUE.ToString("yyyy-MM-dd"):"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Issued_by <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="PLACE_ISSUE" value="@(Model.EMP_PROFILE.PLACE_ISSUE !=null ? Model.EMP_PROFILE.PLACE_ISSUE:"")">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- group bank-->
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px; "><i class="fas fa-money-check-alt"></i> @Human.Resource.Language.Bank_account</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Account_Number <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="BANKACOUNT_NUMBER" value="@(Model.EMP_PROFILE.BANKACOUNT_NUMBER !=null ? Model.EMP_PROFILE.BANKACOUNT_NUMBER:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Bank_Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="BANK_NAME" value="@(Model.EMP_PROFILE.BANK_NAME !=null ? Model.EMP_PROFILE.BANK_NAME:"")" placeholder="Vietcombank, Vpbank, Vietinbank,...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- group bhxh,bhyt -->
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="far fa-id-card"></i> @Human.Resource.Language.Tax_code & @Human.Resource.Language.Insurance</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Pit_No <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="TAX_NUMBER" value="@(Model.EMP_PROFILE.TAX_NUMBER !=null ? Model.EMP_PROFILE.TAX_NUMBER:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Social_Insurance <span class="text-danger">*</span></label>
+                                                <input type="TEXT" class="form-control" name="SOBHXH" value="@(Model.EMP_PROFILE.SOBHXH !=null ? Model.EMP_PROFILE.SOBHXH:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Health_Insurance <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="SOBHYT" value="@(Model.EMP_PROFILE.SOBHYT !=null ? Model.EMP_PROFILE.SOBHYT:"")">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*line study*@
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fa-solid fa-graduation-cap"></i> @Human.Resource.Language.Level</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Education <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="EDUCATION" placeholder="9/12, 12/12, Cao đẳng, Đại học..." value="@(Model.EMP_PROFILE.EDUCATION !=null ? Model.EMP_PROFILE.EDUCATION:"")" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Degree <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="DEGREE" value="@(Model.EMP_PROFILE.DEGREE !=null ? Model.EMP_PROFILE.DEGREE:"")">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Certificate <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Experience <span class="text-danger">*</span></label>
+                                                <textarea rows="4" name="" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="btnSave_EmpTab" class="submit-section text-center">
+                                        @*  <button onclick="nextFieldset()" type="button" style="font-size:16px !important;border-radius:5px;" class=" action-button">Next <i class="fas fa-arrow-right"></i></button>*@
+                                        <button type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-floppy-disk"></i> @Human.Resource.Language.btn_Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset id="fieldset2">
+                        <form id="msform1" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="ID_EMP" value="@Model.EMP_PROFILE.EMPLOYEE_ID" />
+                            <input type="hidden" id="history_id_edit" name="HISTORY_ID" value="@Model.EMP_PROFILE.HISTORY_ID" />
+                            <input type="hidden" name="CONGTAC" value="1" />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @*line job*@
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px; "><i class="fas fa-swatchbook"></i> Công việc</h5>
+                                    </div>
+                                    <input type="hidden" name="DIVISION_ID" value="1" />
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Department <span class="text-danger">*</span></label>
+                                                <select class="form-control select" name="DEPARTMENT_ID" id="departmentSelect">
+                                                    @foreach (var item in Model.List_DEPARTMENT)
+                                                    {
+                                                        <option @Html.Raw(item.DEPARTMENT_ID == Model.EMP_PROFILE.DEPARTMENT_ID ? "selected" : "") value="@item.DEPARTMENT_ID">@item.DEPARTMENT_NAME_EN</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Section <span class="text-danger">*</span></label>
+                                                <select class="form-control select" id="sectionSelect" name="SECTION_ID">
+                                                    @if (Model.LST_SECTION != null && Model.LST_SECTION.Any())
+                                                    {
+                                                        foreach (var item in Model.LST_SECTION)
+                                                        {
+                                                            <option @Html.Raw(item.SECTION_ID == Model.EMP_PROFILE.SECTION_ID ? "selected" : "") value="@item.SECTION_ID">@item.SECTION_NAME_EN</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Position <span class="text-danger">*</span></label>
+                                                <select class="form-control select" name="JOBTITLE_ID" id="jobSelect">
+                                                    @foreach (var item in Model.LST_JOBTITLE)
+                                                    {
+                                                        <option @Html.Raw(item.JobTitle_ID == Model.EMP_PROFILE.JOBTITLE_ID ? "selected" : "") value="@item.JobTitle_ID">@item.TitleName_en</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*line công tác*@
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px; "><i class="fas fa-plane-departure"></i> @Human.Resource.Language.Working_process</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Status</label>
+                                                <div style="border: 1px solid rgba(0, 0, 0, 0.125); border-radius: 0.25rem; padding: 4px 0px; text-align: center;">
+                                                    <div class="inlineblock">
+                                                        <input id="probation_edit" @(Model.EMP_PROFILE.PROBATION.HasValue && Model.EMP_PROFILE.PROBATION.Value ? "checked" : "") type="checkbox" style="top:0;" class="form-check-input mt-0" name="PROBATION" value="1" />
+                                                        <label style="margin:0px;">@Human.Resource.Language.Probation</label>
+                                                    </div>
+                                                    <div class="inlineblock" style="margin-left:20px;">
+                                                        <input @(Model.EMP_PROFILE.QUIT.HasValue && Model.EMP_PROFILE.QUIT.Value ? "checked" : "") type="checkbox" style="top:0;" id="select_quit" name="QUIT" class="form-check-input mt-0" value="1" onchange="toggleDateField(this)" />
+                                                        <label style="margin:0px;">@Human.Resource.Language.Quit_job</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Effective_date <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" id="date_start" name="CONGTACTU" value="@(Model.EMP_PROFILE.CONGTACTU.ToString("dd/MM/yyyy") != "01/01/0001" ?Model.EMP_PROFILE.CONGTACTU.ToString("yyyy-MM-dd"):"")" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.End_date <span class="text-danger">*</span></label>
+                                                <input id="date_end" type="date" class="form-control" name="CONGTACDEN" value="@(Model.EMP_PROFILE.CONGTACDEN.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.CONGTACDEN.ToString("yyyy-MM-dd"):"")" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Day_off</label>
+                                                <input type="date" class="form-control" name="DATE_QUIT" id="quit_date" value="@(Model.EMP_PROFILE.DATE_QUIT.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.DATE_QUIT.ToString("yyyy-MM-dd"):"")" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Note</label>
+                                                <textarea id="note_working" rows="2" class="form-control" name="QUIT_REASON">@Html.Raw(Model.EMP_PROFILE.QUIT_REASON)</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="card profile-box flex-fill border-form">
+                                                <div class="card-body ">
+                                                    @* <h4 class="card-title edit-font" style="color: #f89321;">@Human.Resource.Language.Working_process</h4>*@
+                                                    <div id="working_table" class="table-wrapper-time-keep" style="margin-top: 7px;overflow-y:auto;">
+                                                        <table style="width:100% !important;" class="table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>###</th>
+                                                                    <th>
+                                                                        STT<br>No.
+                                                                    </th>
+                                                                    <th>
+                                                                        Thử việc <br />(probation)
+                                                                    </th>
+                                                                    <th>
+                                                                        NGÀY HIỆU LỰC<br>(START DATE)
+                                                                    </th>
+                                                                    <th>
+                                                                        NGÀY KẾT THÚC<br>(END DATE)
+                                                                    </th>
+                                                                    <th>NGHỈ VIỆC <br />(Quit Job)</th>
+                                                                    <th>Ngày nghỉ <br />(Quit Date)</th>
+                                                                    <th>Ghi chú <br />(Note)</th>
+                                                            </thead>
+                                                            <tbody id="tbody_work">
+                                                                @if (Model.LST_WORKING != null && Model.LST_WORKING.Any())
+                                                                {
+                                                                    int i = 1;
+                                                                    foreach (var item_w in Model.LST_WORKING)
+                                                                    {
+                                                                        <tr id="tr-work-@item_w.HISTORY_ID">
+                                                                            <td>
+                                                                                <div class="form-check-inline mr-0">
+                                                                                    <input @(item_w.HISTORY_ID == Model.EMP_PROFILE.HISTORY_ID ? "checked" : "") name="radio_history_id" class="check_working form-check-input mr-0" type="radio" value="@item_w.HISTORY_ID" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                @i
+                                                                                <input type="hidden" class="department_id_work" value="@item_w.DEPARTMENT_ID" />
+                                                                                <input type="hidden" class="section_id_work" value="@item_w.SECTION_ID" />
+                                                                                <input type="hidden" class="job_id_work" value="@item_w.JOBTITLE_ID" />
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-check-inline mr-0">
+                                                                                    <input disabled class="check_working_item form-check-input mr-0" @(item_w.PROBATION.HasValue && item_w.PROBATION.Value ? "checked" : "") style="margin:auto;" type="checkbox" name="" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>@(item_w.CONGTACTU.ToString("dd/MM/yyyy")=="01/01/0001"?"":item_w.CONGTACTU.ToString("dd/MM/yyyy"))</td>
+                                                                            <td>@(item_w.CONGTACDEN.ToString("dd/MM/yyyy")=="01/01/0001"?"": item_w.CONGTACDEN.ToString("dd/MM/yyyy"))</td>
+                                                                            <td>
+                                                                                <div class="form-check-inline mr-0">
+                                                                                    <input disabled class="check_working_item form-check-input mr-0" @(item_w.QUIT.HasValue && item_w.QUIT.Value ? "checked" : "") style="margin:auto;" type="checkbox" name="" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>@(item_w.DATE_QUIT.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : item_w.DATE_QUIT.ToString("dd/MM/yyyy"))</td>
+                                                                            <td>@(item_w.QUIT_REASON !=null ? item_w.QUIT_REASON : "")</td>
+                                                                        </tr>
+                                                                        i++;
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="btnSave_empHistory" class="submit-section text-center">
+                                        <button id="btn_save_his" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-floppy-disk"></i> @Human.Resource.Language.btn_Save</button>
+                                    </div>
+                                    <div id="btnAdd_empHistory" class="submit-section text-center">
+                                        <button id="btn_add_his" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-folder-plus"></i> @Human.Resource.Language.btn_Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset id="fieldset3">
+                        <form id="msform2" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="id_emp_edit" name="ID_EMP" value="@Model.EMP_PROFILE.EMPLOYEE_ID" />
+                            <input type="hidden" id="SalaryId_edit" name="SALARY_HISTORY_ID" value="" />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @*line lịch sử lương*@
+                                    <div style="margin-top: 10px;">
+                                        <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-search-dollar"></i> @Human.Resource.Language.Salary_history</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Effective_date <span class="text-danger">*</span></label>
+                                                <input id="begin_date" type="date" name="BEGIN_DATE" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.End_date <span class="text-danger">*</span></label>
+                                                <input id="end_date" type="date" name="END_DATE" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Rank</label>
+                                                <select id="salaryDropdown" class="form-control select" name="BASIC_SALARY">
+                                                    <option>@Human.Resource.Language.Salary_level </option>
+                                                    @foreach (var item in Model.LST_SALARY_LEVEL)
+                                                    {
+                                                        <option value="@item.SALARY_VALUE" data-id="@item.ID">@item.SALARY_CODE | @string.Format("{0:N0} VND", item.SALARY_VALUE)</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Salary_basic</label>
+                                                <input id="basicSalaryInput" type="text" disabled class="form-control" min="1000" placeholder="VND" value="" name="" />
+                                                <input type="hidden" id="salary_level_id" name="SALARY_CAT_ID" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_job</label>
+                                                <input id="job_allowance" name="ALLOWANCE_JOB" type="number" min="1000" class="form-control" placeholder="VND" required />
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_phone</label>
+                                                <input id="phone_allowance" type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_PHONE" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_petrol</label>
+                                                <input id="petrol_allowance" type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_PETROL" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_meal</label>
+                                                <input id="meal_allowance" type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_MEAL" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_cashier</label>
+                                                <input id="cashier_allowance" type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_CASHIER" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_house</label>
+                                                <input id="house_allowance" type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_HOUSE" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>@Human.Resource.Language.Allowance_other</label>
+                                                <input id="sup_allowance" type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_SUPPORT" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>@Human.Resource.Language.Note</label>
+                                            <textarea id="salary_note" style="margin-bottom:12px;" rows="2" name="NOTE" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card profile-box flex-fill border-form">
+                                                <div class="card-body ">
+                                                    @*<h3 class="card-title edit-font" style="color: #f89321;">@Human.Resource.Language.Working_process</h3>*@
+                                                    <div id="salary_history_table" class="table-wrapper-time-keep" style="overflow-y:auto;">
+                                                        <table style="width:100% !important;" class="table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>###</th>
+                                                                    <th>
+                                                                        NGÀY HIỆU LỰC<br>(START DATE)
+                                                                    </th>
+                                                                    <th>
+                                                                        NGÀY KẾT THÚC<br>(END DATE)
+                                                                    </th>
+                                                                    <th>LƯƠNG CƠ BẢN <br />(Basic salary)</th>
+                                                                    <th>PC CÔNG VIỆC <br />(Allowance job)</th>
+                                                                    <th>PC ĐIỆN THOẠI <br />(Allowance phone)</th>
+                                                                    <th>PC XĂNG <br />(Allowance Petrol)</th>
+                                                                    <th>PC BỮA ĂN <br />(Allowance Meal)</th>
+                                                                    <th>PC THU NGÂN <br />(allowance Cashier)</th>
+                                                                    <th>PC NHÀ Ở <br /> (Allowace house)</th>
+                                                                    <th>PC KHÁC <br />(Allowance other)</th>
+                                                                    <th>Ghi Chú <br />(Note)</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tbody_salary">
+                                                                @if (Model.LST_SALARY_HISTORY != null && Model.LST_SALARY_HISTORY.Any())
+                                                                {
+                                                                    int i = 1;
+                                                                    foreach (var item_w in Model.LST_SALARY_HISTORY)
+                                                                    {
+                                                                        <tr id="tr-salary-@item_w.SALARY_HISTORY_ID">
+                                                                            <td>
+                                                                                <div class="form-check-inline mr-0">
+                                                                                    <input class="check_allowance form-check-input mr-0" name="radio_SalaryId" type="radio" value="@item_w.SALARY_HISTORY_ID" />
+                                                                                    <input type="hidden" class="salary_cat_id" value="@item_w.SALARY_CAT_ID" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>@(item_w.BEGIN_DATE.ToString("dd/MM/yyyy")=="01/01/0001"?"": item_w.BEGIN_DATE.ToString("dd/MM/yyyy"))</td>
+                                                                            <td>@(item_w.END_DATE.ToString("dd/MM/yyyy")=="01/01/0001"?"": item_w.END_DATE.ToString("dd/MM/yyyy"))</td>
+                                                                            <td>@(item_w.BASIC_SALARY !=0? string.Format("{0:N0} VND", item_w.BASIC_SALARY):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_JOB !=0? string.Format("{0:N0} VND", item_w.ALLOWANCE_JOB):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_PHONE !=0? string.Format("{0:N0} VND", item_w.ALLOWANCE_PHONE):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_PETROL !=0? string.Format("{0:N0} VND", item_w.ALLOWANCE_PETROL):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_MEAL !=0? string.Format("{0:N0} VND", item_w.ALLOWANCE_MEAL):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_CASHIER !=0? string.Format("{0:N0} VND", item_w.ALLOWANCE_CASHIER):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_HOUSE !=0? string.Format("{0:N0} VND", item_w.ALLOWANCE_HOUSE):"")</td>
+                                                                            <td>@(item_w.ALLOWANCE_SUPPORT != 0 ? string.Format("{0:N0} VND", item_w.ALLOWANCE_SUPPORT):"")</td>
+                                                                            <td>@(item_w.NOTE !=null ? item_w.NOTE:"")</td>
+                                                                        </tr>
+                                                                        i++;
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="btnSave_empSalary" class="submit-section text-center">
+                                        <button id="btn_save_salary" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-floppy-disk"></i> @Human.Resource.Language.btn_Save</button>
+                                    </div>
+                                    <div id="btnAdd_empSalary" class="submit-section text-center">
+                                        <button id="btn_add_salary" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-folder-plus"></i> @Human.Resource.Language.btn_Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

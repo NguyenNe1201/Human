@@ -1,0 +1,136 @@
+﻿
+@model Human.Models.KindLeaveModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Phép";
+    ViewBag.active = 3;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng lương" />
+    <meta name="author" content="" />
+
+}
+
+@section LoadJs{
+    <script src="~/Assets/js/admin/Leave.js"></script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var num = 0;
+}
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="Authority">
+        <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+        </script>
+    </div>
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header" style="margin-bottom: 20px;">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title" style="font-weight:600;">Edit Leave</h3>
+            </div>
+
+        </div>
+    </div>
+    <div class="form">
+        <div class="btn-back"><a href="~/Leave/Index"><i class="fa fa-arrow-left"></i></a></div>
+
+        <div class="card-header form-create">
+            @using (Html.BeginForm("InsertLeave", "Leave", FormMethod.Post))
+            {
+                <input type="hidden" value="@Model.T_Leave.EMPLOYEE_ID" name="EMPLOYEE_ID" />
+                <input type="hidden" value="@Model.T_Leave.LEAVE_ID" name="LEAVE_ID" />
+                <input type="hidden" value="@Model.T_Leave.KINDLEAVE_ID" id="kindleave_id" />
+
+                <div class="row col-12">
+                    <div class="col-lg-6 col-12 ">
+                        <label class="header-child col-lg-3  col-5">Name:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.FULLNAME</label>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-3  col-5">Employee Code:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.EMP_CODE</label>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-6 col-12 ">
+                        <label class="header-child col-lg-3  col-5">Department:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.DEPARTMENT_NAME_EN</label>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-3  col-5">Working Site:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.SECTION_NAME_EN</label>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-3  col-5">From date:</label>
+                        <input id="LEAVE_STARTDATE" type="date" readonly class="col-6 col-lg-6 input-disabled" name="LEAVE_STARTDATE" value="@Model.T_Leave.LEAVE_STARTDATE.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-3  col-5">To date:</label>
+                        <input id="LEAVE_ENDDATE" type="date" readonly class="col-6 col-lg-6 input-disabled" name="LEAVE_ENDDATE" value="@Model.T_Leave.LEAVE_ENDDATE.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-3 col-5">Reason:</label>
+                        <select class="col-lg-6 col-6" name="KINDLEAVE_ID" id="KINDLEAVE_ID">
+                            @foreach (var item in Model.LST_KINDLEAVE)
+                            {
+                                <option value="@item.KINDLEAVE_ID" @Html.Raw(item.KINDLEAVE_ID == Model.T_Leave.KINDLEAVE_ID ? "selected" : "")>@item.NAMELEAVE_VI</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-3  col-5">Hours:</label>
+                        <select class="col-lg-6 col-6" name="HOURS">
+                            <option value="4" @Html.Raw(Model.T_Leave.HOURS == 4 ? "selected" : "")>0.5</option>
+                            <option value="8" @Html.Raw(Model.T_Leave.HOURS == 8 ? "selected" : "")>1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-lg-6  hidden-item">
+                        <label class="header-child col-5">Compt for month:</label>
+                        <input class="col-6" name="COM_MONTH" value="@Model.T_Leave.COM_MONTH" />
+                    </div>
+                    <div class="col-lg-6  hidden-item">
+                        <label class="header-child col-3">year:</label>
+                        <input class="col-6" name="COM_YEAR" value="@Model.T_Leave.COM_YEAR" />
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-5 col-lg-3">Detail:</label>
+                        <textarea type="text" class="col-6 col-lg-6 txt-reason" name="REASON" rows="2">@Model.T_Leave.REASON</textarea>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="text-center">
+                        <button style="background-color: rgb(34 190 234); width: 120px;" type="submit" class="btn btn-success">Accept</button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-body">
+        </div>
+    </div>
+</div>

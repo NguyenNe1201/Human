@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    @RenderSection("meta", false)
+     @*<title>@ViewBag.Title</title>*@
+    <title>Conect</title>
+    <link href="~/Assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/Assets/css/default/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="~/Assets/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="~/Areas/Admin/Assets/css/MyStyle.css" rel="stylesheet" type="text/css" />
+    <link href="~/Areas/Admin/Assets/css/Table.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="~/Areas/Admin/Assets/img/logo_2.jpg" />
+
+</head>
+<body class="sb-nav-fixed">
+
+    @Html.Partial("_TopMenu")
+    <div id="layoutSidenav">
+        @Html.Partial("_LeftMenu")
+        <div id="layoutSidenav_content">
+            @RenderBody()
+            @Html.Partial("_Footer")
+        </div>
+
+    </div>
+    <script src="~/Assets/js/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/Assets/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="~/Assets/js/datatables-simple-demo.js"></script>
+
+    @*datatable*@
+
+
+    <script src="~/Assets/libs/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/libs/datatables/dataTables.bootstrap4.js"></script>
+    <script src="~/Assets/libs/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/Assets/libs/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="~/Assets/libs/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Assets/libs/datatables/buttons.bootstrap4.min.js"></script>
+
+
+    <!-- Datatables init -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/Assets/js/pages/datatables.init.js"></script>
+
+    @RenderSection("LoadJs", false)
+</body>
+</html>

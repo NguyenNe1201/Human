@@ -1,0 +1,145 @@
+﻿@model List<Human.Models.TimeTempModel>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Bảng công hàng tháng";
+    ViewBag.active = 4;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng công" />
+    <meta name="author" content="" />
+
+}
+
+@section LoadJs{
+    <script>
+        $(function () {
+            $('#AlertMessage').removeClass("hidden-item");
+            $('#AlertMessage').delay("2000").slideUp("2000");
+
+        })
+
+        //function filterColumn(columnIndex) {
+        //    var input, filter, table, tr, td, i;
+        //    input = document.getElementById("dateFilter"); // Lấy giá trị input từ cột Code
+        //    filter = input.value.toUpperCase(); // Chuyển đổi giá trị thành chữ hoa để so sánh không phân biệt chữ hoa/chữ thường
+        //    table = document.getElementsByTagName("table")[0]; // Lấy bảng
+        //    tr = table.getElementsByTagName("tr"); // Lấy tất cả các dòng trong bảng
+        //    for (i = 1; i < tr.length; i++) { // Bắt đầu từ 1 để bỏ qua dòng tiêu đề
+        //        td = tr[i].getElementsByTagName("td")[columnIndex]; // Lấy ô dữ liệu trong cột được chỉ định
+        //        if (td) {
+        //            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) { // Kiểm tra nếu giá trị trong ô chứa từ khóa tìm kiếm
+        //                tr[i].style.display = ""; // Hiển thị dòng
+        //            } else {
+        //                tr[i].style.display = "none"; // Ẩn dòng
+        //            }
+        //        }
+        //    }
+        //}
+    </script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var num = 1;
+}
+
+<div class="container">
+    <div class="form">
+        <div class="card-header">
+            @using (Html.BeginForm("GetTimeTempByMonth", "DailyAttendent", FormMethod.Get))
+            {
+                <div class="row">
+                    @*<div class="col-md-3">
+                        <label class="lbl-header">Date time:</label>
+                        <input name="MONTH_SALARY" id="MONTH_SALARY" type="date" />
+
+
+                    </div>*@
+                    <div class="col-md-4 col-xl-2 col-3">
+                        <label class="lbl-header hide-item-t" for="MONTH">tháng:</label>
+                        <select name="MONTH" id="MONTH" class="select-custom select-month">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+
+                            <!-- Thêm các tùy chọn cho các tháng khác -->
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 col-xl-2 col-3">
+                        <label for="YEAR" class="hide-item-t lbl-header">năm:</label>
+                        <select name="YEAR" id="YEAR" class="select-custom select-year">
+                            @for (int i = 2015; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+
+                            <!-- Thêm các tùy chọn cho các năm khác -->
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-xl-7 col-4">
+
+                        <button type="submit" id="btn-salary" class="btn-search custom-btn">Tìm kiếm</button>
+                    </div>
+                </div>
+            }
+
+        </div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div id="AlertMessage" class="title-notif  hidden-item @TempData["AlertType"]">@TempData["AlertMessage"]</div>
+
+        }
+        <div class="outer-wrapper">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="w-5">#</th>
+                            <th class="w-10">Code</th>
+                            <th>Name</th>
+                            <th>Ngày quét</th>
+                            <th>Giờ quét</th>
+                            <th>MACHINE NUMBER</th>
+                        </tr>
+                        @*<tr>
+                            <td></td>
+                            <td><input type="text" id="codeFilter" onkeyup="filterColumn(1)" placeholder="Filter"></td>
+                            <td><input type="text" id="nameFilter" onkeyup="filterColumn(2)" placeholder="Filter"></td>
+                            <td><input type="text" id="dateFilter" onkeyup="filterColumn(3)" placeholder="Filter"></td>
+                            <td><input type="text" id="timeFilter" onkeyup="filterColumn(4)" placeholder="Filter"></td>
+                            <td><input type="text" id="machineFilter" onkeyup="filterColumn(5)" placeholder="Filter"></td>
+                        </tr>*@
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="w-5">@num</td>
+                                    <td class="w-10">@item.CARD_NUMBER</td>
+                                    <td>@item.FULLNAME</td>
+                                    <td>@item.DATECHECK.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.TIMECHECK</td>
+                                    <td>@item.MACHINE_NUMBER</td>
+                                </tr>
+
+                                num++;
+                            }
+
+                        }
+
+                    </tbody>
+                </table>
+               
+            </div>
+        </div>
+      
+    </div>
+
+</div>

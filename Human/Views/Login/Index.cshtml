@@ -1,0 +1,141 @@
+﻿﻿@model  Human.Models.Entities.User_Entities
+@{
+    var language = "";
+    if (Session[Human.Common.CommonConstants.CurrentCulture] != null)
+    {
+        language = Session[Human.Common.CommonConstants.CurrentCulture].ToString();
+    }
+    else
+    {
+        language = "vi";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Login</title>
+    <link href="~/Assets/css/styles.css" rel="stylesheet" />
+    <script src="~/Assets/js/pages/use.fontawesome.com_releases_v6.1.0_js_all.js" crossorigin="anonymous"></script>
+    <link href="~/Assets/css/MyStyle.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="~/Assets/img/logo_2.jpg" />
+    <style>
+        .swal2-container.swal2-center > .swal2-popup {
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body class="body-login">
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    Swal.fire({
+                        position: 'center-center',
+                        icon: '@TempData["AlertType"]',
+                        title: '@TempData["AlertMessage"]',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+            </script>
+        </div>
+
+    }
+    <nav class=" navbar navbar-expand navbar-dark" style="right:0;top:0;position:absolute;">
+        <div class="sidebar-toggle border-bottom d-flex ">
+            <div class="d-flex justify-content-between ms-auto me-0 me-md-3 my-2 my-md-0">
+                <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                    <li class="nav-item dropdown has-arrow flag-nav" style="padding:0px 10px;">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" id="navbarDropdown1" aria-expanded="false">
+                            @if (language == "vi")
+                            {
+                                <img src="~/Assets/img/flags/Vietnam-64.png" alt="" height="14">
+                                <span class="font-14" style="text-transform: uppercase;">
+                                    @Human.Resource.Language.Vietnamese_show
+                                </span>}
+                            else if (language == "en")
+                            {
+                                <img src="~/Assets/img/flags/us.png" alt="" height="18">
+                                <span class="font-14" style="text-transform: uppercase;">
+                                    @Human.Resource.Language.English_show
+                                </span>
+                            }
+                        </a>
+                        <div style="padding:5px 0px;" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown1">
+                            <a href="@Url.Action("ChangeCulture", "BaseLogin", new { ddlCulture = "vi", returnUrl = "/Login" })" class="dropdown-item">
+                                <img src="~/Assets/img/flags/flag-vietnam-24.png" alt="" height="16"> @Human.Resource.Language.Vietnamese
+                            </a>
+                            <a href="@Url.Action("ChangeCulture", "BaseLogin", new { ddlCulture = "en", returnUrl = "/Login" })" class="dropdown-item">
+                                <img src="~/Assets/img/flags/us.png" alt="" height="16"> @Human.Resource.Language.English
+                            </a>
+                        </div>
+                    </li>
+                    <!-- /Flag -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="form-login">
+        @{
+            var pass_text = Human.Resource.Language.Password;
+            var input_text = Human.Resource.Language.email_user_name_phone_number;
+        }
+        <div class="registration-form">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-icon">
+                    <span><img class="logo" src="~/Assets/img/logo/logo.png" /></span>
+                </div>
+                @*  <div class="text-danger">@ViewBag.LoginFail</div>*@
+                <div class="form-group ">
+                    @Html.TextBoxFor(model => model.EMAIL, new { @style = "font-size: 13px;", @class = "form-control item", @placeholder = input_text, @id = "inputEmail", @required = "required" })
+                </div>
+                <div id="pwd_login" class="pwd-login form-group hidden-item">
+
+                    @Html.TextBoxFor(model => model.PASSWORD, new { @style = "font-size: 13px;", @class = "form-control item", @placeholder = pass_text, @id = "inputPassword", @type = "password" })
+                </div>
+                <div id="otp_login" class="pwd-login form-group hidden-item">
+                    @Html.TextBoxFor(model => model.OTP, new { @class = "form-control item font-14", @placeholder = "OTP", @id = "inputotp", @type = "password" })
+                </div>
+
+                <div id="check_password" class="pwd-login form-group">
+                    <input type="checkbox" id="chk_pwd" />
+                    <label for="chk_pwd" class="cursor-pointer">@Human.Resource.Language.Login_with_password</label>
+                </div>
+                <div class="form-group text-center">
+
+                    <button type="submit" class="btn-block create-account hidden-item" id="btn-login" disabled>@Human.Resource.Language.Login</button>
+                    <button type="button" class="btn-block create-account" id="btn-OTP" onclick="GetOTP()">@Human.Resource.Language.Login_with_OTP</button>
+
+                </div>
+                <div class="mt-3 text-center">
+                    <a href="/ForgotPassword/Index" class="link" style="color: #0c7ce6;font-size:14px;">@Human.Resource.Language.Forgot_pass?</a>
+                </div>
+            }
+
+        </div>
+    </div>
+    <footer class="py-4 mt-auto footer">
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center justify-content-center">
+                <div class=" align-items-center">&copy; 2023 CONECT Co., LTD. All Rights Reserved</div>
+
+            </div>
+        </div>
+    </footer>
+    <script src="~/Assets/js/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/Assets/js/scripts.js"></script>
+    <script src="~/Assets/js/admin/Login.js"></script>
+    @*sweet alert*@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+</body>
+</html>

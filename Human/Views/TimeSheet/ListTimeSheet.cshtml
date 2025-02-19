@@ -1,0 +1,212 @@
+﻿@model Human.Models.TimeSheetModel
+
+@{
+    ViewBag.Title = "ListTimeSheet";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 6;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý leave" />
+    <meta name="author" content="" />
+    <style>
+
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+
+        #table-timesheet > thead > tr > th {
+            text-align: center;
+        }
+
+        div.dataTables_wrapper div.dataTables_length label {
+            padding-left: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter label {
+            padding-right: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_info {
+            padding-left: 10px;
+            padding-bottom: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate {
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+}
+
+@section LoadJs{
+    <script>
+        $(function () {
+            var table = $('#table-timesheet').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [
+                    [10, 50, 100, -1],
+                    [10, 50, 100, "All"]
+                ],
+                "ordering": false,
+                "searching": false
+                /*"bLengthChange": false,*/ // Tắt "Show entries"
+            });
+        });
+    </script>
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Log_list</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Category_lookup</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Log_list</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+            </script>
+        </div>
+    }
+    <div class="form">
+        <div class="card-header leave-header" style="padding:0;">
+            <input type="hidden" value="" id="pos_hidden" />
+            <div class="header-leave" style="padding:5px 0px;">
+                <div class="row col-12" style="margin:0;">
+                    <form action="/TimeSheet/SearchTimeSheet" method="post" class="row" style="margin:0;padding:0;">
+                        <label class=" input-custom" style="font-size:14px;width:auto;">@Human.Resource.Language.Select_month_year:</label>
+                        @*<input type="month" class=" form-control input-custom input-time" name="SEARCH_DATE" value="@search_date.ToString("yyyy-MM")" />*@
+                        <select id="monthSelect" style="width:80px;" class="form-control input-custom" name="SEARCH_MONTH">
+                            <option value="">@Human.Resource.Language.Month</option>
+                            @for (int month = 1; month <= 12; month++)
+                            {
+                                string monthFormatted = month.ToString("D2"); // Định dạng số tháng thành chuỗi có 2 chữ số
+                                <option value="@monthFormatted">@monthFormatted</option>
+                            }
+                        </select>
+                        <select id="yearSelect" style="width:80px;" class="form-control input-custom" name="SEARCH_YEAR">
+                            <option value="">@Human.Resource.Language.Year</option>
+                            @for (int year = 2015; year <= DateTime.Now.Year; year++)
+                            {
+                                <option value="@year">@year</option>
+                            }
+                        </select>
+                        <button style=" width:120px;" type="submit" class=" form-control btn input-custom"><img class="icon-button" src="~/Assets/img/icon/search-2.png" />@Human.Resource.Language.Search</button>
+                    </form>
+                    @if (Model.LIST_TIMESHEETVIEW != null && Model.LIST_TIMESHEETVIEW.Any())
+                    {
+                        <div class="input-custom btn-pdf-right">
+                            <a class="text-color-blue-dark" style="font-size:15px;" href="@Url.Action("GenerateExcel", new { SEARCH_DATE = Html.Raw(ViewData["SEARCH_DATE"]) })">Excel<img class="icon-caption" src="~/Assets/img/icon/icon-Export.jpg" /></a>
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="outer-wrapper" style="margin-bottom:50px;">
+            <div class="table-wrapper-time-keep" style="overflow-y:auto;">
+                <div class="table-caption">
+                    <div style="margin:0;">
+                        @if (ViewData["SEARCH_DATE"] != null)
+                        {
+                            <div>
+                                @Human.Resource.Language.Log_list - @Html.Raw(ViewData["SEARCH_DATE"])
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                @Human.Resource.Language.Log_list - @DateTime.Now.ToString("MM/yyyy")
+                            </div>
+                        }
+                    </div>
+                </div>
+                <table class="table-hover" style="width:100%!important;" id="table-timesheet">
+                    <thead>
+                        <tr>
+                            <th>
+                                STT <br /> No.
+                            </th>
+                            <th>
+                                Mã thẻ
+                                <br />(ID Card)
+                            </th>
+
+                            <th>
+                                Ngày quét
+                                <br />(Scan date)
+                            </th>
+                            <th>
+                                Giờ quét
+                                <br />(Scan time)
+                            </th>
+                            <th>
+                                Số máy
+                                <br />(Machine Number)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LIST_TIMESHEETVIEW != null && Model.LIST_TIMESHEETVIEW.Any())
+                        {
+                            int i = 1;
+
+                            foreach (var item in Model.LIST_TIMESHEETVIEW)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@(string.IsNullOrEmpty(item.EMPLOYEE_NUMBER) ? "-" : item.EMPLOYEE_NUMBER)</td>
+                                    <td>@(item.DATECHECK == null ? "-" : item.DATECHECK.ToString("dd/MM/yyyy"))</td>
+                                    <td>@(item.TIME_TEMP == null ? "-" : item.TIME_TEMP.ToString("HH:mm:ss"))</td>
+                                    @if (item.MACHINE_NUMBER == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.MACHINE_NUMBER</td>
+                                    }
+                                </tr>
+                                i++;
+                            }
+                        }
+                        @*  else
+                            {
+                                <tr>
+                                    <td colspan="5" style="text-align: center;"> No matching records found </td>
+                                </tr>
+                            }*@
+                    </tbody>
+
+                </table>
+
+            </div>
+            @* <div class="footer-table" style="border-top: 2px solid #ccc2c2;">
+                    <span class="text-color-gray btn-paging">
+                    </span>
+                </div>*@
+        </div>
+    </div>
+</div>
+

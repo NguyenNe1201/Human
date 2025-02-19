@@ -1,0 +1,146 @@
+﻿@{
+    var employee = Session["INFO_EMP"] as Human.Models.Entities.EmployeeView_Entities;
+    var count_notifi = Session["COUNT_NOTIFI"];
+
+    var random = new Random();
+    var randomValue = random.Next().ToString();
+    var language = "";
+    if (Session[Human.Common.CommonConstants.CurrentCulture] != null)
+    {
+        language = Session[Human.Common.CommonConstants.CurrentCulture].ToString();
+    }
+    else
+    {
+        language = "vi";
+    }
+    var Session_pos = Session["EMP_POS"];
+
+}
+
+<nav class="sb-topnav navbar navbar-expand navbar-dark border-bottom">
+    <div class="sidebar-toggle d-flex">
+        <div class="logo-display" style="margin-top:8px;">
+            <a class="ps-3 text-center" href="~/Home">
+                <img style="width:80px; height:27px;" src="~/Assets/img/logo/logo.png?random=@randomValue" alt="logo website" />
+            </a>
+        </div>
+        <button style="border-radius:10px;" class="btn order-1 order-lg-0 me-2 me-lg-0" id="sidebarToggle">
+            <i class="fas fa-bars"></i><i style="display:none;" class="fas fa-chevron-left"></i> Menu
+        </button>
+        <div class="d-flex justify-content-between ms-auto me-0 me-md-3 my-2 my-md-0" style="margin-right:0px !important;">
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <!-- Notifications -->
+                @if (Session["EMP_POS"] != "")
+                {
+                    <li class="nav-item dropdown has-arrow flag-nav">
+                        <a style="padding-right:25px;" class="nav-link" data-bs-toggle="dropdown" href="#" role="button" id="navbarDropdown_notifi" aria-expanded="false">
+                            <i class="fas fa-bell" style="height:15px;"></i> <span class="badge badge-pill notifi-sum" style="border-radius: 10rem; right: 4px; top: -3px;">@count_notifi</span>
+                        </a>
+                        <div class="dropdown-menu notifications" aria-labelledby="navbarDropdown_notifi">
+                            <div class="topnav-dropdown-header">
+                                <span class="notification-title">@Human.Resource.Language.Notification</span>
+                                <a href="#" class="clear-noti"> @Human.Resource.Language.Clear_All </a>
+                            </div>
+                            <div class="noti-content">
+                                <ul class="notification-list">
+                                    @if (Convert.ToInt32(count_notifi) != 0)
+                                    {
+                                        <li class="notification-message">
+                                            <a href="~/Notification/Index">
+                                                <div class="media">
+                                                    @*    <span class="avatar">
+                                                        <img alt="" src="assets/img/profiles/avatar-02.jpg">
+                                                    </span>*@
+                                                    <div class="media-body">
+                                                        <p class="noti-details  font-14" style="color:red;"><span class="noti-title font-13"></span> @count_notifi <span class="noti-title font-13">@Human.Resource.Language.Emp_request_cancel_leave</span></p>
+                                                        @*<p class="noti-time"><span class="notification-time">4 mins ago</span></p>*@
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="notification-message"><div class="font-14 font-weight-bold" style="text-align:center;margin:15px;">@Human.Resource.Language.No_notification</div></li>
+                                    }
+                                    @*<li class="notification-message">
+                                        <a href="activities.html">
+                                            <div class="media">
+                                               <span class="avatar">
+                                                    <img alt="" src="assets/img/profiles/avatar-03.jpg">
+                                                </span>
+                                                <div class="media-body">
+                                                    <p class="noti-details"><span class="noti-title">Tarah Shropshire</span> changed the task name <span class="noti-title">Appointment booking with payment gateway</span></p>
+                                                    <p class="noti-time"><span class="notification-time">6 mins ago</span></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>*@
+                                </ul>
+                            </div>
+                            <div class="topnav-dropdown-footer">
+                                <a href="#">@Human.Resource.Language.View_all_Notifications</a>
+                            </div>
+                        </div>
+                    </li>
+                }
+                <!-- /Notifications -->
+                <!-- Flag -->
+                <li class="nav-item dropdown has-arrow flag-nav" style="padding-right:5px">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" id="navbarDropdown1" aria-expanded="false">
+                        @if (language == "vi")
+                        {
+                            <img src="~/Assets/img/flags/Vietnam-64.png" alt="" height="14">
+
+                            <span class="font-14" style="text-transform: uppercase;">
+                                @Human.Resource.Language.Vietnamese_show
+                            </span>
+                        }
+                        else if (language == "en")
+                        {
+                            <img src="~/Assets/img/flags/us.png" alt="" height="18">
+
+                            <span class="font-14" style="text-transform: uppercase;">
+                                @Human.Resource.Language.English_show
+                            </span>
+                        }
+
+                    </a>
+                    <div style="padding:5px 0px;" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown1">
+                        <a href="@Url.Action("ChangeCulture", "Base", new { ddlCulture = "vi", returnUrl = "/Home" })" class="dropdown-item">
+                            <img src="~/Assets/img/flags/flag-vietnam-24.png" alt="" height="16"> @Human.Resource.Language.Vietnamese
+                        </a>
+                        <a href="@Url.Action("ChangeCulture", "Base", new { ddlCulture = "en", returnUrl = "/Home" })" class="dropdown-item">
+                            <img src="~/Assets/img/flags/us.png" alt="" height="16"> @Human.Resource.Language.English
+                        </a>
+                    </div>
+                </li>
+                <!-- /Flag -->
+                <li class="nav-item dropdown d-flex">
+                    <a style="padding-bottom:5px;" class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>
+                            <img style="border-radius:50%; width:30px;height:30px;" src="~/Assets/img/avatar/@(employee.IMG_WEB != null ? employee.IMG_WEB+ "?random=" + randomValue :"user.png"+"?random=" + randomValue)" alt="user">
+                            @*<span class="status-online"></span>*@
+                        </span>
+                        <b class="name-header">@employee.FULLNAME</b>
+                    </a>
+                    @*  <i class="fas fa-user fa-fw text-black"></i>*@
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li>
+                            <div class="dropdown-item" style="padding:0px;">
+                                <a class="border-bottom dropdown-item-text">
+                                    <p style="margin-bottom:0;">@employee.FULLNAME</p>
+                                    <p style="margin-bottom:0;">@employee.EMP_CODE</p>
+                                    <p style="margin-bottom:0;"> @employee.TitleName_en</p>
+                                </a>
+                            </div>
+                        </li>
+                        <li><a class="dropdown-item" href="~/ProfileEmployee/Index">@Human.Resource.Language.Profile</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="Logout()">@Human.Resource.Language.Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>

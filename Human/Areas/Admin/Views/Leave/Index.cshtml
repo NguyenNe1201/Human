@@ -1,0 +1,275 @@
+﻿
+@model Human.Models.LeaveModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Phép";
+    ViewBag.active = 5;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng lương" />
+    <meta name="author" content="" />
+}
+
+@section LoadJs{
+
+    <script>
+        $(function () {
+            $('#AlertMessage').removeClass("hidden-item");
+            $('#AlertMessage').delay("2000").slideUp("2000");
+
+        })
+    </script>
+    <script src="~/Areas/Admin/Assets/JS/Leave.js"></script>
+    <script src="~/Areas/Admin/Assets/JS/scrips.js"></script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var num = 0;
+    var start_date = DateTime.Now;
+    var end_date = DateTime.Now;
+    if (Session["SEARCH_START"] != null)
+    {
+        start_date = Convert.ToDateTime(Session["SEARCH_START"]);
+        end_date = Convert.ToDateTime(Session["SEARCH_END"]);
+
+    }
+
+
+}
+
+<div class="container">
+    <div class="form">
+        <div class="card-header leave-header">
+            <div class="row col-12 func-header">
+                <div>
+                    <div class="btn btn-success left"><a class="text-white" href="~/Admin/Leave/Create">Add new</a></div>
+                    <div class="btn btn-success right ">@Html.ActionLink("Reset", "ReloadTotalLeave", new { }, new { @class = "text-white" })</div>
+
+                </div>
+            </div>
+
+            @using (Html.BeginForm("Search", "Leave", FormMethod.Post))
+            {
+                <div class="header-leave">
+                    <div class="row col-12">
+                        <div class="col-lg-5 col-12">
+                            <label class="header-child col-lg-3 col-5">Employee code:</label>
+                            <input class="col-lg-6 col-6" name="SEARCH_CODE" value="@Session["SEARCH_CODE"]" />
+                        </div>
+                        @*<div class="col-5">
+                                <label class="header-child col-2">Tên NV:</label>
+                                <label class="header-child col-6">@Model.EMP_NAME</label>
+                            </div>*@
+
+                    </div>
+                    <div class="row col-12">
+                        <div class="col-lg-5 col-12">
+                            <label class="header-child col-lg-3 col-5">Leave type:</label>
+                            <select class="col-lg-6 col-6" name="KINDLEAVE_ID">
+                                @foreach (var item in Model.LST_KINDLEAVE)
+                                {
+                                    <option @Html.Raw(item.KINDLEAVE_ID == 0 ? "selected" : "") value="@item.KINDLEAVE_ID">@item.NAMELEAVE_VI</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-5 col-12">
+                            <label class="header-child col-lg-3 col-5">Status:</label>
+                            <select class="col-lg-6 col-6" name="SEARCH_STATUSLEAVE">
+                                <option value="-1">All</option>
+                                <option value="0">Pending</option>
+                                <option value="1">Accept</option>
+                                <option value="2">Deny</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row col-12">
+                        <div class="col-lg-5 col-12 ">
+                            <label class="header-child col-lg-3  col-5">From date:</label>
+                            <input type="date" class="col-lg-6 col-6" name="SEARCH_STARTDATE" value="@start_date.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-lg-5 col-12">
+                            <label class="header-child col-lg-3  col-5">To date:</label>
+                            <input type="date" class="col-lg-6 col-6" name="SEARCH_ENDDATE" value="@end_date.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+
+                    <div class="row col-12">
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success right">Search</button>
+
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+
+        </div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div id="AlertMessage" class="title-notif hidden-item @TempData["AlertType"]">@TempData["AlertMessage"]</div>
+
+        }
+
+        <div class="outer-wrapper">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th><input type="checkbox" id="chk_all"/></th>
+                            <th>DATE</th>
+                            <th class="w-10">EMP CODE</th>
+                            <th class="w-20">EMP NAME</th>
+                            <th>SECTION</th>
+                            <th>REASON</th>
+                            <th>HOURS</th>
+                            <th class="w-12">DETAIL</th>
+                            <th>Supervisor</th>
+                            <th>Manager</th>
+                            <th>Director</th>
+                            <th>###</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LST_LEAVEVIEW)
+                        {
+                            <tr>
+                                @{
+                                    Model.KIND_LEAVE = Model.LST_KINDLEAVE.Where(w => w.KINDLEAVE_ID == item.KINDLEAVE_ID).First();
+
+                                    num++;
+                                    var position = Human.Models.Entities.ClsGlobal_Entities.POS;
+
+                                    var SupCheck = 1;
+                                    var ManCheck = 1;
+                                    var SelCheck = 1;
+                                    if (item.SUP_STATUS > 0)
+                                    {
+                                        if (item.DIR_STATUS > 0 || item.MAN_STATUS > 0)
+                                        {
+                                            SupCheck = 0;
+                                        }
+                                    }
+                                    if (item.MAN_STATUS > 0)
+                                    {
+                                        if (item.DIR_STATUS > 0)
+                                        {
+                                            ManCheck = 0;
+                                        }
+                                    }
+                                    if (position == "SUP")
+                                    {
+                                        if (item.MAN_STATUS > 0 || item.DIR_STATUS > 0)
+                                        {
+                                            SelCheck = 0;
+                                        }
+                                    }
+                                    else if (position == "MAN")
+                                    {
+                                        if (item.DIR_STATUS > 0)
+                                        {
+                                            SelCheck = 0;
+                                        }
+                                    }
+                                }
+                                <td class="hidden-item">@item.LEAVE_ID</td>
+                                <td>@num</td>
+                                <td><input type="checkbox" /></td>
+
+                                <td>@item.LEAVE_STARTDATE.ToString("dd/MM/yyyy")</td>
+                                <td>@item.EMP_CODE</td>
+                                <td>@item.FULLNAME</td>
+                                <td>@item.SECTION_NAME_EN</td>
+                                <td>
+                                    @if (SelCheck == 1)
+                                    {
+                                        <select class="remove-dropdown" onchange="handleSelectChange(this)" data-leaveid="@item.LEAVE_ID" data-employeeid="@item.EMPLOYEE_ID">
+                                            @foreach (var i_kindleave in Model.LST_KINDLEAVE)
+                                            {
+                                                if (i_kindleave.KINDLEAVE_ID > 0)
+                                                {
+                                                    <option value="@i_kindleave.KINDLEAVE_ID" @Html.Raw(i_kindleave.KINDLEAVE_ID == item.KINDLEAVE_ID ? "selected" : "")>@i_kindleave.NAMELEAVE_VI</option>
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        @Model.KIND_LEAVE.NAMELEAVE_VI
+                                    }
+                                </td>
+                                <td>@item.HOURS</td>
+                                <td>@item.REASON</td>
+
+
+                                <td class="text-center">
+                                    @if (Model.POSITION == "SUP" && SupCheck == 1)
+                                    {
+                                        <button class="button-circle @Html.Raw(item.SUP_STATUS==1?"color-green btn-disabled":"")" onclick="Update_Status(@item.LEAVE_ID,1)"><i class="fa fa-check"></i></button>
+                                        <button class="button-circle @Html.Raw(item.SUP_STATUS==2?"color-red btn-disabled":"")" onclick="Update_Status(@item.LEAVE_ID,2)"><i class="fa fa-xmark"></i></button>
+
+                                    }
+                                    else
+                                    {
+                                        <button disabled class="button-circle @Html.Raw(item.SUP_STATUS==1?"color-green btn-disabled":"")"><i class="fa fa-check"></i></button>
+                                        <button disabled class="button-circle @Html.Raw(item.SUP_STATUS==2?"color-red btn-disabled":"")"><i class="fa fa-xmark"></i></button>
+
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (Model.POSITION == "MAN" && ManCheck == 1)
+                                    {
+                                        <button class="button-circle @Html.Raw(item.MAN_STATUS==1?"color-green btn-disabled":"")" onclick="Update_Status(@item.LEAVE_ID,1)"><i class="fa fa-check"></i></button>
+                                        <button class="button-circle @Html.Raw(item.MAN_STATUS==2?"color-red btn-disabled":"")" onclick="Update_Status(@item.LEAVE_ID,2)"><i class="fa fa-xmark"></i></button>
+
+                                    }
+                                    else
+                                    {
+                                        <button disabled class="button-circle @Html.Raw(item.MAN_STATUS==1?"color-green btn-disabled":"")"><i class="fa fa-check"></i></button>
+                                        <button disabled class="button-circle @Html.Raw(item.MAN_STATUS==2?"color-red btn-disabled":"")"><i class="fa fa-xmark"></i></button>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (Model.POSITION == "DIR")
+                                    {
+                                        <button class="button-circle @Html.Raw(item.DIR_STATUS==1?"color-green text-white":"")" onclick="Update_Status(@item.LEAVE_ID,1)"><i class="fa fa-check"></i></button>
+                                        <button class="button-circle @Html.Raw(item.DIR_STATUS==2?"color-red text-white":"")" onclick="Update_Status(@item.LEAVE_ID,2)"><i class="fa fa-xmark"></i></button>
+
+                                    }
+                                    else
+                                    {
+                                        <button disabled class="button-circle @Html.Raw(item.DIR_STATUS==1?"color-green text-white":"")"><i class="fa fa-check"></i></button>
+                                        <button disabled class="button-circle @Html.Raw(item.DIR_STATUS==2?"color-red text-white":"")"><i class="fa fa-xmark"></i></button>
+                                    }
+                                </td>
+                                <td class="status">
+                                    @{
+                                        var classStatus = "";
+                                        var textStatus = "";
+                                        switch (item.STATUS_L)
+                                        {
+
+                                            case 1: classStatus = "active"; textStatus = "Accept"; break;
+                                            case 2: classStatus = "deny"; textStatus = "Deny"; break;
+                                            default: classStatus = "waiting"; textStatus = "Pending"; break;
+                                        }
+                                    }
+                                    <span class="@classStatus">@textStatus</span>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

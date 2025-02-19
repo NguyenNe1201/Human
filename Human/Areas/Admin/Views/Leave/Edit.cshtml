@@ -1,0 +1,100 @@
+﻿
+@model Human.Areas.Admin.Models.LeaveModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Phép";
+    ViewBag.active = 3;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Chỉnh sửa phép" />
+    <meta name="author" content="" />
+
+}
+
+@section LoadJs{
+    <script src="~/Areas/Assets/js/admin/Leave.js"></script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var num = 0;
+}
+
+<div class="container">
+    <div class="form">
+        <div class="btn-back"><a href="~/Admin/Leave/Index"><i class="fa fa-arrow-left"></i></a></div>
+
+        <div class="card-header leave-header">
+            @using (Html.BeginForm("InsertLeave", "Leave", FormMethod.Post))
+            {
+                <input type="hidden" value="@Model.T_Leave.EMPLOYEE_ID" name="EMPLOYEE_ID" />
+                <input type="hidden" value="@Model.T_Leave.KINDLEAVE_ID" id="kindleave_id" />
+                <div class="row col-12">
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Mã NV:</label>
+                        <input class="col-6" name="EMP_CODE" id="EMP_CODE" value="@Model.T_Leave.EMP_CODE" readonly>
+
+                    </div>
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Họ tên:</label>
+                        <input class="col-6" name="FULLNAME" id="FULLNAME" value="@Model.T_Leave.FULLNAME" readonly>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Loại phép:</label>
+                        <select class="col-6 " name="KINDLEAVE_ID" id="ListKindLeave">
+                            @foreach (var item in Model.LST_KINDLEAVE)
+                            {
+                                <option value="@item.KINDLEAVE_ID" @Html.Raw(item.KINDLEAVE_ID==Model.T_Leave.KINDLEAVE_ID?"Selected":"")>@item.NAMELEAVE_VI</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Từ ngày:</label>
+                        <input id="LEAVE_STARTDATE" type="date" readonly class="col-6 col-lg-6" name="LEAVE_STARTDATE" value="@Model.T_Leave.LEAVE_STARTDATE.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Đến ngày:</label>
+                        <input id="LEAVE_ENDDATE" type="date" readonly class="col-6 col-lg-6" name="LEAVE_ENDDATE" value="@Model.T_Leave.LEAVE_ENDDATE.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Số giờ:</label>
+                        <select class="col-6" name="HOURS">
+                            <option value="4" @Html.Raw(Model.T_Leave.HOURS==4?"selected":"")>4</option>
+                            <option value="8" @Html.Raw(Model.T_Leave.HOURS==8?"selected":"")>8</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-5  hidden-item">
+                        <label class="header-child col-5">Compt for month:</label>
+                        <input class="col-6" name="COM_MONTH" value="@Model.T_Leave.COM_MONTH" />
+                    </div>
+                    <div class="col-lg-5  hidden-item">
+                        <label class="header-child col-3">year:</label>
+                        <input class="col-6" name="COM_YEAR" value="@Model.T_Leave.COM_YEAR" />
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 ">
+                        <label class="header-child col-3">Lý do:</label>
+
+                        <textarea type="text" class="col-6 col-lg-6 txt-reason" name="REASON">@Model.T_Leave.REASON</textarea>
+                    </div>
+                    <div class="col-12 col-lg-7">
+                        <button type="submit" class="btn btn-success right">Xác nhận</button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-body">
+
+        </div>
+    </div>
+
+</div>

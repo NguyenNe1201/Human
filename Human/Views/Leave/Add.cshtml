@@ -1,0 +1,236 @@
+﻿
+@model Human.Models.KindLeaveModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Add leave";
+    ViewBag.active = 3;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng lương" />
+    <meta name="author" content="" />
+
+}
+
+@section LoadJs{
+    <script src="~/Assets/js/admin/Leave.js?v=1.1"></script>
+    <script>
+        $(document).ready(function () {
+            $('#confirmSubmit').click(function () {
+                var date_create = $('#LEAVE_STARTDATE').val();
+                var input_id = $('#EMPLOYEE_ID').val();
+
+                $.ajax({
+                    url: '@Url.Action("CheckleaveDate","Leave")',
+                    type: "POST",
+                    data: { date_create: date_create, employee_id: input_id },
+                    success: function (result) {
+
+                        if (result) {
+                            Swal.fire({
+                                title: "Ngày này đã tạo phép rồi",
+                                icon: "warning",
+                                showConfirmButton: false,
+                                timer: 3000
+                                /*confirmButtonText: "Đồng ý",
+                                cancelButtonText: "Hủy bỏ"*/
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    confirmShown = true;
+                                    $('#leaveform').submit();
+
+                                }
+                            });
+                            return false;
+                        }
+                        else {
+                            $('#leaveform').submit();
+                        }
+
+                    },
+                    error: function (result) {
+
+                    }
+                })
+            });
+        })
+        function checkInputHidden() {
+
+            var isChecked = document.getElementById('chk_todate').checked;
+            document.getElementById('CHECKED_TODATE_HIDDEN').value = isChecked ? "true" : "false";
+            var input_chk = document.getElementById('input_todate');
+            input_chk.classList.toggle('hidden-item');
+        }
+        document.getElementById("LEAVE_STARTDATE").oninput = function () {
+            var currentDate = new Date();
+            var selectedDate = new Date(this.value);
+
+            if (selectedDate < currentDate) {
+                Swal.fire({
+                    title: "Ngày bắt đầu phải từ ngày hôm nay trở đi!",
+                    icon: "warning",
+                    showConfirmButton: false,
+                    timer: 3000  // Đặt timer là 3000ms (tương đương 3 giây)
+                });
+                this.value = ''; // Xóa giá trị nếu không hợp lệ
+                this.valueAsDate = currentDate; // Đặt giá trị về ngày hiện tại
+            }
+        };
+        document.getElementById("LEAVE_ENDDATE").oninput = function () {
+            var currentDate = new Date();
+            var startDate = new Date(document.getElementById("LEAVE_STARTDATE").value);
+            var selectedDate = new Date(this.value);
+            if (selectedDate < currentDate || selectedDate < startDate) {
+                Swal.fire({
+                    title: "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!",
+                    icon: "warning",
+                    showConfirmButton: false,
+                    timer: 3000  // Đặt timer là 3000ms (tương đương 3 giây)
+                });
+                this.value = ''; // Xóa giá trị nếu không hợp lệ
+                this.valueAsDate = currentDate; // Đặt giá trị về ngày hiện tại
+            }
+        };
+        window.onload = function () {
+            var leaveStartDate = document.getElementById("LEAVE_STARTDATE");
+            var leaveEndDate = document.getElementById("LEAVE_ENDDATE");
+
+            leaveStartDate.addEventListener("input", function () {
+                leaveEndDate.value = leaveStartDate.value;
+                validateEndDate(); // Gọi hàm kiểm tra ngày kết thúc
+            });
+
+            function validateEndDate() {
+                var currentDate = new Date();
+                var startDate = new Date(leaveStartDate.value);
+                var endDate = new Date(leaveEndDate.value);
+
+                if (endDate < currentDate || endDate < startDate) {
+                    Swal.fire({
+                        title: "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!",
+                        icon: "warning",
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    leaveEndDate.value = ''; // Xóa giá trị nếu không hợp lệ
+                    leaveEndDate.valueAsDate = currentDate;
+                }
+            }
+        };
+    </script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var date_now = DateTime.Now.ToString("yyyy-MM-dd");
+}
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="Authority">
+        <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+        </script>
+    </div>
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Add_leave</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Category_lookup</a></li>
+                    <li class="breadcrumb-item"><a href="/Leave/Index" class="font-weight-bold">@Human.Resource.Language.Leave</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Add_leave</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form">
+        <div class="btn-back"><a href="~/Leave/Index"><i class="fa fa-arrow-left"></i></a></div>
+        <div class="card-header form-create">
+            @using (Html.BeginForm("InsertLeave", "Leave", FormMethod.Post, new { id = "leaveform", @class = "position-relative" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" value="@ViewBag.EmployeeID" name="EMPLOYEE_ID" id="EMPLOYEE_ID" />
+                <input type="hidden" id="CHECKED_TODATE_HIDDEN" name="CHECKED_TODATE" value="false" />
+                <input type="hidden" name="PNCL" id="PNCL" />
+
+                <div class="row col-12">
+                    <div class="col-lg-3 col-12 bold">
+                        <label class="header-child col-lg-2  col-5">@Human.Resource.Language.Name:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.FULLNAME</label>
+                    </div>
+                    <div class="col-lg-3 col-12 bold">
+                        <label class="header-child col-lg-2  col-5">@Human.Resource.Language.Employee_code:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.EMP_CODE</label>
+                    </div>
+                    <div class="col-lg-3 col-12 bold">
+                        <label class="header-child col-lg-2  col-5">@Human.Resource.Language.Department:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.DEPARTMENT_NAME_EN</label>
+                    </div>
+                    <div class="col-lg-3 col-12 bold">
+                        <label class="header-child col-lg-2  col-5">@Human.Resource.Language.Working_site:</label>
+                        <label class="col-lg-6 col-6 text-color-gray">@Model.EMPLOYEE.SECTION_NAME_EN</label>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-3 col-12">
+                        <label class="header-child col-lg-2 col-5">@Human.Resource.Language.Add_leave_reason:</label>
+                        <select class="col-lg-6 col-6" name="KINDLEAVE_ID" id="KINDLEAVE_ID">
+                            @foreach (var item in Model.LST_KINDLEAVE)
+                            {
+                                <option value="@item.KINDLEAVE_ID">@item.NAMELEAVE_VI</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-12">
+                        <label class="header-child col-lg-2 col-5">@Human.Resource.Language.add_leave_day:</label>
+                        <select class="col-lg-6 col-6" name="HOURS">
+                            <option value="4">0.5</option>
+                            <option value="8">1</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-12 ">
+                        <label class="header-child col-lg-2  col-5">@Human.Resource.Language.add_leave_from_day:</label>
+                        <input type="date" class="col-lg-6 col-6" name="LEAVE_STARTDATE" value="@date_now" id="LEAVE_STARTDATE" min="2000-01-01" max="2999-12-31" />
+                        <label><input type="checkbox" id="chk_todate" onclick="checkInputHidden()" /></label>
+                    </div>
+                    <div class="col-lg-3 col-12 hidden-item" id="input_todate">
+                        <label class="header-child col-lg-2  col-5">@Human.Resource.Language.add_leave_to_day:</label>
+                        <input type="date" class="col-lg-6 col-6" name="LEAVE_ENDDATE" value="" id="LEAVE_ENDDATE" min="2000-01-01" max="2999-12-31" />
+                    </div>
+                </div>
+                <div class="row col-12 ">
+                    <div class="col-4 hidden-item">
+                        <label class="header-child col-lg-3">Compt for month:</label>
+                        <input class="col-lg-6 col-6" name="COM_MONTH" value="" />
+                    </div>
+                    <div class="col-4 hidden-item">
+                        <label class="header-child col-3">year:</label>
+                        <input class="col-6 col-6" name="COM_YEAR" value="" />
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-6 col-12">
+                        <label class="header-child col-lg-1 col-5">@Human.Resource.Language.Detail:</label>
+                        <textarea type="text" class="col-lg-8 col-6 txt-reason" name="REASON"></textarea>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                    </div>
+                </div>
+                <button style="width: 120px;" type="button" class="btn right btn-search" id="confirmSubmit">@Human.Resource.Language.Apply</button>
+            }
+        </div>
+        <div class="card-body">
+        </div>
+    </div>
+</div>

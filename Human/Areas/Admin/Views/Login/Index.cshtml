@@ -1,0 +1,65 @@
+﻿@model  Human.Models.Entities.User_Entities
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Conect</title>
+    <link href="~/Areas/Admin/Assets/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="~/Areas/Admin/Assets/css/MyStyle.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="~/Areas/Admin/Assets/img/logo_2.jpg" />
+    <style>
+        body {
+            background-color: #dee9ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-form">
+
+
+        @using(Html.BeginForm())
+        {
+            <div class="form-icon">
+                <span><img src="~/Assets/img/logo.png" /></span>
+            </div>
+            if (TempData["AlertMessage"] != null)
+            {
+                <div id="AlertMessage" class="title-notif alert-warning hidden-item @TempData["AlertType"]">@TempData["AlertMessage"]</div>
+
+            }
+            @Html.ValidationMessageFor(model => model.USERNAME, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.USERNAME, new { @class = "form-control item", @placeholder = "username", @id = "inputEmail" })
+
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.PASSWORD, new { @class = "form-control item", @placeholder = "password", @type = "password", @id = "inputPassword" })
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn-block create-account">Login</button>
+            </div>
+        }
+
+
+
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+    <script>
+        $(function () {
+            $('#AlertMessage').removeClass("hidden-item");
+            $('#AlertMessage').delay("2000").slideUp("2000");
+
+        })
+
+    </script>
+</body>
+</html>
+

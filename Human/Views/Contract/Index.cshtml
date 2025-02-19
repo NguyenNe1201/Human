@@ -1,0 +1,399 @@
+﻿@model Human.Models.ContractModel
+@{
+    ViewBag.Title = "Contract";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 11;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng phép" />
+    <meta name="author" content="" />
+    <!-- datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" type="text/css">
+    <style>
+        input {
+            font-size: 14px !important;
+        }
+        .select {
+            -webkit-appearance: auto !important;
+            font-size: 14px !important;
+        }
+        label {
+            font-weight: bolder !important;
+            font-size: 14px !important;
+        }
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+        table thead tr th {
+            text-align: center;
+        }
+        #table-listemp > thead > tr > th {
+            text-align: center;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-radius: 0px !important;
+        }
+        div.dataTables_wrapper div.dataTables_filter input {
+            margin-bottom: 10px;
+            height: 20px;
+        }
+    </style>
+}
+@section LoadJs{
+    <script type="text/javascript" src="~/Assets/js/admin/Contract.js?v=1.1"></script>
+    <script>
+        $(function () {
+            var table = $('#table-listemp').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [
+                    [10, 50, 100, -1],
+                    [10, 50, 100, "All"]
+                ],
+                "columnDefs": [
+                    { "orderable": false, "targets": [0] }
+                ]
+            });
+        });
+    </script>
+}
+@{
+    var language = "";
+    if (Session[Human.Common.CommonConstants.CurrentCulture] != null)
+    {
+        language = Session[Human.Common.CommonConstants.CurrentCulture].ToString();
+    }
+    else
+    {
+        language = "vi";
+    }
+    string name_func_contract = "";
+    string btn_func_contract = "";
+    var lst_fuction_emp2 = Session["FUNCTION_BY_EMP"] as List<Human.Models.Entities.Emp_Function_Entities>;
+    foreach (var item_t in lst_fuction_emp2)
+    {
+        if (item_t.NAME_FUNCTION.ToString() == "contract" && (item_t.BTN_FUNCTION == "edit/read" || item_t.BTN_FUNCTION == "read"))
+        {
+            name_func_contract = item_t.NAME_FUNCTION.ToString();
+            btn_func_contract = item_t.BTN_FUNCTION.ToString();
+            break;
+        }
+    }
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Labor_contract</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Labor_contract</li>
+                </ul>
+                @if (lst_fuction_emp2 != null && btn_func_contract == "edit/read" && name_func_contract == "contract")
+                {
+                    <div class="btn-edit-emp" id="btn-fieldset">
+                        <button class="btn color-green" type="button" id="btn-add"><i class="fa-solid fa-plus"></i> @Human.Resource.Language.btn_Add</button>
+                        <button class="btn color-blue" type="button" id="btn-edit"><i class="fa-solid fa-pen-to-square"></i> @Human.Resource.Language.btn_Edit</button>
+                        <button class="btn color-orange" type="button" id="btn-cancel"><i class="fa-solid fa-rotate-right"></i> @Human.Resource.Language.btn_Cancel</button>
+                        <button id="btn-del" class="btn color-redpale" type="button"><i class="fa-solid fa-trash"></i> @Human.Resource.Language.btn_Delete</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+            document.addEventListener("DOMContentLoaded", function (event) {
+                Swal.fire({
+                    position: 'center-center',
+                    icon: '@TempData["AlertType"]',
+                    title: '@TempData["AlertMessage"]',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+            </script>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3" style="border-radius:15px;">
+                <div class="card-body" style="padding:1.5rem 2.5rem;">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-id-badge"></i> @Human.Resource.Language.Emp_info</h5>
+                                </div>
+                                <div class="row">
+                                    @* <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Chọn nhận viên</label>
+                                              <a class="btn color-greenlight" href="#" data-bs-toggle="modal" data-bs-target="#select_emp_modal">Chọn Nhân Viên</a>
+                                            </div>
+                                        </div>*@
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Employee_code</label>
+                                            <input type="text" class="form-control" id="ip_emp_code" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.ID_card</label>
+                                            <input class="form-control" type="text" id="ip_emp_id" value="" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Fullname </label>
+                                            <input type="text" class="form-control" id="ip_fullname" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Date_of_join </label>
+                                            <input type="date" class="form-control" id="ip_date_join" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Department</label>
+                                            <input type="text" class="form-control" id="ip_deparment" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Section </label>
+                                            <input type="text" class="form-control" id="ip_section" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Job </label>
+                                            <input type="text" class="form-control" id="ip_job" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group" style="display:flex;align-items:flex-end;justify-content:center;height:78%;">
+                                            <a class="btn" href="#" data-bs-toggle="modal" data-bs-target="#select_emp_modal"><i class="fas fa-search"></i> @Human.Resource.Language.Select_emp</a>
+                                            @*   <button class="color-greenlight btn color-blue" type="button"><i class="fas fa-search"></i> @Human.Resource.Language.Search</button>*@
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3" style="border-radius:15px;">
+                <div class="card-body" style="padding:1.5rem 2.5rem;">
+                    <form method="post" id="msform">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="emp_id_hidden" name="EMPLOYEE_ID" />
+                        <input type="hidden" name="EMP_CODE_HIDDEN" />
+                        <input type="hidden" id="contract_id_hidden" name="CONTRACT_ID" />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-file-signature"></i> @Human.Resource.Language.Contract_info</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Contract_type <span class="text-danger">*</span></label>
+                                            <select class="form-control select" id="select_contractType" name="CONTRACTTYPE_ID">
+                                                <option value="">@Human.Resource.Language.Select_contract_type</option>
+                                                @if (Model.LST_CONTRACT_TYPE != null && Model.LST_CONTRACT_TYPE.Any())
+                                                {
+                                                    foreach (var item in Model.LST_CONTRACT_TYPE)
+                                                    {
+                                                        <option value="@item.CONTRACTTYPE_ID" data-period="@item.PERIOD" data-contractypename="@(language == "vi" ? item.CONTRACTNAME_VI : item.CONTRACTNAME_EN)">@Html.Raw(language == "vi" ? item.CONTRACTNAME_VI : item.CONTRACTNAME_EN) @Html.Raw(item.PERIOD != 0 ? " | " + item.PERIOD.ToString() + " tháng" : "") </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Contract_code</label>
+                                            <input id="contract_code" type="text" class="form-control" disabled />
+                                            <input id="contract_code_hidden" type="hidden" name="CONTRACT_NO" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Sign_day <span class="text-danger">*</span></label>
+                                            <input id="date_start" class="form-control" type="date" name="ISSUEDATE" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Expiration_date</label>
+                                            <input id="date_end" type="date" class="form-control" name="DEADLINE" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Specialize_title</label>
+                                            <input id="ip_specialize" class="form-control" type="text" name="BASEON" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Job_to_do</label>
+                                            <input id="ip_jobToDo" type="text" class="form-control" name="BASEON_KYNGAY" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>@Human.Resource.Language.Note</label>
+                                        <input id="ip_note_contract" type="text" class="form-control" name="REMARK" />
+                                    </div>
+                                </div>
+                                <div class="mb-2 font-13">
+                                    <span class="text-danger">* @Human.Resource.Language.Note_contract</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card profile-box flex-fill border-form">
+                                            <div class="card-body ">
+                                                <div id="contract_table" class="table-wrapper-time-keep" style="margin-top: 7px;overflow-y:auto;">
+                                                    <table class="table-hover" style="width:100% !important;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>###</th>
+                                                                <th>
+                                                                    Mã số hợp đồng <br />(cotract code)
+                                                                </th>
+                                                                <th>
+                                                                    Loại hợp đồng <br />(contract type)
+                                                                </th>
+                                                                <th>
+                                                                    NGÀY Ký<br>(START DATE)
+                                                                </th>
+                                                                <th>
+                                                                    NGÀY Hết hạn<br>(END DATE)
+                                                                </th>
+                                                                <th>Chức danh chuyên môn <br />(specialize)</th>
+                                                                <th>Công việc phải làm <br />(work)</th>
+                                                                <th> Ghi chú <br />(Note)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colspan="8" style="text-align:center;font-size:14px;">@Human.Resource.Language.No_data_available</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="btnSave_Contract" class="submit-section text-center">
+                                    <button id="btn_save_Contract" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                                </div>
+                                <div id="btnAdd_Contract" class="submit-section text-center">
+                                    <button id="btn_add_Contract" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-folder-plus"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Profile Modal -->
+<div class="modal custom-modal fade" id="select_emp_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="margin:auto;padding:20px 0 0 0;">
+                <h4 class="modal-title main-color-web" style="font-weight:bold;"><i class="fas fa-user-plus"></i> @Human.Resource.Language.Select_emp</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" style="font-size:20px;">
+                    <span aria-hidden="true" style="position:absolute; top:10px;right:10px;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:2rem;">
+                <div class="table-wrapper-time-keep" style="overflow-y:auto;">
+                    <div class="table-caption">
+                        <div style="margin: 0;">
+                            @Human.Resource.Language.ListEmployee
+                        </div>
+                    </div>
+                    <table class="table-hover" style="width:100%!important;" id="table-listemp">
+                        <thead>
+                            <tr>
+                                <th>###</th>
+                                <th>
+                                    Mã thẻ
+                                    <br />(Code)
+                                </th>
+                                <th>
+                                    Họ tên
+                                    <br />(Fullname)
+                                </th>
+                                <th>
+                                    Bộ phận
+                                    <br />(Section)
+                                </th>
+                                <th>
+                                    Chức vụ
+                                    <br />(Job)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LST_ALL_EMPLOYEE != null && Model.LST_ALL_EMPLOYEE.Any())
+                            {
+                                int i = 1;
+
+                                foreach (var empCondition in Model.LST_ALL_EMPLOYEE)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="form-check-inline mr-0">
+                                                <input type="radio" name="radio-emp" class="check-emp form-check-input mr-0" value="@empCondition.EMPLOYEE_ID" />
+                                            </div>
+                                        </td>
+                                        <td>@(string.IsNullOrEmpty(empCondition.EMP_CODE) ? "-" : empCondition.EMP_CODE)</td>
+                                        <td>@(string.IsNullOrEmpty(empCondition.FIRSTNAME) ? "-" : empCondition.FIRSTNAME)</td>
+                                        <td>@(string.IsNullOrEmpty(empCondition.SECTION_NAME_EN) ? "-" : empCondition.SECTION_NAME_EN)</td>
+                                        <td>@(string.IsNullOrEmpty(empCondition.TitleName_en) ? "-" : empCondition.TitleName_en)</td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

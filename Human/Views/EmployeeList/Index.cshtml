@@ -1,0 +1,106 @@
+﻿@model Human.Models.CommonModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Employee List";
+    ViewBag.active = 5;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý nhân viên" />
+    <meta name="author" content="" />
+    <link href="~/Assets/css/MyStyle.css" rel="stylesheet" type="text/css" />
+
+}
+@section LoadJs{
+    <script src="~/Assets/js/admin/Employees.js"></script>
+}
+<div class="container">
+    <div class="form card-body btn-search">
+        <div class="card-header">
+            <div class="col-md-12 header-child">
+                <label for="branch" class="lbl-header">Branch:</label>
+                <select id="branch" class="select-item">
+                    @foreach (var item in Model.LSTDIVISION)
+                    {
+                        <option value="@item.DIVISION_ID">@item.DIVISION_NAME_EN</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-12">
+                <label for="department" class="lbl-header">Division:</label>
+                <select id="department" class="select-item">
+                    @foreach (var item in Model.LSTDEPART)
+                    {
+                        <option value="@item.DEPARTMENT_ID">@item.DEPARTMENT_NAME_EN</option>
+                    }
+                </select>
+            </div>
+
+        </div>
+
+        <div id="btn-search" class="right">
+            <button id="btnSearchEMP" type="button" class="btn-search custom-btn">Tìm kiếm</button>
+
+        </div>
+        <div id="gif-spin" class="right hidden-item">
+            <div class="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="col-12">
+            <table class="table-emp table ">
+                <thead>
+                    <tr>
+                        <th>Emp Code</th>
+                        <th>Name</th>
+                        <th>Joining date</th>
+                        <th>Branch</th>
+                        <th>Division</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--<div class="container-fluid px-4">
+    <div class="form card-body btn-search">
+        <button id="btnSearchEMP" type="button" class="btn-search">Tìm kiếm</button>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Datatable Employee List
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+
+
+
+                </div>-->
+<!-- end col-->
+<!--</div>
+        </div>
+    </div>
+</div>-->

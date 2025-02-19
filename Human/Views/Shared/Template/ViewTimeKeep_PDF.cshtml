@@ -1,0 +1,270 @@
+﻿﻿@model Human.Models.TimeKeepModel
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TimeKeep Pdf</title>
+    <style>
+        /* Các kiểu CSS tùy chỉnh cho PDF */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div style="display:flex; margin:7px 0px;">
+        <h2 style="float:left; width:50%; margin:0px;">PHIẾU CHẤM CÔNG NHÂN VIÊN<br />(TIMEKEEPER)</h2>
+        <span style="float: right; width: 50%; margin:auto;text-align:end;">Chấm công tháng (Month): @Model.MONTH_TIMEKEEP</span>
+    </div>
+    <div style="display:flex; margin-bottom:10px;">
+        <div style="float: left; width:50%;">
+            <span style="display:flex;">Mã nhân viên (Code): <b style="margin-left:10px;"> @Model.EMP_VIEW.EMP_CODE</b></span>
+            <span style="display:flex;">Họ và tên (Fullname): <b style="margin-left:10px;"> @Model.EMP_VIEW.FULLNAME</b></span>
+            <span style="display:flex;">Chức vụ (Position): <b style="margin-left:10px;"> @Model.EMP_VIEW.TitleName_en</b></span>
+        </div>
+        <div style="  width: 50%;">
+            <div style="width: 30%;"></div>
+            <div style="width: 70%; float: right;">
+                <span>Phòng ban (Department): <b style="margin-left:10px;">@Model.EMP_VIEW.DEPARTMENT_NAME_VI</b><br /></span>
+                <span>Bộ phận (Section): <b style="margin-left:10px;">@Model.EMP_VIEW.SECTION_NAME_VI</b><br /></span>
+                <span>Ngày Vào (Start date): <b style="margin-left:10px;"> @Model.EMP_VIEW.HIRE_DAY.ToString("dd/MM/yyyy")</b></span>
+            </div>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+
+                <th>
+                    Ngày
+                    <br />(Date)
+                </th>
+                <th>
+                    Thứ
+                    <br />(Day)
+                </th>
+                <th>
+                    Giờ vào
+                    <br />(Checkin)
+                </th>
+                <th>
+                    Giờ ra
+                    <br />(Checkout)
+                </th>
+                <th>
+                    Giờ công
+                    <br />(Hour)
+                </th>
+                <th>TC 150 <br /> OT 150</th>
+                <th>TC 210 <br /> OT 210</th>
+                <th>
+                    Ca đêm
+                    <br />(Night)
+                </th>
+                <th>TC 200<br />OT 200</th>
+                <th>
+                    PNăm
+                    <br />(AnL)
+                </th>
+                <th>
+                    Cưới,tang
+                    <br />(Wed,Ful)
+                </th>
+                <th>
+                    K.thai
+                    <br />(Preg)
+                </th>
+                <th>
+                    Khác
+                    <br />(Other)
+                </th>
+                <th>
+                    Lễ
+                    <br />(Hol)
+                </th>
+                <th>
+                    Ghi chú
+                    <br />(Remark)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.LIST_TIMEKEEEPVIEW != null && Model.LIST_TIMEKEEEPVIEW.Any())
+            {
+
+                double total_hourwork = 0;
+                double total_otwork = 0;
+                double total_ot215 = 0;
+                double total_nighthour = 0;
+                double total_anuallave = 0;
+                double total_wed_ful = 0;
+                double total_other = 0;
+                double total_holiday = 0;
+
+                foreach (var item in Model.LIST_TIMEKEEEPVIEW)
+                {
+                    var rowStyle = (item.DATENAME == "SUN") ? "background-color:#F3ecec;" : "";
+
+                    <tr style="@rowStyle">
+                        <td>@item.DATEOFMONTH.ToString("dd/MM")</td>
+                        <td>@item.DATENAME</td>
+
+                        @if (item.TIME_CHECKIN == null)
+                        {
+                            <td>-</td>
+
+                        }
+                        else if (item.TIME_CHECKIN.ToString("HH:mm:ss") == "00:00:00")
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.TIME_CHECKIN.ToString("HH:mm:ss")</td>
+                        }
+                        @if (item.TIME_CHECKOUT == null)
+                        {
+                            <td>-</td>
+
+                        }
+                        else if (item.TIME_CHECKOUT.ToString("HH:mm:ss") == "00:00:00")
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.TIME_CHECKOUT.ToString("HH:mm:ss")</td>
+                        }
+                        @if (item.HOUR_WORK == 0)
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.HOUR_WORK</td>
+                            total_hourwork += item.HOUR_WORK;
+                        }
+
+                        @if (item.OT_WORK == 0)
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.OT_WORK</td>
+                            total_otwork += item.OT_WORK;
+                        }
+                        @if (item.OT200_WORK == 0)
+
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.OT200_WORK</td>
+                            total_ot215 += item.OT200_WORK;
+                        }
+                        @if (item.NIGHT_TIME == 0)
+
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.NIGHT_TIME</td>
+                            total_nighthour += item.NIGHT_TIME;
+                        }
+                        <td>-</td>
+                        @if (item.ANUAL_LEAVE == 0)
+
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.ANUAL_LEAVE</td>
+                            total_anuallave += item.ANUAL_LEAVE;
+                        }
+                        @if (item.WED_FUL_LEAVE == 0)
+
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.WED_FUL_LEAVE </td>
+                            total_wed_ful += item.WED_FUL_LEAVE;
+                        }
+                        <td>-</td>
+                        @if (item.OTHER_LEAVE == 0)
+
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.OTHER_LEAVE</td>
+                            total_other += item.OTHER_LEAVE;
+                        }
+                        @if (item.DAYOFF == 0)
+
+                        {
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@item.DAYOFF</td>
+                            total_holiday += item.DAYOFF;
+
+                        }
+                        <td style="font-size:10px;">@(string.IsNullOrEmpty(item.REMARK) ? "-" : item.REMARK)</td>
+                    </tr>
+
+
+
+                }
+
+                <!-- Hiển thị tổng ở ngoài vòng lặp -->
+                <tr style=" border-top: 1px solid black; font-size: 15px; font-weight: 600;">
+                    <td colspan="3" class="text-center">Tổng cộng (Total):</td>
+                    <td>
+                        (Hour)
+                        <br />(Day)
+                    </td>
+                    <td>
+                        @(total_hourwork == 0 ? "-" : Math.Round(total_hourwork, 1).ToString())
+                        <br />@(total_hourwork == 0 ? "-" : Math.Round(total_hourwork/8, 2).ToString())
+                    </td>
+                    <td>@(total_otwork == 0 ? "-" : total_otwork.ToString())</td>
+                    <td>@(total_ot215 == 0 ? "-" : total_ot215.ToString())</td>
+                    <td>@(total_nighthour == 0 ? "-" : total_nighthour.ToString())</td>
+                    <td>-</td>
+                    <td>@(total_anuallave == 0 ? "-" : total_anuallave.ToString())</td>
+                    <td>@(total_wed_ful == 0 ? "-" : total_wed_ful.ToString())</td>
+                    <td>-</td>
+                    <td>@(total_other == 0 ? "-" : total_other.ToString())</td>
+                    <td>@(total_holiday == 0 ? "-" : total_holiday.ToString())</td>
+                    <td></td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="15" style="text-align: center;"> No matching records found </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</body>
+</html>

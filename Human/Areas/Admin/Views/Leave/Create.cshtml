@@ -1,0 +1,104 @@
+﻿
+@model Human.Areas.Admin.Models.LeaveModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Phép";
+    ViewBag.active = 3;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng lương" />
+    <meta name="author" content="" />
+
+}
+
+@section LoadJs{
+    <script src="~/Areas/Admin/Assets/JS/Leave.js"></script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var date_now = DateTime.Now.ToString("yyyy-MM-dd");
+}
+
+<div class="container">
+    <div class="form">
+        <div class="btn-back"><a href="~/Admin/Leave/Index"><i class="fa fa-arrow-left"></i></a></div>
+
+        <div class="card-header leave-header">
+
+
+            @using (Html.BeginForm("InsertLeave", "Leave", FormMethod.Post))
+            {
+                <input type="hidden" value="@ViewBag.EmployeeID" name="EMPLOYEE_ID" id="EMPLOYEE_ID" />
+                <input type="hidden" name="PNCL" id="PNCL" />
+                <div class="row col-12">
+                    <div class="col-lg-5 col-12">
+                        <label class="header-child col-lg-3 col-5">Mã NV:</label>
+                        <input class="col-lg-6 col-6" name="EMP_CODE" id="EMP_CODE" required/>
+                        <a class="leave-btn color-blue-light" id="CHECK_EMPCODE">Kiểm tra</a>
+                    </div>
+                    <div class="col-lg-5 col-12">
+                        <label class="header-child col-lg-3 col-5">Tên NV:</label>
+                        <label class="col-lg-6 col-6" name="FULLNAME" id="NAME_EMP"></label>
+
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 col-12">
+                        <label class="header-child col-lg-3 col-5">Loại phép:</label>
+                        <select class="col-lg-6 col-6" name="KINDLEAVE_ID">
+                            @foreach (var item in Model.LST_KINDLEAVE)
+                            {
+                                <option value="@item.KINDLEAVE_ID">@item.NAMELEAVE_VI</option>
+                            }
+
+                        </select>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 col-12 ">
+                        <label class="header-child col-lg-3  col-5">Từ ngày:</label>
+                        <input type="date" class="col-lg-6 col-6" name="LEAVE_STARTDATE" value="@date_now" />
+                    </div>
+                    <div class="col-lg-5 col-12">
+                        <label class="header-child col-lg-3  col-5">Đến ngày:</label>
+                        <input type="date" class="col-lg-6 col-6" name="LEAVE_ENDDATE" value="@date_now" />
+                    </div>
+                </div>
+                <div class="row col-12 ">
+                    <div class="col-lg-5 col-12">
+                        <label class="header-child col-lg-3 col-5">Số giờ:</label>
+                        <select class="col-lg-6 col-6" name="HOURS">
+                            <option value="4">4</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                    <div class="col-4 hidden-item">
+                        <label class="header-child col-lg-5">Compt for month:</label>
+                        <input class="col-lg-6 col-6" name="COM_MONTH" value="" />
+                    </div>
+                    <div class="col-4 hidden-item">
+                        <label class="header-child col-3">year:</label>
+                        <input class="col-6 col-6" name="COM_YEAR" value="" />
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-lg-5 col-12">
+                        <label class="header-child col-lg-3 col-5">Lý do:</label>
+
+                        <textarea type="text" class="col-lg-6 col-6 txt-reason" name="REASON"></textarea>
+                    </div>
+                    <div class="col-lg-7 col-12">
+                        <button type="submit" class="btn btn-success right">Xác nhận</button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-body">
+
+        </div>
+    </div>
+
+</div>

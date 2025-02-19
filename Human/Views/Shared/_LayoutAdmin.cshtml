@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    @RenderSection("meta", false)
+    <title>@ViewBag.Title</title>
+    <!-- datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" type="text/css">
+    <link href="~/Assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/css/default/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="~/Assets/css/styles.css?v=1.1" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="~/Assets/css/Table.css?v=1.1" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="~/Assets/img/logo_2.jpg" />
+    <link href="~/Assets/css/MyStyle.css?v=1.1" rel="stylesheet" />
+    <style>
+        .swal2-container.swal2-center > .swal2-popup {
+            font-size: 12px;
+        }
+
+        div.dataTables_wrapper div.dataTables_length select {
+            min-height: 23px;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: none;
+            border-bottom: 1px solid #b7b6b6;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .table-wrapper th:first-child {
+            border-bottom-left-radius: 0px;
+        }
+
+        .table-wrapper th:last-child {
+            border-bottom-right-radius: 0px;
+        }
+
+        .font-google {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <input class="hidden-item" type="hidden" value="@Session["EMP_CODE"]" id="emp_code_hidden" />
+    <div id="layoutSidenav">
+        @Html.Partial("_LeftMenu")
+
+        <div id="layoutSidenav_content">
+
+            @Html.Partial("_TopMenu")
+            @RenderBody()
+
+        </div>
+        @Html.Partial("_Footer")
+    </div>
+    <!-- back to top -->
+    <a id="button-back-top"><i style="font-size: 2em; font-weight: 600;color:#fff;margin-top:8px;" class="fa fa-angle-double-up"></i></a>
+    <!-- javascript jquery -->
+    <script src="~/Assets/js/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/Assets/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="~/Assets/js/datatables-simple-demo.js"></script>
+    @* sweet *@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+    @*datatable*@
+    <script src="~/Assets/libs/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/libs/datatables/dataTables.bootstrap4.js"></script>
+    <script src="~/Assets/libs/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/Assets/libs/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="~/Assets/libs/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Assets/libs/datatables/buttons.bootstrap4.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+    <!-- Datatables init -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/Assets/js/pages/datatables.init.js"></script>
+    @*js back to top*@
+    <script src="~/Assets/js/admin/Back_top.js?v=1.1"></script>
+    @*js admin dashboard*@
+    <script src="~/Assets/js/admin/Common.js?v=1.1"></script>
+    <script src="~/Assets/js/admin/EmailSMS.js?v=1.1"></script>
+    <script src="~/Assets/js/admin/Upload_IMG.js?v=1.1"></script>
+    <script src="~/Assets/js/admin/Colo_web.js?v=1.1"></script>
+    @RenderSection("LoadJs", false)
+</body>
+</html>

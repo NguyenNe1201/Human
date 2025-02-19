@@ -1,0 +1,302 @@
+﻿@model Human.Models.KindLeaveModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Leave Employee";
+    ViewBag.active = 3;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng phép" />
+    <meta name="author" content="" />
+}
+
+@section LoadJs{
+    <script src="~/Assets/js/admin/Leave.js?v=1.1"></script>
+    <script>
+        $(function () {
+            $('#AlertMessage').removeClass("hidden-item");
+            $('#AlertMessage').delay("2000").slideUp("2000");
+
+        })
+
+    </script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var num = 0;
+    var total_year_Text = Human.Resource.Language.Total_leaves_in_year;
+    var total_month_Text = Human.Resource.Language.Total_leaves_in_month;
+    var accept_text = Human.Resource.Language.Accept;
+    var deny_text = Human.Resource.Language.Deny;
+    var cancel_text = Human.Resource.Language.Cancel;
+    var pending_text = Human.Resource.Language.Pending;
+    var delete_text = Human.Resource.Language.Delete;
+    var request_text = Human.Resource.Language.Request;
+}
+
+<!-- Include the value in a data attribute -->
+<div class="hidden-item" id="total_leavel_year_Text" data-total-year-text="@total_year_Text"></div>
+<div class="hidden-item" id="total_leavel_month_Text" data-total-month-text="@total_month_Text"></div>
+<div class="hidden-item" id="accept_Text" data-accept-text="@accept_text"></div>
+<div class="hidden-item" id="deny_Text" data-deny-text="@deny_text"></div>
+<div class="hidden-item" id="cancel_Text" data-cancel-text="@cancel_text"></div>
+<div class="hidden-item" id="pending_Text" data-pending-text="@pending_text"></div>
+<div class="hidden-item" id="delete_Text" data-delete-text="@delete_text"></div>
+<div class="hidden-item" id="request_Text" data-request-text="@request_text"></div>
+
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Leave_list</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Category_lookup</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Leave</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    Swal.fire({
+                        position: 'center-center',
+                        icon: '@TempData["AlertType"]',
+                        title: '@TempData["AlertMessage"]',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+            </script>
+        </div>
+    }
+    <div class="form">
+        <div class="row">
+            <div class="col-md-12 row p-2 font-18 bold text-color-copper jus-center-leave">
+                @if (Model.TOTAL_LEAVE != null)
+                {
+                    <div class="col-md-8 row jus-center-leave">
+                        <div class="box-leave">
+                            <div class="card color-copper  text-white mb-0" style="border-radius:25px;">
+                                <div class="card-body custom-total-leave">@Human.Resource.Language.Home_total : @Model.TOTAL_LEAVE.ANUAL_LEAVE_DAY</div>
+                            </div>
+                        </div>
+                        <div class="box-leave">
+                            <div class="card color-green text-white mb-0" style="border-radius:25px;">
+                                <div class="card-body custom-total-leave">@Human.Resource.Language.Home_used : @Model.TOTAL_LEAVE.TONGCONG</div>
+                            </div>
+                        </div>
+                        <div class="box-leave">
+                            <div class="card text-white mb-0" style="background-color: #7460ee !important; border-radius:25px;">
+                                <div class="card-body custom-total-leave">@Human.Resource.Language.Home_remain : @Model.TOTAL_LEAVE.REMAIN</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-auto float-right ml-auto d-flex">
+                    <div class="box-leave">
+                        <a class="text-white btn" href="~/Leave/Add" style="width:121px;"><i class="fas fa-plus"></i> @Human.Resource.Language.Leavel_list_add_new</a>
+                    </div>
+                    <div class="box-leave">
+                        <a id="btn-detail" class="btn btn-detail text-white" style=" background-color: rgb(34 190 234); width:121px;"><i class="fas fa-calendar-week"></i> @Human.Resource.Language.Home_detail_leave</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="outer-wrapper" style="margin-bottom:50px;">
+            <div class="table-wrapper tb-leave">
+                <table id="tbl-leave" style="width:100% !important;">
+                    <caption class="table-caption">
+                        <div>
+                            <div>
+                                @Human.Resource.Language.Total_annual_leave
+                            </div>
+                        </div>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>Tháng<br>(Month)</th>
+                            <th class="month-cell">T1<br>(Jan)</th>
+                            <th class="month-cell">T2<br>(Feb)</th>
+                            <th class="month-cell">T3<br>(Mar)</th>
+                            <th class="month-cell">T4<br>(Apr)</th>
+                            <th class="month-cell">T5<br>(May)</th>
+                            <th class="month-cell">T6<br>(Jun)</th>
+                            <th class="month-cell">T7<br>(Jul)</th>
+                            <th class="month-cell">T8<br>(Aug)</th>
+                            <th class="month-cell">T9<br>(Sep)</th>
+                            <th class="month-cell">T10<br>(Oct)</th>
+                            <th class="month-cell">T11<br>(Nov)</th>
+                            <th class="month-cell">T12<br>(Dec)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center">
+                            <td class="bold">Ngày<br>(Date)</td>
+                            @{
+                                List<Human.Models.Entities.Leave_Entities> Leave_temp;
+                                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                                for (var i = 1; i <= 12; i++)
+                                {
+                                    var text_dayleave = "";
+                                    if (Model.LST_LEAVE != null)
+                                    {
+                                        Leave_temp = Model.LST_LEAVE.Where(w => w.LEAVE_STARTDATE.Month == i).ToList();
+                                        foreach (var item_temp in Leave_temp)
+                                        {
+
+                                            if (item_temp.KINDLEAVE_ID == 1 && item_temp.STATUS_L == 1)
+                                            {
+                                                text_dayleave += item_temp.LEAVE_STARTDATE.Day.ToString() + ", ";
+                                            }
+                                        }
+                                        char[] cut = { ',', ' ' };
+                                        text_dayleave = text_dayleave.TrimEnd(cut);
+                                    }
+                                    <td>@text_dayleave</td>
+                                }
+                            }
+                        </tr>
+                        @if (Model.TOTAL_LEAVE != null)
+                        {
+                            <tr class="text-center bold">
+                                <td>Tổng cộng <br />(Total)</td>
+                                <td>@Model.TOTAL_LEAVE.T1</td>
+                                <td>@Model.TOTAL_LEAVE.T2</td>
+                                <td>@Model.TOTAL_LEAVE.T3</td>
+                                <td>@Model.TOTAL_LEAVE.T4</td>
+                                <td>@Model.TOTAL_LEAVE.T5</td>
+                                <td>@Model.TOTAL_LEAVE.T6</td>
+                                <td>@Model.TOTAL_LEAVE.T7</td>
+                                <td>@Model.TOTAL_LEAVE.T8</td>
+                                <td>@Model.TOTAL_LEAVE.T9</td>
+                                <td>@Model.TOTAL_LEAVE.T10</td>
+                                <td>@Model.TOTAL_LEAVE.T11</td>
+                                <td>@Model.TOTAL_LEAVE.T12</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="FormLeaveOverlay" class="hidden-item">
+            <div class="outer-wrapper form-leave table-overlay menu-left">
+                <span class="close-btn">X</span>
+                <div class="table-wrapper tb-leave-detail ">
+                    <table style="width: 100% !important;">
+                        <caption class="table-caption">
+                            <div>
+                                <div id="caption-detail">
+                                    @*Total leaves in year*@
+                                </div>
+                            </div>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>TRẠNG THÁI<br>(Status)</th>
+                                <th>NGÀY<br>(Date)</th>
+                                <th>LÝ DO<br>(Reason)</th>
+                                <th>TỔNG NGÀY<br>(TOTAL DAY)</th>
+                                <th>Chi tiết<br>(Detail)</th>
+                                <th>###</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LST_LEAVE != null && Model.LST_LEAVE.Any())
+                            {
+                                foreach (var item in Model.LST_LEAVE)
+                                {
+                                    Model.KIND_LEAVE = Model.LST_KINDLEAVE.Where(w => w.KINDLEAVE_ID == item.KINDLEAVE_ID).First();
+                                    var status = item.STATUS_L;
+                                    var classCheck = "";
+                                    var classIcon = "";
+                                    DateTime datenow = DateTime.Now;
+                                    switch (item.STATUS_L)
+                                    {
+                                        case 1:
+                                            classIcon = "fa-solid fa-check icon text-color-green";
+                                            break;
+                                        case 2:
+                                            classCheck = "text-color-red";
+                                            classIcon = "fa fa-times icon";
+                                            break;
+                                        default:
+                                            //classIcon = "gg-info text-color-copper";
+                                            classIcon = "fa-solid fa-circle-exclamation icon text-color-copper";
+                                            break;
+                                    }
+                                    <tr class="@classCheck">
+                                        <td>
+                                            <i class="@classIcon"></i>
+
+                                        </td>
+                                        <td>@item.LEAVE_STARTDATE.ToString("dd/MM/yyyy")</td>
+                                        <td>@Model.KIND_LEAVE.NAMELEAVE_VI</td>
+                                        <td>@(item.HOURS/8)</td>
+                                        <td>@item.REASON</td>
+                                        <td class="flex-column">
+                                            @if (item.STATUS_L == 0)
+                                            {
+                                                @*  @Html.ActionLink("Edit", "Edit", new { LEAVE_ID = item.LEAVE_ID }, new { @class = "leave-btn color-copper" })
+                                                *@ if (item.LEAVE_STARTDATE > datenow)
+                                                {
+                                                    @Html.ActionLink("Reback", "Reback", new { LEAVE_ID = item.LEAVE_ID }, new { @class = "leave-btn color-red" })
+
+                                                }
+                                                else
+                                                {
+                                                    @Html.ActionLink("Cancel", "Cancel", new { LEAVE_ID = item.LEAVE_ID }, new { @class = "leave-btn color-red" })
+
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                if (item.LEAVE_STARTDATE > datenow)
+                                                {
+                                                    if (item.STATUS_L == 3)
+                                                    {
+                                                        @Html.ActionLink("Reback", "Reback", new { LEAVE_ID = item.LEAVE_ID }, new { @class = "leave-btn color-red" });
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.ActionLink("Cancel", "Cancel", new { LEAVE_ID = item.LEAVE_ID }, new { @class = "leave-btn color-red" })
+
+                                                    }
+                                                }
+
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" style="text-align: center; font-size:13px;"> Không có dữ liệu<br>(No matching records found)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footer-table" style="border-top: 2px solid #ccc2c2;">
+                    <span class="text-color-gray btn-paging">
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="Overlay" class="hidden-item"></div>
+    </div>
+
+</div>

@@ -1,0 +1,639 @@
+﻿
+@model Human.Models.AdminLeaveModel
+@using PagedList.Mvc
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "management annual leave";
+    ViewBag.active = 4;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý leave" />
+    <meta name="author" content="" />
+    <style>
+
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+
+        #tbl-leave > thead > tr > th {
+            text-align: center;
+        }
+        #dataTableSelect {
+            border: none;
+            border-bottom: 1px solid #b7b6b6;
+            box-shadow: none;
+            border-radius: 0;
+        }
+        div.dataTables_wrapper div.dataTables_length label {
+            padding-left: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter label {
+            padding-right: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_info {
+            padding-left: 10px;
+            padding-bottom: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate {
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+
+        .dropdown-action .dropdown-toggle {
+            pointer-events: none;
+            cursor: pointer;
+        }
+
+        .dropdown-action:hover .dropdown-menu {
+            display: block;
+            top: -75px !important;
+        }
+        /*   table.dataTable thead > tr > th.sorting::before
+        {
+            content: none;
+            display: none;
+        }
+        table.dataTable thead > tr > th.sorting::after {
+            content: none;
+            display: none;
+        }*/
+        /* td >.dropdown{
+            top:-75px !important;
+        }*/
+        .footer-table {
+            border-top: 2px solid #ccc2c2;
+        }
+    </style>
+
+}
+
+@section LoadJs{
+    <script src="~/Assets/js/admin/leave_admin.js?v=1.1"></script>
+    <script>
+        $(function () {
+            $('#AlertMessage').removeClass("hidden-item");
+            $('#AlertMessage').delay("2000").slideUp("2000");
+
+        })
+        function check_statusCancel() {
+            var input_chk = document.getElementById('chk_statusCancel');
+            var CancelColumns = document.querySelectorAll('.cancel-column');
+
+            CancelColumns.forEach(function (element) {
+                element.classList.toggle('hidden-item');
+            })
+        }
+    </script>
+}
+@{
+    var formatString = "{0:0,0}";
+    var num = 0;
+    var start_date = DateTime.Now;
+    var end_date = DateTime.Now;
+
+    var status_search = -1;
+    var kindleave_search = 0;
+    var section_search = 0;
+    var name_search = "";
+    if (Session["SEARCH_CODE"] != null)
+    {
+        name_search = Session["SEARCH_CODE"].ToString();
+    }
+    if (Session["SEARCH_START"] != null)
+    {
+        start_date = Convert.ToDateTime(Session["SEARCH_START"]);
+        end_date = Convert.ToDateTime(Session["SEARCH_END"]);
+
+    }
+    if (Session["SEARCH_STATUS"] != null)
+    {
+        status_search = Convert.ToInt32(Session["SEARCH_STATUS"]);
+    }
+    if (Session["SEARCH_KL_ID"] != null)
+    {
+        kindleave_search = Convert.ToInt32(Session["SEARCH_KL_ID"]);
+    }
+    if (Session["SEARCH_SECTION_ID"] != null)
+    {
+        section_search = Convert.ToInt32(Session["SEARCH_SECTION_ID"]);
+    }
+    var Session_pos = Session["EMP_POS"];
+    var lst_fuction_emp = Session["FUNCTION_BY_EMP"] as List<Human.Models.Entities.Emp_Function_Entities>;
+    string btn_fun = "";
+    string name_fun = "";
+    foreach (var item_p in lst_fuction_emp)
+    {
+        if ((item_p.BTN_FUNCTION == "edit/read" || item_p.BTN_FUNCTION == "read") && item_p.NAME_FUNCTION == "leave")
+        {
+            btn_fun = item_p.BTN_FUNCTION;
+            name_fun = item_p.NAME_FUNCTION;
+            break;
+        }
+    }
+    var checkfunction = "";
+    if (lst_fuction_emp.Count > 0 && btn_fun == "read" && name_fun == "leave")
+    {
+        checkfunction = "disabled";
+    }
+}
+@if (Session_pos.ToString() != "")
+{
+    <div class="container" style="padding:10px 20px;">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Leave_managment</h2>
+                    <ul class="breadcrumb font-15">
+                        <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                        <li class="breadcrumb-item active">@Human.Resource.Language.Leave_managment</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div class="Authority">
+                <script>
+                 document.addEventListener("DOMContentLoaded", function (event) {
+                     Swal.fire({
+                         position: 'center-center',
+                         icon: '@TempData["AlertType"]',
+                         title: '@TempData["AlertMessage"]',
+                         showConfirmButton: false,
+                         timer: 3000
+                     });
+                 });
+                </script>
+            </div>
+        }
+        <div class="form">
+            <div class="row col-12 hidden-item">
+
+                <div class="row col-12 func-header">
+                    <div>
+                        @* <div class="btn  left"><a class="text-white" href="~/LeaveAdmin/Create">Add new</a></div>*@
+                        <label class="text-title">Annual Leave</label>
+                        @*  <div class="btn  right text-white" id="btn-cancel-leave">Cancel Leave</div>*@
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-header leave-header">
+                <input type="hidden" value="@Human.Models.Entities.ClsGlobal_Entities.POS" id="pos_hidden" />
+                @using (Html.BeginForm("Search", "LeaveAdmin", FormMethod.Post))
+                {
+                    <div class="row col-md-12" style="padding:10px 0px; margin:0;">
+                        <div class="row col-md-10 m-0 jus-center-leave">
+                            <input style="min-height:28px;" class="form-control input-custom input-text width-name-code" name="SEARCH_CODE" value="@name_search" placeholder="@Human.Resource.Language.Name_or_code" />
+                            @*select status*@
+                            <select class=" form-control input-custom input-time" name="SEARCH_SECTION">
+                                @foreach (var item1 in Model.LST_SECTION)
+                                {
+                                    <option @Html.Raw(item1.SECTION_ID == section_search ? "selected" : "") value="@item1.SECTION_ID">@item1.SECTION_NAME_EN</option>
+                                }
+                            </select>
+                            @*select status*@
+                            <select class="form-control input-custom input-time" name="KINDLEAVE_ID">
+                                @foreach (var item in Model.LST_KINDLEAVE)
+                                {
+                                    <option @Html.Raw(item.KINDLEAVE_ID == kindleave_search ? "selected" : "") value="@item.KINDLEAVE_ID">@item.NAMELEAVE_EN</option>
+                                }
+                            </select>
+                            @*select status*@
+                            <select class=" form-control input-custom input-time" name="SEARCH_STATUSLEAVE">
+                                <option value="0" @Html.Raw(status_search == 0 ? "selected" : "")>@Human.Resource.Language.All_status</option>
+                                <option value="1" @Html.Raw(status_search == 1 ? "selected" : "")>@Human.Resource.Language.Pending</option>
+                                <option value="2" @Html.Raw(status_search == 2 ? "selected" : "")>@Human.Resource.Language.Accept</option>
+                                <option value="3" @Html.Raw(status_search == 3 ? "selected" : "")>@Human.Resource.Language.Deny</option>
+                                <option value="4" @Html.Raw(status_search == 4 ? "selected" : "")>@Human.Resource.Language.Cancel</option>
+                            </select>
+                            <input type="date" class="form-control input-custom input-time" name="SEARCH_STARTDATE" value="@start_date.ToString("yyyy-MM-dd")" />
+                            <input type="date" class=" form-control input-custom input-time" name="SEARCH_ENDDATE" value="@end_date.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-2 btn-leave-admin">
+                            <button type="submit" class="btn input-custom leave-btn"><img class="icon-button" src="~/Assets/img/icon/search-2.png" />@Human.Resource.Language.Search</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="outer-wrapper" style="margin-bottom:50px;">
+                <div class="table-wrapper-time-keep" style="overflow-y:auto;">
+                    @* <div class="table-caption">
+                        <div>
+                            @Human.Resource.Language.Employee_list_leave
+                            <div id="btn_header" class="hidden-item" style="justify-content:flex-start;">
+                                <button style="width:auto;" class="btn color-green " type="button" id="accept_all" onclick="SendListCheck(1)">@Human.Resource.Language.Accept_btn</button>
+                                <button class="btn color-redpale" type="button" id="deny_all" onclick="SendListCheck(2)">@Human.Resource.Language.Deny</button>
+                                <button class="btn color-red" type="button" onclick="SendListCheck(3)">@Human.Resource.Language.Delete</button>
+                            </div>
+                        </div>
+                    </div>*@
+                    <table id="tbl-leave" style="width:100%;" class="table-hover">
+                        <caption class="table-caption">
+                            <div>
+                                <div>
+                                    @Human.Resource.Language.Employee_list_leave
+                                    <div id="btn_header" class="hidden-item">
+                                        @if (lst_fuction_emp.Count > 0 && btn_fun == "edit/read" && name_fun == "leave")
+                                        {
+                                            <button class="btn color-green " type="button" id="accept_all" onclick="SendListCheck(1)">@Human.Resource.Language.Ok_btn</button>
+                                            <button class="btn color-redpale" type="button" id="deny_all" onclick="SendListCheck(2)">@Human.Resource.Language.Deny</button>
+                                            <button class="btn color-red" type="button" onclick="SendListCheck(3)">@Human.Resource.Language.Delete</button>
+                                        }
+                                    </div>
+                                </div>
+                                <a class="text-color-blue-dark" style="margin-right:5px;" href="#">Export<img class="icon-caption" src="~/Assets/img/icon/icon-Export.jpg" /></a>
+                            </div>
+                            <div class="dataTable-length">
+                                <label style="margin:5px 10px;font-size:13px;color:#212529;">
+                                    show
+                                    <select id="dataTableSelect">
+                                        <option value="10" selected>10</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="200">200</option>
+                                    </select>
+                                    entries
+                                </label>
+
+                            </div>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th class="hidden-item"> LEAVE_ID </th>
+                                <th>
+                                    <div class="form-check-inline mr-0">
+                                        <input type="checkbox" id="chk_all" class="form-check-input mr-0" onclick="Check_all()" />
+                                    </div>
+                                </th>
+                                <th data-sort="date">
+                                    <button class="p-0">NGÀY<br />(DATE)<span aria-hidden="true"></span></button>
+                                </th>
+                                <th data-sort="code">
+                                    <button class="p-0">MÃ<br>(CODE)<span aria-hidden="true"></span></button>
+                                </th>
+                                <th data-sort="name">
+                                    <button class="p-0">HỌ TÊN<br>(FULLNAME)<span aria-hidden="true"></span></button>
+                                </th>
+                                <th data-sort="section">
+                                    <button class="p-0">NGÀNH<br>(SECTION)<span aria-hidden="true"></span> </button>
+                                </th>
+                                <th data-sort="reason">
+                                    <button class="p-0">LÝ DO<br>(REASON)<span aria-hidden="true"></span> </button>
+                                </th>
+                                <th data-sort="day">
+                                    <button class="p-0">TỔNG NGÀY<br>(TOTAL DAY)<span aria-hidden="true"></span> </button>
+
+                                </th>
+                                @*<th>
+                                    NGÀY<br>(DATE)
+                                </th>
+                                <th>
+                                    MÃ<br>(CODE)
+                                </th>
+                                <th>
+                                    HỌ TÊN<br>(FULLNAME)
+                                </th>
+                                <th>
+                                    NGÀNH<br>(SECTION)
+                                </th>
+                                <th>
+                                    LÝ DO<br>(REASON)
+
+                                </th>
+                                <th>
+                                    TỔNG NGÀY<br>(TOTAL DAY)
+                                </th>*@
+                                <th class="w-10">CHI TIẾT<br>DETAIL</th>
+                                @*<th class="hidden-item cancel-column">Cancel</th>*@
+                                <th>TRƯỞNG PHÒNG<br>(Leader)</th>
+                                <th>QUẢN LÝ<br>(Manager)</th>
+                                <th>GIÁM ĐỐC<br>(Director)</th>
+                                <th style="justify-content:center;">###</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LST_LEAVEVIEW != null && Model.LST_LEAVEVIEW.Any())
+                            {
+                                var accept_text = Human.Resource.Language.Accept;
+                                var deny_text = Human.Resource.Language.Deny;
+                                var cancel_text = Human.Resource.Language.Cancel;
+                                var pending_text = Human.Resource.Language.Pending;
+                                var delete_text = Human.Resource.Language.Delete;
+                                var request_text = Human.Resource.Language.Request;
+
+                                foreach (var item in Model.LST_LEAVEVIEW)
+                                {
+                                    var checkCancel = "";
+                                    var classCancel = "";
+
+                                    if (item.STATUS_L == 3)
+                                    {
+                                        checkCancel = "disabled";
+                                        classCancel = "cancel-cell";
+                                    }
+                                    <tr>
+                                        @{
+                                            Model.KIND_LEAVE = Model.LST_KINDLEAVE.Where(w => w.KINDLEAVE_ID == item.KINDLEAVE_ID).First();
+                                            
+                                            num++;
+                                            var position = Session["EMP_POS"].ToString();
+                                            var SupCheck = 1;
+                                            var ManCheck = 1;
+                                            var SelCheck = 1;
+                                            if (item.SUP_STATUS > 0)
+                                            {
+                                                if (item.DIR_STATUS > 0 || item.MAN_STATUS > 0)
+                                                {
+                                                    SupCheck = 0;
+                                                }
+                                            }
+                                            if (item.MAN_STATUS > 0)
+                                            {
+                                                if (item.DIR_STATUS > 0)
+                                                {
+                                                    ManCheck = 0;
+                                                }
+                                            }
+                                            if (position == "SUP")
+                                            {
+                                                if (item.MAN_STATUS > 0 || item.DIR_STATUS > 0)
+                                                {
+                                                    SelCheck = 0;
+                                                }
+                                            }
+                                            else if (position == "MAN")
+                                            {
+                                                if (item.DIR_STATUS > 0)
+                                                {
+                                                    SelCheck = 0;
+                                                }
+                                            }
+                                        }
+                                        <td class="hidden-item leave_id">@item.LEAVE_ID</td>
+                                        <td>
+                                            <div class="mr-0 form-check-inline">
+                                                <input type="checkbox" class="checkall-item form-check-input mr-0" onclick="handleCheckboxClick()" />
+                                            </div>
+                                        </td>
+                                        <td class="@classCancel">@item.LEAVE_STARTDATE.ToString("dd/MM/yyyy")</td>
+                                        <td class="@classCancel">@item.EMP_CODE</td>
+                                        <td class="@classCancel">@item.FULLNAME</td>
+                                        <td class="@classCancel">@item.SECTION_NAME_EN</td>
+                                        <td class="@classCancel">
+                                            @if (SelCheck == 1 && item.STATUS_L != 3)
+                                            {
+                                                <select style="max-width:120px" class="remove-dropdown" onchange="handleSelectChange(this)" data-leaveid="@item.LEAVE_ID" data-employeeid="@item.EMPLOYEE_ID">
+                                                    @foreach (var i_kindleave in Model.LST_KINDLEAVE)
+                                                    {
+                                                        if (i_kindleave.KINDLEAVE_ID > 0)
+                                                        {
+                                                            <option style="max-width:120px" value="@i_kindleave.KINDLEAVE_ID" @Html.Raw(i_kindleave.KINDLEAVE_ID == item.KINDLEAVE_ID ? "selected" : "")>@i_kindleave.NAMELEAVE_EN</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                                @Model.KIND_LEAVE.NAMELEAVE_EN
+                                            }
+                                        </td>
+                                        <td class="@classCancel">@(item.HOURS / 8)</td>
+                                        <td>@item.REASON</td>
+                                        <td class="text-center">
+                                            @if (Model.POSITION == "SUP" && SupCheck == 1)
+                                            {
+                                                <button @checkCancel class="button-circle m-0 @Html.Raw(item.SUP_STATUS == 1 ? "color-green btn-disabled" : "")" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></button>
+                                                <button @checkCancel class="button-circle @Html.Raw(item.SUP_STATUS == 2 ? "color-red btn-disabled" : "")" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></button>
+                                            }
+                                            else
+                                            {
+                                                if (item.SUP_STATUS == 1 || item.SUP_STATUS == 2)
+                                                {
+                                                    <div class="dropdown dropdown-action">
+                                                        @if (item.SUP_STATUS == 1)
+                                                        {
+                                                            <a class="button-circle m-0 @Html.Raw(item.SUP_STATUS == 1 ? "color-green text-white" : "")" id="dropdown-menu" aria-expanded="false"><i class="fa fa-check"></i></a>
+                                                            <button class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red text-white" : "")"><i class="fa fa-xmark"></i></button>
+                                                        }
+                                                        else if (item.SUP_STATUS == 2)
+                                                        {
+                                                            <button class="button-circle m-0 @Html.Raw(item.SUP_STATUS == 1 ? "color-green text-white" : "")"><i class="fa fa-check"></i></button>
+                                                            <a class="button-circle @Html.Raw(item.SUP_STATUS == 2 ? "color-red text-white" : "")" id="dropdown-menu" aria-expanded="false"><i class="fa fa-xmark"></i></a>
+                                                        }
+                                                        <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                                                            <div class="dropdown-item">
+                                                                <p>@(item.FULLNAME_SUP != null ? item.FULLNAME_SUP : "_ _ _ _" )</p>
+                                                                <p>@item.SUP_DATETIME.ToString("HH:mm dd/MM/yyyy")</p>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <button disabled class="button-circle m-0 @Html.Raw(item.SUP_STATUS == 1 ? "color-green btn-disabled" : "")"><i class="fa fa-check"></i></button>
+                                                    <button disabled class="button-circle @Html.Raw(item.SUP_STATUS == 2 ? "color-red btn-disabled" : "")"><i class="fa fa-xmark"></i></button>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @*DIR duyệt rồi thì chỉ cần xem không cần tích*@
+                                            @if (position == "MAN" && ManCheck == 1)
+                                            {
+                                                if (item.MAN_STATUS == 1 || item.MAN_STATUS == 2)
+                                                {
+                                                    <div class="dropdown dropdown-action">
+                                                        @if (item.MAN_STATUS == 1)
+                                                        {
+                                                            <a class="button-circle m-0 @Html.Raw(item.MAN_STATUS == 1 ? "color-green text-white" : "")" id="dropdown-menu" aria-expanded="false" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></a>
+                                                            <button @checkfunction class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red text-white" : "")" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></button>
+
+                                                        }
+                                                        else if (item.MAN_STATUS == 2)
+                                                        {
+
+                                                            <button @checkfunction class="button-circle m-0 @Html.Raw(item.MAN_STATUS == 1 ? "color-green text-white" : "")" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></button>
+                                                            <a class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red text-white" : "")" id="dropdown-menu" aria-expanded="false" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></a>
+                                                        }
+                                                        <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                                                            <div class="dropdown-item">
+                                                                <p>@(item.FULLNAME_MAN != null ? item.FULLNAME_MAN : "_ _ _ _" )</p>
+                                                                <p>@(item.MAN_DATETIME.ToString("HH:mm") != "00:00" ? item.MAN_DATETIME.ToString("HH:mm dd/MM/yyyy") : "_ _ _ _ _ _ _ _ _ _")</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (lst_fuction_emp.Count > 0 && btn_fun == "edit/read" && name_fun == "leave")
+                                                    {
+                                                        <button @checkCancel class="button-circle m-0 @Html.Raw(item.MAN_STATUS == 1 ? "color-green btn-disabled" : "")" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></button>
+                                                        <button @checkCancel class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red btn-disabled" : "")" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></button>
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (item.MAN_STATUS == 1)
+                                                {
+                                                    <div class="dropdown dropdown-action">
+                                                        <a class="button-circle m-0 @Html.Raw(item.MAN_STATUS == 1 ? "color-green text-white" : "")" id="dropdown-menu" aria-expanded="false"><i class="fa fa-check"></i></a>
+                                                        <button disabled class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red text-white" : "")"><i class="fa fa-xmark"></i></button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                                                            <div class="dropdown-item">
+                                                                <p>@(item.FULLNAME_MAN != null ? item.FULLNAME_MAN : "_ _ _ _" )</p>
+                                                                <p>@(item.MAN_DATETIME.ToString("HH:mm") != "00:00" ? item.MAN_DATETIME.ToString("HH:mm dd/MM/yyyy") : "_ _ _ _ _ _ _ _ _ _")</p>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (item.MAN_STATUS == 2)
+                                                {
+                                                    <div class="dropdown dropdown-action">
+                                                        <button disabled class="button-circle m-0 @Html.Raw(item.MAN_STATUS == 1 ? "color-green text-white" : "")"><i class="fa fa-check"></i></button>
+                                                        <a class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red text-white" : "")" id="dropdown-menu" aria-expanded="false"><i class="fa fa-xmark"></i></a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                                                            <div class="dropdown-item">
+                                                                <p>@(item.FULLNAME_MAN != null ? item.FULLNAME_MAN : "_ _ _ _" )</p>
+                                                                <p>@(item.MAN_DATETIME.ToString("HH:mm") != "00:00" ? item.MAN_DATETIME.ToString("HH:mm dd/MM/yyyy") : "_ _ _ _ _ _ _ _ _ _")</p>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <button disabled class="button-circle m-0 @Html.Raw(item.MAN_STATUS == 1 ? "color-green btn-disabled" : "")"><i class="fa fa-check"></i></button>
+                                                    <button disabled class="button-circle @Html.Raw(item.MAN_STATUS == 2 ? "color-red btn-disabled" : "")"><i class="fa fa-xmark"></i></button>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (position == "DIR")
+                                            {
+                                                if (item.DIR_STATUS == 1 || item.DIR_STATUS == 2)
+                                                {
+                                                    <div class="dropdown dropdown-action">
+                                                        @if (item.DIR_STATUS == 1)
+                                                        {
+                                                            <a class="button-circle m-0 @Html.Raw(item.DIR_STATUS == 1 ? "color-green text-white" : "")" id="dropdown-menu" aria-expanded="false" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></a>
+                                                            <button @checkfunction @checkCancel class="button-circle @Html.Raw(item.DIR_STATUS == 2 ? "color-red text-white" : "")" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></button>
+                                                        }
+                                                        else if (item.DIR_STATUS == 2)
+                                                        {
+                                                            <button @checkfunction @checkCancel class="button-circle m-0 @Html.Raw(item.DIR_STATUS == 1 ? "color-green text-white" : "")" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></button>
+                                                            <a class="button-circle @Html.Raw(item.DIR_STATUS == 2 ? "color-red text-white" : "")" id="dropdown-menu" aria-expanded="false" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></a>
+                                                        }
+                                                        <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                                                            <div class="dropdown-item">
+                                                                <p>@(item.FULLNAME_DIR != null ? item.FULLNAME_DIR : "_ _ _ _" )</p>
+                                                                <p>@(item.DIR_DATETIME.ToString("HH:mm") != "00:00" ? item.DIR_DATETIME.ToString("HH:mm dd/MM/yyyy") : "_ _ _ _ _ _ _ _ _ _")</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (lst_fuction_emp.Count > 0 && btn_fun == "edit/read" && name_fun == "leave")
+                                                    {
+                                                        <button @checkCancel class="button-circle m-0 @Html.Raw(item.DIR_STATUS == 1 ? "color-green text-white" : "")" onclick="Update_Status(@item.LEAVE_ID, 1)"><i class="fa fa-check"></i></button>
+                                                        <button @checkCancel class="button-circle @Html.Raw(item.DIR_STATUS == 2 ? "color-red text-white" : "")" onclick="Update_Status(@item.LEAVE_ID, 2)"><i class="fa fa-xmark"></i></button>
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="dropdown dropdown-action">
+                                                    @if (item.DIR_STATUS == 1)
+                                                    {
+                                                        <a class="button-circle m-0 @Html.Raw(item.DIR_STATUS == 1 ? "color-green text-white" : "")" id="dropdown-menu" aria-expanded="false"><i class="fa fa-check"></i></a>
+                                                        <button disabled class="button-circle @Html.Raw(item.DIR_STATUS == 2 ? "color-red text-white" : "")"><i class="fa fa-xmark"></i></button>
+                                                    }
+                                                    else if (item.DIR_STATUS == 2)
+                                                    {
+                                                        <button disabled class="button-circle m-0 @Html.Raw(item.DIR_STATUS == 1 ? "color-green text-white" : "")"><i class="fa fa-check"></i></button>
+                                                        <a class="button-circle @Html.Raw(item.DIR_STATUS == 2 ? "color-red text-white" : "")" id="dropdown-menu" aria-expanded="false"><i class="fa fa-xmark"></i></a>
+                                                    }
+                                                    else if (item.DIR_STATUS != 1 && item.DIR_STATUS != 2)
+                                                    {
+                                                        <button disabled class="button-circle m-0 @Html.Raw(item.DIR_STATUS == 1 ? "color-green btn-disabled" : "")"><i class="fa fa-check"></i></button>
+                                                        <button disabled class="button-circle @Html.Raw(item.DIR_STATUS == 2 ? "color-red btn-disabled" : "")"><i class="fa fa-xmark"></i></button>
+                                                    }
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                                                        <div class="dropdown-item">
+                                                            <p>@(item.FULLNAME_DIR != null ? item.FULLNAME_DIR : "_ _ _ _" )</p>
+                                                            <p>@(item.DIR_DATETIME.ToString("HH:mm") != "00:00" ? item.DIR_DATETIME.ToString("HH:mm dd/MM/yyyy") : "_ _ _ _ _ _ _ _ _ _")</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td class="status">
+                                            @{
+                                                var classStatus = "";
+                                                var textStatus = "";
+                                                switch (item.STATUS_L)
+                                                {
+                                                    case 1: classStatus = "active"; textStatus = accept_text; break;
+                                                    case 2: classStatus = "deny"; textStatus = deny_text; break;
+                                                    case 3: classStatus = "cancel"; textStatus = cancel_text; break;
+                                                    case 4: classStatus = "request"; textStatus = request_text; break;
+                                                    default: classStatus = "waiting"; textStatus = pending_text; break;
+                                                }
+                                            }
+                                            <span class="@classStatus">@textStatus</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="11" class="font-14">Không có dữ liệu<br>(No matching records found)</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                    @* @if (ViewData["COUNT_LST_LEAVEVIEW"] != null)
+                    {
+                        <div class="text-center-768" style="margin:-5px 0px 10px 10px">Sum = @Html.Raw(ViewData["COUNT_LST_LEAVEVIEW"]) leave</div>
+                    }*@
+                </div>
+                <div class="footer-table">
+                    @if (ViewData["COUNT_LST_LEAVEVIEW"] != null)
+                    {
+                        <div class="font-14 font-weight-bold">Sum = @Html.Raw(ViewData["COUNT_LST_LEAVEVIEW"])</div>
+                    }
+                    <span class="text-color-gray btn-paging" data-total-page="@ViewBag.TotalPage">
+                        @if (ViewBag.TotalPage != null)
+                        {
+                            if (Model.PAGE_ACTIVE != 1)
+                            {
+                                <i class="icon icon-paging fa fa-angles-left cursor-pointer" onclick="FirstPage()"></i>
+                                <i class="icon icon-paging fa fa-angle-left cursor-pointer" onclick="PreviousPage()"></i>
+                            }
+                            for (int i = 1; i <= ViewBag.TotalPage; i++)
+                            {
+                                <a id="page-@i" href="#" onclick="Paging(@i)" class="@Html.Raw(Model.PAGE_ACTIVE == i ? "" : "text-color-gray-light")">@i</a>
+                            }
+                            if (Model.PAGE_ACTIVE != ViewBag.TotalPage)
+                            {
+                                <i class="icon icon-paging fa fa-angle-right cursor-pointer" onclick="NextPage()"></i>
+                                <i class="icon icon-paging fa fa-angles-right cursor-pointer" onclick="LastPage()"></i>
+                            }
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

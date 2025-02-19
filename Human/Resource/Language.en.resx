@@ -1,0 +1,888 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Absolutely_otp" xml:space="preserve">
+    <value>Absolutely DO NOT share the authentication code (OTP) with anyone in the picture any recipe. The authentication code is valid for 1 minutes</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Accept</value>
+    <comment>public</comment>
+  </data>
+  <data name="Accept_btn" xml:space="preserve">
+    <value>Accept</value>
+    <comment>public button</comment>
+  </data>
+  <data name="Account_Number" xml:space="preserve">
+    <value>Account number</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Account_team" xml:space="preserve">
+    <value>The Conect account team</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Add_contract_fail" xml:space="preserve">
+    <value>Add contract fail</value>
+  </data>
+  <data name="Add_contract_success" xml:space="preserve">
+    <value>Add contract success</value>
+  </data>
+  <data name="Add_employee" xml:space="preserve">
+    <value>Add employee</value>
+  </data>
+  <data name="Add_emp_info" xml:space="preserve">
+    <value>Add employee information</value>
+  </data>
+  <data name="Add_leave" xml:space="preserve">
+    <value>Add leave</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="add_leave_day" xml:space="preserve">
+    <value>Day</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="add_leave_from_day" xml:space="preserve">
+    <value>From day</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="Add_leave_reason" xml:space="preserve">
+    <value>Reason</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="add_leave_to_day" xml:space="preserve">
+    <value>To day</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="Add_new_leave_failed" xml:space="preserve">
+    <value>Add new leave failed</value>
+  </data>
+  <data name="Add_new_leave_successful" xml:space="preserve">
+    <value>Add new leave successful</value>
+  </data>
+  <data name="Add_salary_history_fail" xml:space="preserve">
+    <value>Add salary history fail</value>
+  </data>
+  <data name="Add_salary_history_success" xml:space="preserve">
+    <value>Add salary history success</value>
+  </data>
+  <data name="Admin_menu_settings" xml:space="preserve">
+    <value>Admin menu settings</value>
+  </data>
+  <data name="Admin_setting" xml:space="preserve">
+    <value>Admin settings</value>
+  </data>
+  <data name="Allowance_cashier" xml:space="preserve">
+    <value>Cashier allowance</value>
+  </data>
+  <data name="Allowance_house" xml:space="preserve">
+    <value>House allowance</value>
+  </data>
+  <data name="Allowance_job" xml:space="preserve">
+    <value>Job allowance</value>
+  </data>
+  <data name="Allowance_meal" xml:space="preserve">
+    <value>Meal allowance</value>
+  </data>
+  <data name="Allowance_other" xml:space="preserve">
+    <value>Other allowance</value>
+  </data>
+  <data name="Allowance_petrol" xml:space="preserve">
+    <value>Petrol allowance</value>
+  </data>
+  <data name="Allowance_phone" xml:space="preserve">
+    <value>Phone allowance</value>
+  </data>
+  <data name="All_department" xml:space="preserve">
+    <value>All department</value>
+    <comment>decentralize page view </comment>
+  </data>
+  <data name="All_leave" xml:space="preserve">
+    <value>All leave</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="All_section" xml:space="preserve">
+    <value>All section</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="All_status" xml:space="preserve">
+    <value>All status</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+    <comment>public</comment>
+  </data>
+  <data name="Bank_account" xml:space="preserve">
+    <value>Bank account</value>
+  </data>
+  <data name="Bank_code" xml:space="preserve">
+    <value>Bank code</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Bank_Info" xml:space="preserve">
+    <value>Bank Informations</value>
+  </data>
+  <data name="Bank_Name" xml:space="preserve">
+    <value>Bank name</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Birthday" xml:space="preserve">
+    <value>Birthday</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="btn_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="btn_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btn_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="btn_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="btn_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>public</comment>
+  </data>
+  <data name="Cancel_leave_failed" xml:space="preserve">
+    <value>Cancel leave failed</value>
+  </data>
+  <data name="Cancel_leave_successfully" xml:space="preserve">
+    <value>Cancel leave successfully</value>
+  </data>
+  <data name="Category_lookup" xml:space="preserve">
+    <value>Query category</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="choose_gender" xml:space="preserve">
+    <value>Choose gender</value>
+  </data>
+  <data name="Clear_All" xml:space="preserve">
+    <value>Clear all</value>
+    <comment>notification topmenu</comment>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Contract" xml:space="preserve">
+    <value>Contract</value>
+    <comment>leftmenu</comment>
+  </data>
+  <data name="Contract_code" xml:space="preserve">
+    <value>Cotract code</value>
+  </data>
+  <data name="Contract_info" xml:space="preserve">
+    <value>Contract information</value>
+  </data>
+  <data name="Contract_type" xml:space="preserve">
+    <value>Contract type</value>
+  </data>
+  <data name="Daily_timesheet_data" xml:space="preserve">
+    <value>Daily timesheet data</value>
+  </data>
+  <data name="Date_Issue" xml:space="preserve">
+    <value>Date issue</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Date_of_join" xml:space="preserve">
+    <value>Date of join</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Day_off" xml:space="preserve">
+    <value>Day off</value>
+  </data>
+  <data name="Decentralize" xml:space="preserve">
+    <value>Decentralize</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Degree" xml:space="preserve">
+    <value>Degree</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+    <comment>public</comment>
+  </data>
+  <data name="Delete_leave_failed" xml:space="preserve">
+    <value>Delete leave failed</value>
+  </data>
+  <data name="Delete_leave_successfully" xml:space="preserve">
+    <value>Delete leave successfully</value>
+  </data>
+  <data name="Del_salary_history_fail" xml:space="preserve">
+    <value>Delete salary history fail</value>
+  </data>
+  <data name="Del_salary_history_success" xml:space="preserve">
+    <value>Delete salary history success</value>
+  </data>
+  <data name="Del_work_process_fail" xml:space="preserve">
+    <value>Delete work process fail</value>
+  </data>
+  <data name="Del_work_process_success" xml:space="preserve">
+    <value>Delete work process success</value>
+  </data>
+  <data name="Deny" xml:space="preserve">
+    <value>Deny</value>
+    <comment>public</comment>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Department</value>
+    <comment>public</comment>
+  </data>
+  <data name="Department_manager" xml:space="preserve">
+    <value>Department manager</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Detail" xml:space="preserve">
+    <value>Detail</value>
+    <comment>public</comment>
+  </data>
+  <data name="Division" xml:space="preserve">
+    <value>Division</value>
+  </data>
+  <data name="Edit_emp_info" xml:space="preserve">
+    <value>Edit employee information</value>
+  </data>
+  <data name="Edit_work_process_fail" xml:space="preserve">
+    <value>Edit work process fail</value>
+  </data>
+  <data name="Edit_work_process_success" xml:space="preserve">
+    <value>Edit work process success</value>
+  </data>
+  <data name="Education" xml:space="preserve">
+    <value>Education</value>
+  </data>
+  <data name="Education_Info" xml:space="preserve">
+    <value>Education Informations</value>
+  </data>
+  <data name="Effective_date" xml:space="preserve">
+    <value>Effective date</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="email_user name_phone number" xml:space="preserve">
+    <value>Email, username, phone number</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>Employee</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Employee_code" xml:space="preserve">
+    <value>Employee code</value>
+    <comment>public</comment>
+  </data>
+  <data name="Employee_list_leave" xml:space="preserve">
+    <value>Employee list leave</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Emp_info" xml:space="preserve">
+    <value>Employee info</value>
+  </data>
+  <data name="Emp_request_cancel_leave" xml:space="preserve">
+    <value>Employee request cancel leave</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="End_date" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="English_show" xml:space="preserve">
+    <value>Eng</value>
+  </data>
+  <data name="error_while_upload" xml:space="preserve">
+    <value>error while uploading</value>
+  </data>
+  <data name="Experience" xml:space="preserve">
+    <value>Experience</value>
+  </data>
+  <data name="Expiration_date" xml:space="preserve">
+    <value>Expiration date</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="Forgot_pass" xml:space="preserve">
+    <value>Forgot passwod</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Fullname" xml:space="preserve">
+    <value>Fullname</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Gender</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="General_info" xml:space="preserve">
+    <value>Genaral info</value>
+    <comment>public</comment>
+  </data>
+  <data name="Granted_permissions_failed" xml:space="preserve">
+    <value>Granted permissions failed</value>
+  </data>
+  <data name="Granted_permissions_success" xml:space="preserve">
+    <value>Granted permissions successfully</value>
+  </data>
+  <data name="Health_Insurance" xml:space="preserve">
+    <value>Health insurance</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Hello</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Home_annual_leave" xml:space="preserve">
+    <value>Annual Leave</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_detail_leave" xml:space="preserve">
+    <value>Detail Leave</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_hello" xml:space="preserve">
+    <value>Hello</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_remain" xml:space="preserve">
+    <value>Remain</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_total" xml:space="preserve">
+    <value>Total</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_used" xml:space="preserve">
+    <value>Used</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Identity_card" xml:space="preserve">
+    <value>Identity card</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="ID_card" xml:space="preserve">
+    <value>Id card</value>
+  </data>
+  <data name="Input_emp_code" xml:space="preserve">
+    <value>Input employee code</value>
+    <comment>public</comment>
+  </data>
+  <data name="Insurance" xml:space="preserve">
+    <value>Insurance</value>
+  </data>
+  <data name="Issued_by" xml:space="preserve">
+    <value>Inssued by</value>
+  </data>
+  <data name="Job" xml:space="preserve">
+    <value>Job</value>
+  </data>
+  <data name="Job_to_do" xml:space="preserve">
+    <value>Job to do</value>
+  </data>
+  <data name="Labor_contract" xml:space="preserve">
+    <value>Labor contract</value>
+  </data>
+  <data name="Leave" xml:space="preserve">
+    <value>Leave</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Leavel_list_add_new" xml:space="preserve">
+    <value>Add new</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Leave_employee" xml:space="preserve">
+    <value>Leave employee</value>
+    <comment>view managment page</comment>
+  </data>
+  <data name="Leave_list" xml:space="preserve">
+    <value>Leave list</value>
+    <comment>public</comment>
+  </data>
+  <data name="Leave_managment" xml:space="preserve">
+    <value>Leave managment</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Leave_request_list" xml:space="preserve">
+    <value>Leave request list</value>
+    <comment>notification view page</comment>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="ListEmployee" xml:space="preserve">
+    <value>List Employee</value>
+    <comment>decentralize view page</comment>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Login_with_OTP" xml:space="preserve">
+    <value>Login with OTP</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Login_with_password" xml:space="preserve">
+    <value>Login with password</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Logo_update_success" xml:space="preserve">
+    <value>Logo update successful</value>
+  </data>
+  <data name="Log_list" xml:space="preserve">
+    <value>Log list</value>
+    <comment>log list view</comment>
+  </data>
+  <data name="Look_up_data" xml:space="preserve">
+    <value>Data query</value>
+    <comment>public view page</comment>
+  </data>
+  <data name="Look_up_timekeep" xml:space="preserve">
+    <value>Real-time check in / out</value>
+    <comment>public vew page</comment>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="Managment" xml:space="preserve">
+    <value>Manage</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Marital_Status" xml:space="preserve">
+    <value>Marital status</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Month</value>
+    <comment>public</comment>
+  </data>
+  <data name="Month_year" xml:space="preserve">
+    <value>Month/year</value>
+    <comment>salary view page</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+    <comment>public</comment>
+  </data>
+  <data name="Name or code" xml:space="preserve">
+    <value>Name or code</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Note_contract" xml:space="preserve">
+    <value>If the contract is INFINITE, then the contract's expiration date will not be displayed</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>Notification</value>
+    <comment>Notification view</comment>
+  </data>
+  <data name="No_data_available" xml:space="preserve">
+    <value>No data available</value>
+  </data>
+  <data name="No_notification" xml:space="preserve">
+    <value>No notification</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+    <comment>button</comment>
+  </data>
+  <data name="OTP_code_expired_please_get_code" xml:space="preserve">
+    <value>OTP code expired, please get a new code</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Payroll" xml:space="preserve">
+    <value>Payroll</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+    <comment>public</comment>
+  </data>
+  <data name="Personal_Info" xml:space="preserve">
+    <value>Personal Informations</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Pit_No" xml:space="preserve">
+    <value>Pit no</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Please_select_complete_info" xml:space="preserve">
+    <value>Please select complete information</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Probation" xml:space="preserve">
+    <value>Probation</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Profile_Emloyee" xml:space="preserve">
+    <value>Profile Employee</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Quit_job" xml:space="preserve">
+    <value>Quit job</value>
+  </data>
+  <data name="Rank" xml:space="preserve">
+    <value>Rank</value>
+  </data>
+  <data name="Request" xml:space="preserve">
+    <value>Request</value>
+  </data>
+  <data name="Request_approval_fail" xml:space="preserve">
+    <value>Request approval failed</value>
+  </data>
+  <data name="Request_approved_success" xml:space="preserve">
+    <value>Request approved successfully</value>
+  </data>
+  <data name="Request_btn" xml:space="preserve">
+    <value>Request</value>
+  </data>
+  <data name="Request_sent_failed" xml:space="preserve">
+    <value>Request sent failed</value>
+  </data>
+  <data name="Request_sent_successfully" xml:space="preserve">
+    <value>Request sent successfully</value>
+  </data>
+  <data name="Salary" xml:space="preserve">
+    <value>Salary</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Salary_basic" xml:space="preserve">
+    <value>Salary basic</value>
+  </data>
+  <data name="Salary_employee" xml:space="preserve">
+    <value>Salary employee</value>
+    <comment>salary view page</comment>
+  </data>
+  <data name="Salary_history" xml:space="preserve">
+    <value>Salary history</value>
+    <comment>public</comment>
+  </data>
+  <data name="Salary_level" xml:space="preserve">
+    <value>Salary level</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+    <comment>public</comment>
+  </data>
+  <data name="Search_public" xml:space="preserve">
+    <value>Search</value>
+    <comment>public</comment>
+  </data>
+  <data name="Section" xml:space="preserve">
+    <value>Section</value>
+  </data>
+  <data name="Security_code" xml:space="preserve">
+    <value>Security code</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="security_for_account" xml:space="preserve">
+    <value>Please use the following security code for the Conect account</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Select_all" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="Select_contract_type" xml:space="preserve">
+    <value>Select contract type</value>
+  </data>
+  <data name="Select_department" xml:space="preserve">
+    <value>Select department</value>
+  </data>
+  <data name="Select_emp" xml:space="preserve">
+    <value>Select employees</value>
+  </data>
+  <data name="Select_language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Select_month_year" xml:space="preserve">
+    <value>Select month/year</value>
+    <comment>time sheet view</comment>
+  </data>
+  <data name="Select_position" xml:space="preserve">
+    <value>Select position</value>
+  </data>
+  <data name="Select_section" xml:space="preserve">
+    <value>Select section</value>
+  </data>
+  <data name="Setup" xml:space="preserve">
+    <value>Setup</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Sign_day" xml:space="preserve">
+    <value>Sign day</value>
+  </data>
+  <data name="Social_Insurance" xml:space="preserve">
+    <value>Social insurance</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Specialize_title" xml:space="preserve">
+    <value>Specialize title</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Tax_code" xml:space="preserve">
+    <value>Tax code</value>
+  </data>
+  <data name="Temporary_addres" xml:space="preserve">
+    <value>Temporary address</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Thanks" xml:space="preserve">
+    <value>Thanks</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="This_emp_not_contract" xml:space="preserve">
+    <value>This employee does not have a contract</value>
+  </data>
+  <data name="This_leave_date_has_been_confirmed" xml:space="preserve">
+    <value>This leave date has been confirmed</value>
+  </data>
+  <data name="Timekeeping" xml:space="preserve">
+    <value>Timekeeping</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Timekeep_day" xml:space="preserve">
+    <value>Timekeep day</value>
+  </data>
+  <data name="Time_sheet" xml:space="preserve">
+    <value>Timesheet</value>
+    <comment>time sheet view</comment>
+  </data>
+  <data name="Time_sheet_day" xml:space="preserve">
+    <value>Timesheet the day</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Total_annual_leave" xml:space="preserve">
+    <value>Total annual leave</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Total_leaves_in_month" xml:space="preserve">
+    <value>Total leaves in month</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Total_leaves_in_year" xml:space="preserve">
+    <value>Tota leaves in year</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Update_avt_success" xml:space="preserve">
+    <value>Updated avatar successfully</value>
+  </data>
+  <data name="Update_contract_fail" xml:space="preserve">
+    <value>Update contract fail</value>
+  </data>
+  <data name="Update_contract_success" xml:space="preserve">
+    <value>Update contract success</value>
+  </data>
+  <data name="Update_emp_info_success" xml:space="preserve">
+    <value>Updat employee information success</value>
+  </data>
+  <data name="update_leave_failed" xml:space="preserve">
+    <value>Update leave failed</value>
+  </data>
+  <data name="update_leave_successful" xml:space="preserve">
+    <value>Update leave successful</value>
+  </data>
+  <data name="Update_salary_history_fail" xml:space="preserve">
+    <value>Update salary history fail</value>
+  </data>
+  <data name="Update_salary_history_success" xml:space="preserve">
+    <value>Update salary history success</value>
+  </data>
+  <data name="User_name" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="Vietnamese" xml:space="preserve">
+    <value>Tiếng việt</value>
+  </data>
+  <data name="Vietnamese_show" xml:space="preserve">
+    <value>Vie</value>
+  </data>
+  <data name="View_all_Notifications" xml:space="preserve">
+    <value>View all notifications</value>
+    <comment>notification topmenu</comment>
+  </data>
+  <data name="Working_process" xml:space="preserve">
+    <value>Working process</value>
+  </data>
+  <data name="Working_site" xml:space="preserve">
+    <value>Working site</value>
+    <comment>public</comment>
+  </data>
+  <data name="Wrong_account_or_password" xml:space="preserve">
+    <value>Wrong account or password</value>
+  </data>
+  <data name="Wrong_OTP_password_please_re_enter" xml:space="preserve">
+    <value>Wrong OTP password, please re-enter</value>
+  </data>
+  <data name="Wrong_pass_please_re_enter" xml:space="preserve">
+    <value>Wrong password, please re-enter</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+    <comment>public</comment>
+  </data>
+  <data name="You_not_have_this_right" xml:space="preserve">
+    <value>You do not have this right</value>
+  </data>
+</root>

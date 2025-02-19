@@ -1,0 +1,333 @@
+﻿@model Human.Models.Entities.Salary_Entities
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Salary";
+    ViewBag.active = 2;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng lương" />
+    <meta name="author" content="" />
+
+}
+
+@section LoadJs{
+    <script src="~/Assets/js/admin/Salary.js"></script>
+    <script>
+        $(function () {
+            $('#AlertMessage').removeClass("hidden-item");
+            $('#AlertMessage').delay("2000").slideUp("2000");
+
+        })
+    </script>
+}
+@{
+    var formatString = "{0:0,0}";
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header" style="margin-bottom: 20px;">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Salary_employee</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Category_lookup</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Salary_employee</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="form">
+        <div class="card-header">
+            <div class="col-md-12 header-child row">
+
+                @using (Html.BeginForm("Index", "Salary", FormMethod.Get, new { @class = "col-md-8 edit-col form-salary-style" }))
+                {
+                    @*<div class="col-md-3">
+                            <label class="lbl-header">Date time:</label>
+                            <input name="MONTH_SALARY" id="MONTH_SALARY" type="date" />
+                        </div>*@
+                    <div class="">
+                        <label class="lbl-header hide-item-t font-14" for="MONTH">@Human.Resource.Language.Month_year:</label>
+                        <select name="MONTH_SALARY" id="MONTH" class="select-custom select-month  input-custom">
+
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                            <!-- Thêm các tùy chọn cho các tháng khác -->
+                        </select>
+                        <select name="YEAR" id="YEAR" class="select-custom select-year input-custom">
+                            @for (int i = 2015; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                            <!-- Thêm các tùy chọn cho các năm khác -->
+                        </select>
+                        <button style="width: 120px; height:28px;" type="submit" id="btn-salary" class="btn form-control"><img class="icon-button" src="~/Assets/img/icon/search-2.png" /> @Human.Resource.Language.Search</button>
+                    </div>
+                }
+                @if (Model.EMPLOYEE_ID != 0)
+                {
+                    <div class="col-auto ml-auto">
+                        <div style="width:100%;height:40px;">
+                            <a class="text-color-blue-dark input-custom" style="width:150px; font-size:15px; position:absolute; right:0;bottom:0; text-align:end;" href="@Url.Action("GeneratePdf", new { name = "test.pdf" })">Download pdf<img class="icon-caption" src="~/Assets/img/icon/icon-Export.jpg" /></a>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div class="Authority">
+                <script>
+                    document.addEventListener("DOMContentLoaded", function (event) {
+                        Swal.fire({
+                            position: 'center-center',
+                            icon: '@TempData["AlertType"]',
+                            title: '@TempData["AlertMessage"]',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    });
+                </script>
+            </div>
+
+        }
+        @if (Model.EMPLOYEE_ID != 0)
+        {
+            //tạm
+            var Pay_OT150 = 0.0;
+            double Pay_OT200 = 0;
+            double Pay_OT210 = 0;
+            double Pay_OT300 = 0;
+            double total_hour = Model.TOTAL_DAY * 8;
+            double Basic = Convert.ToDouble(Model.BASIC_SALARY);
+            Pay_OT150 = Math.Round(((Basic / total_hour) * 14.3) * 1.5, 0);
+            Pay_OT200 = Math.Round(((Basic / total_hour) * 8) * 2, 0);
+            Pay_OT210 = Math.Round(((Basic / total_hour) * 9.75) * 2.1, 0);
+            Pay_OT300 = Math.Round(((Basic / total_hour) * 16) * 3, 0);
+            decimal totalPAYOT = Convert.ToDecimal(Pay_OT150 + Pay_OT200 + Pay_OT210 + Pay_OT300);
+            <div class="row">
+                @*  <div class="col-md-12 text-right">
+                        <a href="@Url.Action("GeneratePdf", new { name = "test.pdf" })">
+                            <i class="fa fa-file-pdf" style="font-size: 24px; color: red;"></i> Lưu thành file PDF
+                        </a>
+                    </div>*@
+
+            </div>
+            <div class="card-body ">
+                <div class="col-12 font-16">
+                    <form>
+
+                        <div class="row">
+                            <div class="col-md-12 text-center title-salary"><h3>CHI TIẾT THU NHẬP THÁNG @ViewBag.ThisMonth</h3></div>
+                        </div>
+                        <div class="row">
+                            <div class="text-center"><h4>(CHU KỲ LƯƠNG TỪ NGÀY 26/@ViewBag.PreMonth ĐẾN HẾT NGÀY 25/@ViewBag.ThisMonth)</h4></div>
+                        </div>
+                        <br /><br />
+                        <div class="row font-italic d-flex justify-content-center">
+                            <div class="col-11_custom">
+                                <div class="col-12 ">
+                                    <label class="col-lg-4 col-md-7 col-sm-12 bold">Tên Nhân Viên/ Employee's name :</label>
+                                    <label class="col-sm-12 col-md-4 bold">@Model.FULLNAME</label>
+                                </div>
+                                <div class="col-12">
+                                    <div class="col-lg-4 col-md-7 col-sm-12 d-inline-block bold">Mã số Nhân Viên/ Employee code:</div>
+                                    <div class="d-inline-block col-sm-12 col-md-4 bold">@Model.EMPLOYEE_CODE</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-lg-4 col-md-7 col-sm-12 d-inline-block">Phòng ban/ Department:</div>
+                                    <div class="d-inline-block col-sm-12 col-md-4">@Model.SECTION_NAME_EN</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-lg-4 col-md-7 col-sm-12 d-inline-block">Ngày vào công ty/ Joining date:</div>
+                                    <div class="d-inline-block col-sm-12 col-md-4">@Model.HIRE_DATE.ToString("dd/MM/yyyy")</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-lg-4 col-md-7 col-sm-12 d-inline-block">Email:</div>
+                                    <div class="d-inline-block col-sm-12 col-md-4">@Session["EMAIL"]</div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row col-12 align-middle pd-0 mg-0">
+                            <div class="col-lg-1"></div>
+                            <table id="table_salary" class="table-bordered tb-salary col-lg-10 col-sm-12">
+                                <tbody>
+                                    <tr bold>
+                                        <td class="col-md-9 col-sm-8">- LƯƠNG CƠ BẢN THEO HỢP ĐỒNG LAO ĐỘNG</td>
+                                        <td colspan="2">@Model.BASIC_SALARY</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- TỔNG PHỤ CẤP THEO HỢP ĐỒNG LAO ĐỘNG</td>
+                                        <td colspan="2">@Model.TOTAL_ALL</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Số ngày công theo tiêu chuẩn</td>
+                                        <td colspan="2">@Model.DAY_WORK</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Tổng số ngày công tính lương trong chu kỳ lương </td>
+                                        <td colspan="2">@Model.TOTAL_DAY</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8 salary_td_menu">A. THU NHẬP / GROSS INCOME:</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Lương cơ bản thực tế trong tháng </td>
+                                        <td colspan="2">@Model.PAY_MONTH</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Tổng phụ cấp thực tế trong tháng </td>
+                                        <td colspan="2">@(Model.TOTAL_ALL_PRO1 + Model.TOTAL_ALL_PRO85 + Model.TOTAL_ALL)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Lương & Tổng phụ cấp được tính theo mức lương cũ (nếu có)</td>
+                                        <td colspan="2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Phụ trội ca đêm (nếu có) </td>
+                                        <td colspan="2">@Model.PAY_OT30</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- tăng ca 150 (nếu có)</td>
+                                        <td>14.3</td>
+                                        <td>@Pay_OT150</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- tăng ca 210 (nếu có)</td>
+                                        <td>9.75</td>
+                                        <td>@Pay_OT210</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- tăng ca 200 (nếu có)</td>
+                                        <td>8</td>
+                                        <td>@Pay_OT200</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- tăng ca 300 (nếu có)</td>
+                                        <td>16</td>
+                                        <td>@Pay_OT300</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Lương tháng 13 (nếu có)</td>
+                                        <td colspan="2">@Model.BONUS</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Incentive (nếu có)</td>
+                                        <td colspan="2">@Model.INCENTIVES</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Phụ cấp thăng chức (nếu có)</td>
+                                        <td colspan="2">@Model.ALL_SPEC</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Truy lĩnh chênh lệch (nếu có)</td>
+                                        <td colspan="2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Ngày phép còn lại (nếu có)</td>
+                                        <td colspan="2">@Model.PAY_LEAVE</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Phụ cấp khác (nếu có)</td>
+                                        <td colspan="2">@Model.ALL_OTHER</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">
+                                            - Số tiền được khen thưởng cà nhân xuất sắc,
+                                            Sinh nhật, Thâm niên,Giftcard Lễ 01/05, Chiết khấu 10% giftcard mua
+                                            tại Quầy Treasury <b>(Cộng vào để tính số thuế thu nhập cá nhân </b>)(nếu có)
+                                        </td>
+                                        <td colspan="2">@Model.GIFT_CARD</td>
+                                    </tr>
+                                    <tr class="salary_tr_SumPayment color-copper">
+                                        <td class="col-md-9 col-sm-8">TỔNG THU NHẬP: (I)</td>
+                                        <td colspan="2">@(Model.TOTAL_PAY+ totalPAYOT)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8 salary_td_menu">B. KHOẢN ĐƯỢC GIẢM TRỪ KHI TÍNH THUẾ THU NHẬP CÁ NHÂN:</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Giảm trừ bản thân người nộp thuế</td>
+                                        <td colspan="2">@Model.TAX_SELF</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Giảm trừ người phụ thuộc</td>
+                                        <td colspan="2">@Model.AMT</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">- Khoản Ăn Trưa <b>không chịu thuế</b> (nếu có)</td>
+                                        <td colspan="2">@Model.LUNCH_MAX</td>
+                                    </tr>
+                                    <tr class="salary_tr_SumPayment color-copper">
+                                        <td class="col-md-9 col-sm-8">TỔNG CÁC KHOẢN GIẢM TRỪ TRƯỚC KHI TÍNH THUẾ:</td>
+                                        <td colspan="2">@(Model.TAX_SELF+Model.AMT+Model.LUNCH_MAX)</td>
+                                    </tr>
+                                    <tr class="salary_tr_SumPayment">
+                                        <td class="col-md-9 col-sm-8">Tổng thu nhập tính thuế/ Total taxable income (*):</td>
+                                        <td colspan="2">@Model.FEE</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8 salary_td_menu">C. NGHĨA VỤ NHÂN VIÊN/ OBLIGATION OF EMPLOYEE:</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr class="bold">
+                                        <td class="col-md-9 col-sm-8">- Thuế TNCN tạm nộp</td>
+                                        <td colspan="2">@Model.MIN_TAX</td>
+                                    </tr>
+                                    <tr class="bold">
+                                        <td class="col-md-9 col-sm-8">- Bảo hiểm xã hội (8%)</td>
+                                        <td colspan="2">@Model.E_SOCIAL_PAY</td>
+                                    </tr>
+                                    <tr class="bold">
+                                        <td class="col-md-9 col-sm-8">- Bảo hiểm y tế (1.5%)</td>
+                                        <td colspan="2">@Model.E_MEDICAL_PAY</td>
+                                    </tr>
+                                    <tr class="bold">
+                                        <td class="col-md-9 col-sm-8">- Bảo hiểm thất nghiệp (1%)</td>
+                                        <td colspan="2">@Model.E_JOB_PAY</td>
+                                    </tr>
+                                    <tr class="salary_tr_SumPayment color-copper">
+                                        <td class="col-md-9 col-sm-8">TỔNG CÁC KHOẢN PHẢI NỘP: (II)</td>
+                                        <td colspan="2">@(Model.MIN_TAX+Model.E_SOCIAL_PAY+Model.E_MEDICAL_PAY+Model.E_JOB_PAY)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-9 col-sm-8">
+                                            - Trừ lại khoản tiền khen thưởng cá nhân xuất sắc,sinh nhật , thâm niên,
+                                            Giftcard Lễ 01/5, Chiết khấu 10% giftcard mua tại Quầy Treasury trong tháng
+                                            <b style="color:red;font-weight:500"> DO ĐÃ ĐƯỢC NHẬN TIỀN MẶT HOẶC ĐÃ ĐƯỢC CHUYỂN KHOẢN TRƯỚC ĐÓ </b> (nếu có)
+                                        </td>
+                                        <td colspan="2">@Model.GIFT_CARD</td>
+                                    </tr>
+                                    <tr class="salary_tr_SumPayment color-copper">
+                                        <td class="col-md-9 col-sm-8">- Phí công đoàn: (III)</td>
+                                        <td colspan="2">@Model.UNION_PAY</td>
+                                    </tr>
+                                    <tr class="salary_tr_SumPayment salary_tr_SumALL color-blue  text-white ">
+                                        <td class="col-md-9 col-sm-8">
+                                            LƯƠNG THỰC LÃNH/ NET INCOME
+                                            (I)	–(II) –(III)
+                                        </td>
+                                        <td colspan="2">@(Model.REAL_PAY+ totalPAYOT)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="col-lg-1"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

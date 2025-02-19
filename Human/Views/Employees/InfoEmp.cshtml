@@ -1,0 +1,371 @@
+﻿@model Human.Models.ProfileEmployeeModel
+@{
+    ViewBag.Title = "Profile Employee";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 10;
+}
+
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý thông tin nhân viên" />
+    <meta name="author" content="" />
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/Assets/Profile/css/style.css?v=1.1">
+    <style>
+        .edit-css-title {
+            font-size: 14px;
+            font-family: 'Myriad Pro',sans-serif;
+            /*color: black;*/
+        }
+
+        .border-form {
+            border-radius: 20px !important;
+        }
+
+       
+
+       /* .personal-info li .text {
+            color: #212529;
+        }*/
+
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+
+        #working_table > thead > tr > th {
+            text-align: center;
+        }
+    </style>
+}
+
+@section LoadJs{
+    <script src="~/Assets/js/admin/Employees.js?v=1.1"></script>
+    <script>
+        function submitForm() {
+            document.getElementById("upload_avt_profile").submit();
+        }
+        $(function (e) {
+            $(document).ready(function () {
+               var table = $('#working_table').DataTable({
+                    "pageLength": 10,
+                    "lengthMenu": [
+                        [10, 50, 100, -1],
+                        [10, 50, 100, "All"]
+                    ],
+                    "ordering": false, // Tắt sắp xếp
+                    /*"bLengthChange": false,*/ // Tắt "Show entries"
+                    "searching": false // Tắt phần tìm kiếm
+                });
+            });
+        });
+    </script>
+}
+@{
+    var random = new Random();
+    var randomValue = random.Next().ToString();
+}
+<div class="container" style="padding:10px 20px;">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-title">@Human.Resource.Language.Profile_Emloyee</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                    <li class="breadcrumb-item"><a href="/Employees/Index" class="main-color-web font-weight-bold">@Human.Resource.Language.Employee</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Profile_Emloyee</li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+            </script>
+        </div>
+    }
+    <!-- info profile -->
+    <div class="card mb-0  border-form">
+        <div class="card-body ">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="profile-view">
+                        <form id="upload_avt_profile" class="profile-img-wrap" action="/ProfileEmployee/UploadAvt" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div class="profile-img" style="overflow: hidden; background-color: #fff; border-radius: 50%;">
+
+                                <img alt="avt-user" src="~/Assets/img/avatar/@(Model.EMP_PROFILE.IMG_WEB != null ? Model.EMP_PROFILE.IMG_WEB + "?random=" + randomValue :"user.png")">
+
+                                @*<div class="fileupload btn" style="width:120px;">
+                                        <span class="btn-text">edit</span>
+                                        <input class="upload" type="file" name="upload_file" id="upload_file" accept="image/*" onchange="submitForm()">
+                                    </div>*@
+                            </div>
+                        </form>
+
+                        <div class="profile-basic">
+                            <div class="row">
+
+                                <div class="col-md-5 profile-info-left">
+                                    <div>
+                                        <h3 class="user-name m-t-0 mb-0 edit-css-title" style="font-size: 24px; color: rgb(9 135 226);">@Model.EMP_PROFILE.FULLNAME</h3>
+                                        <h6 class="text-id edit-css-title " style="font-size:16px;font-weight:bold;">@Model.EMP_PROFILE.DEPARTMENT_NAME_EN</h6>
+                                        <small class="text-id edit-css-title " style="font-size: 16px; font-weight: bold;">@Model.EMP_PROFILE.TitleName_en</small>
+                                        <div class="staff-id edit-css-title ">@Human.Resource.Language.Gender : @Model.EMP_PROFILE.SEX</div>
+                                        <div class="doj text-id edit-css-title">@Human.Resource.Language.Date_of_join : @(Model.EMP_PROFILE.HIRE_DAY.ToString("dd/MM/yyyy") != "01/01/0001"? Model.EMP_PROFILE.HIRE_DAY.ToString("dd/MM/yyyy") : "_ _ _ _ _ _")</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <ul class="personal-info">
+
+                                        <li>
+                                            <div class="title edit-css-title " style="">@Human.Resource.Language.Phone:</div>
+                                            <div class="text edit-css-title ">
+                                                <a href="#" style="color: #007bff;">@(Model.EMP_PROFILE.PHONE_NUMBER != null ? Model.EMP_PROFILE.PHONE_NUMBER : "_ _ _ _ _ _")</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="title edit-css-title ">@Human.Resource.Language.Email:</div>
+                                            <div class="text edit-css-title "><a href="#" style="color: #007bff;">@(Model.EMP_PROFILE.EMAIL != null ? Model.EMP_PROFILE.EMAIL : "_ _ _ _ _ _") </a></div>
+                                        </li>
+                                        <li>
+                                            <div class="title edit-css-title ">@Human.Resource.Language.Birthday:</div>
+                                            <div class="text edit-css-title ">@(Model.EMP_PROFILE.DATE_OF_BIRTH.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.DATE_OF_BIRTH.ToString("dd/MM/yyyy") : "_ _ _ _ _ _")</div>
+                                        </li>
+                                        <li>
+                                            <div class="title edit-css-title">@Human.Resource.Language.Address:</div>
+                                            <div class="text edit-css-title">@(Model.EMP_PROFILE.PERMANENT_ADDRESS != null ? Model.EMP_PROFILE.PERMANENT_ADDRESS : "_ _ _ _ _ _")</div>
+                                        </li>
+                                        <li>
+                                            <div class="title edit-css-title">@Human.Resource.Language.Temporary_addres:</div>
+                                            <div class="text edit-css-title">@(Model.EMP_PROFILE.TEMPORARY_ADDRESS != null ? Model.EMP_PROFILE.TEMPORARY_ADDRESS : "_ _ _ _ _ _")</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-edit">
+                            @*  <a data-bs-toggle="modal" data-bs-target="#profile_info" class="edit-icon" href="#"><i class="fa fa-pencil"></i></a>*@
+                            <a class="text-color-blue-dark input-custom" style="font-size:15px; position:absolute; right:0;top:0;text-align:end;" href="@Url.Action("GeneratePdf", new { name = "test.pdf",emp_code =Model.EMP_PROFILE.EMP_CODE })">pdf <i class="fa-solid fa-download"></i></a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <!-- Profile Info Tab -->
+        <div id="emp_profile" class="pro-overview tab-pane fade show active">
+            <div class="row">
+                <!--Personal Information-->
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill border-form">
+                        <div class="card-body ">
+                            <h3 class="card-title edit-font main-color-web"><i class="fas fa-info-circle"></i> @Human.Resource.Language.Personal_Info </h3>
+                            <ul class="personal-info">
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Identity_card :</div>
+                                    <div class="text  edit-css-title">@(Model.EMP_PROFILE.ID_CARDNUMBER != null ? Model.EMP_PROFILE.ID_CARDNUMBER : "_ _ _ _ _ _")</div>
+                                </li>
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Date_Issue :</div>
+                                    <div class="text  edit-css-title">@(Model.EMP_PROFILE.DATE_ISSUE.ToString("dd/MM/yyyy") != "01/01/0001" ? Model.EMP_PROFILE.DATE_ISSUE.ToString("dd/MM/yyyy"): "_ _ _ _ _ _")</div>
+                                </li>
+                                @*  <li>
+                                        <div class="title edit-css-title">Nationality:</div>
+                                        <div class="text  edit-css-title">@(Model.EMP_PROFILE.NATIONALITY !=null ? Model.EMP_PROFILE.NATIONALITY : "_ _ _ _ _ _")</div>
+                                    </li>*@
+
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Marital_Status :</div>
+                                    <div class="text  edit-css-title">Single</div>
+                                </li>
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Social_Insurance :</div>
+                                    <div class="text edit-css-title">@(Model.EMP_PROFILE.SOBHXH != null ? Model.EMP_PROFILE.SOBHXH : "_ _ _ _ _ _")</div>
+                                </li>
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Health_Insurance :</div>
+                                    <div class="text edit-css-title">@(Model.EMP_PROFILE.SOBHYT != null ? Model.EMP_PROFILE.SOBHYT : "_ _ _ _ _ _")</div>
+                                </li>
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Pit_No :</div>
+                                    <div class="text edit-css-title">@(Model.EMP_PROFILE.TAX_NUMBER != null ? Model.EMP_PROFILE.TAX_NUMBER : "_ _ _ _ _ _")</div>
+                                </li>
+                            </ul>
+                            <h3 class="card-title edit-font main-color-web" style="margin-top:15px;"><i class="fas fa-university"></i> @Human.Resource.Language.Bank_Info</h3>
+                            <ul class="personal-info">
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Bank_Name :</div>
+                                    <div class="text edit-css-title">@(Model.EMP_PROFILE.BANK_NAME != null ? Model.EMP_PROFILE.BANK_NAME : "_ _ _ _ _ _")</div>
+                                </li>
+                                <li>
+                                    <div class="title edit-css-title">@Human.Resource.Language.Bank_code :</div>
+                                    <div class="text edit-css-title">@(Model.EMP_PROFILE.BANK_CODE != null ? Model.EMP_PROFILE.BANK_CODE : "_ _ _ _ _ _")</div>
+                                </li>
+                                <li>
+                                    <div class="title  edit-css-title">@Human.Resource.Language.Account_Number :</div>
+                                    <div class="text edit-css-title">@(Model.EMP_PROFILE.BANKACOUNT_NUMBER != null ? Model.EMP_PROFILE.BANKACOUNT_NUMBER : "_ _ _ _ _ _")</div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--Experience Information-->
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill border-form">
+                        <div class="card-body">
+                            <h3 class="card-title edit-font main-color-web"><i class="fas fa-book-open"></i> @Human.Resource.Language.Experience</h3>
+                            <div class="experience-box">
+                                <ul class="experience-list">
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">Công ty Conect</a>
+                                                <span class="time">Jan 2013 - Present (5 years 2 months)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">Công ty Conect</a>
+                                                <span class="time">Jan 2013 - Present (5 years 2 months)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">Công ty Conect</a>
+                                                <span class="time">Jan 2013 - Present (5 years 2 months)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- education info -->
+                            <h3 class="card-title edit-font main-color-web" style="margin-top:15px;"><i class="fas fa-school"></i> @Human.Resource.Language.Education_Info </h3>
+                            <div class="experience-box">
+                                <ul class="experience-list">
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">@(Model.EMP_PROFILE.UNIVERSITY_NAME_1 != null ? Model.EMP_PROFILE.UNIVERSITY_NAME_1 : "_ _ _ _ _")</a>
+                                                <div>@(Model.EMP_PROFILE.MAJOR_1 != null?Model.EMP_PROFILE.MAJOR_1:"_ _ _ _ _" )</div>
+                                                <span class="time">@(Model.EMP_PROFILE.YEAR_EDUCATION_1 != null ? Model.EMP_PROFILE.YEAR_EDUCATION_1 : "_ _ _ _ _") </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Working info -->
+                <div class="col-md-12 d-flex">
+                    <div class="card profile-box flex-fill border-form">
+                        <div class="card-body ">
+                            <h3 class="card-title edit-font main-color-web"><i class="fas fa-plane-departure"></i> @Human.Resource.Language.Working_process</h3>
+                            <div class="table-wrapper-time-keep" style="margin-top: 7px;overflow-y:auto;">
+                                <table id="working_table" style="width:100% !important;">
+                                    <caption class="table-caption p-t-0">
+                                        @*<div>
+                                                List Leave 10/2023
+                                            </div>*@
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                STT<br>No.
+                                            </th>
+                                            <th>phòng ban <br />(department)</th>
+                                            <th>bộ phận <br />(section)</th>
+                                            <th>chức vụ <br />(job title)</th>
+                                            <th>
+                                                Thử việc <br />(probation)
+                                            </th>
+                                            <th>
+                                                NGÀY HIỆU LỰC<br>(START DATE)
+                                            </th>
+                                            <th>
+                                                NGÀY KẾT THÚC<br>(END DATE)
+                                            </th>
+                                            <th>NGHỈ VIỆC <br />(Quit Job)</th>
+                                            <th>Ngày nghỉ <br />(Quit Date)</th>
+                                            <th>Ghi chú <br />(Note)</th>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.LST_WORKING != null && Model.LST_WORKING.Any())
+                                        {
+                                            int i = 1;
+                                            foreach (var item_w in Model.LST_WORKING)
+                                            {
+                                                <tr class="">
+                                                    <td>
+                                                        @i
+                                                        <input type="hidden" class="department_id_work" value="@item_w.DEPARTMENT_ID" />
+                                                        <input type="hidden" class="section_id_work" value="@item_w.SECTION_ID" />
+                                                        <input type="hidden" class="job_id_work" value="@item_w.JOBTITLE_ID" />
+                                                    </td>
+                                                    <td>@(string.IsNullOrEmpty(item_w.DEPARTMENT_NAME_EN) ? "" : item_w.DEPARTMENT_NAME_EN)</td>
+                                                    <td>@(string.IsNullOrEmpty(item_w.SECTION_NAME_EN) ? "" : item_w.SECTION_NAME_EN )</td>
+                                                    <td>@(string.IsNullOrEmpty(item_w.TitleName_en) ? "" : item_w.TitleName_en)</td>
+                                                    <td>
+                                                        <input class="check_working_item" @(item_w.PROBATION.HasValue && item_w.PROBATION.Value ? "checked" : "disabled") style="margin:auto;" type="checkbox" name="" />
+                                                    </td>
+                                                    <td>@(item_w.CONGTACTU.ToString("dd/MM/yyyy")=="01/01/0001" ? "" :item_w.CONGTACTU.ToString("dd/MM/yyyy"))</td>
+                                                    <td>@(item_w.CONGTACDEN.ToString("dd/MM/yyyy")=="01/01/0001" ? "" : item_w.CONGTACDEN.ToString("dd/MM/yyyy"))</td>
+                                                    <td>
+                                                        <input class="check_working_item" @(item_w.QUIT.HasValue && item_w.QUIT.Value ? "checked" : "disabled") style="margin:auto;" type="checkbox" name="" />
+                                                    </td>
+                                                    <td>@(item_w.DATE_QUIT.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : item_w.DATE_QUIT.ToString("dd/MM/yyyy"))</td>
+                                                    <td>@(string.IsNullOrEmpty(item_w.QUIT_REASON) ? "" : item_w.QUIT_REASON)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

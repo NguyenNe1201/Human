@@ -1,0 +1,915 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Absolutely_otp" xml:space="preserve">
+    <value>Tuyệt đối KHÔNG chia sẻ mã xác thực (OTP) với bất kỳ ai trong ảnh
+bất kỳ công thức nào. Mã xác thực có hiệu lực trong 1 phút</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Đã duyệt</value>
+    <comment>public</comment>
+  </data>
+  <data name="Accept_btn" xml:space="preserve">
+    <value>Duyệt</value>
+    <comment>public button</comment>
+  </data>
+  <data name="Account_Number" xml:space="preserve">
+    <value>Số tài khoản</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Account_team" xml:space="preserve">
+    <value>Nhóm Conect account</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Địa chỉ</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Add_contract_fail" xml:space="preserve">
+    <value>Thêm hợp đồng lao động thất bại</value>
+  </data>
+  <data name="Add_contract_success" xml:space="preserve">
+    <value>Thêm hợp đồng thành công</value>
+  </data>
+  <data name="Add_employee" xml:space="preserve">
+    <value>Thêm nhân viên</value>
+  </data>
+  <data name="Add_emp_info" xml:space="preserve">
+    <value>Thêm thông tin nhân viên</value>
+  </data>
+  <data name="Add_emp_info_fail" xml:space="preserve">
+    <value>Thêm thông tin nhân viên thất bại</value>
+  </data>
+  <data name="Add_emp_info_success" xml:space="preserve">
+    <value>Thêm thông tin nhân viên thành công</value>
+  </data>
+  <data name="Add_leave" xml:space="preserve">
+    <value>Thêm phép</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="add_leave_day" xml:space="preserve">
+    <value>Ngày</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="add_leave_from_day" xml:space="preserve">
+    <value>Từ ngày</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="Add_leave_reason" xml:space="preserve">
+    <value>Lý do</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="add_leave_to_day" xml:space="preserve">
+    <value>Đến ngày</value>
+    <comment>view add leave  page</comment>
+  </data>
+  <data name="Add_new_leave_failed" xml:space="preserve">
+    <value>Thêm mới phép thất bại</value>
+  </data>
+  <data name="Add_new_leave_successful" xml:space="preserve">
+    <value>Thêm mới phép thành công</value>
+  </data>
+  <data name="Add_salary_history_fail" xml:space="preserve">
+    <value>Thêm lịch sử lương thất bại</value>
+  </data>
+  <data name="Add_salary_history_success" xml:space="preserve">
+    <value>Thêm lịch sử lương thành công</value>
+  </data>
+  <data name="Add_work_process_fail" xml:space="preserve">
+    <value>Thêm quá trình công tác thất bại</value>
+  </data>
+  <data name="Add_work_process_success" xml:space="preserve">
+    <value>Thêm quá trình công tác thành công</value>
+  </data>
+  <data name="Admin_menu_settings" xml:space="preserve">
+    <value>Cài đặt menu quản trị</value>
+  </data>
+  <data name="Admin_setting" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="Allowance_cashier" xml:space="preserve">
+    <value>Phụ cấp thu ngân</value>
+  </data>
+  <data name="Allowance_house" xml:space="preserve">
+    <value>Phụ cấp nhà ở</value>
+  </data>
+  <data name="Allowance_job" xml:space="preserve">
+    <value>Phụ cấp công việc</value>
+  </data>
+  <data name="Allowance_meal" xml:space="preserve">
+    <value>Phụ cấp bữa ăn</value>
+  </data>
+  <data name="Allowance_other" xml:space="preserve">
+    <value>Phụ cấp khác</value>
+  </data>
+  <data name="Allowance_petrol" xml:space="preserve">
+    <value>Phụ cấp xăng</value>
+  </data>
+  <data name="Allowance_phone" xml:space="preserve">
+    <value>Phụ cấp điện thoại</value>
+  </data>
+  <data name="All_department" xml:space="preserve">
+    <value>Tất cả phòng ban</value>
+    <comment>decentralize page view </comment>
+  </data>
+  <data name="All_leave" xml:space="preserve">
+    <value>Tất cả phép</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="All_section" xml:space="preserve">
+    <value>Tất cả ngành</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="All_status" xml:space="preserve">
+    <value>Tất cả trạng thái</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Gửi</value>
+    <comment>pubic</comment>
+  </data>
+  <data name="Bank_account" xml:space="preserve">
+    <value>Tài khoản ngân hàng</value>
+  </data>
+  <data name="Bank_code" xml:space="preserve">
+    <value>Mã thẻ</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Bank_Info" xml:space="preserve">
+    <value>Thông tin ngân hàng</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Bank_Name" xml:space="preserve">
+    <value>Ngân hàng</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Birthday" xml:space="preserve">
+    <value>Ngày sinh</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="btn_Add" xml:space="preserve">
+    <value>Thêm</value>
+  </data>
+  <data name="btn_Cancel" xml:space="preserve">
+    <value>Hủy bỏ</value>
+  </data>
+  <data name="btn_Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="btn_Edit" xml:space="preserve">
+    <value>Chỉnh sửa</value>
+  </data>
+  <data name="btn_Save" xml:space="preserve">
+    <value>Lưu lại</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy bỏ</value>
+    <comment>public</comment>
+  </data>
+  <data name="Cancel_leave_failed" xml:space="preserve">
+    <value>Hủy phép thất bại</value>
+  </data>
+  <data name="Cancel_leave_successfully" xml:space="preserve">
+    <value>Hủy phép thành công</value>
+  </data>
+  <data name="Category_lookup" xml:space="preserve">
+    <value>Danh mục tra cứu</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Chứng chỉ</value>
+  </data>
+  <data name="choose_gender" xml:space="preserve">
+    <value>Chọn giới tính</value>
+  </data>
+  <data name="Clear_All" xml:space="preserve">
+    <value>Xóa tất cả</value>
+    <comment>notification topmenu</comment>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Màu sắc</value>
+  </data>
+  <data name="Contract" xml:space="preserve">
+    <value>Hợp đồng</value>
+    <comment>leftmenu</comment>
+  </data>
+  <data name="Contract_code" xml:space="preserve">
+    <value>Mã số hợp đồng</value>
+  </data>
+  <data name="Contract_info" xml:space="preserve">
+    <value>Thông tin hợp đồng</value>
+  </data>
+  <data name="Contract_type" xml:space="preserve">
+    <value>Loại hợp đồng</value>
+  </data>
+  <data name="Daily_timesheet_data" xml:space="preserve">
+    <value>Dữ liệu bảng chấm công ngày</value>
+  </data>
+  <data name="Date_Issue" xml:space="preserve">
+    <value>Ngày cấp</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Date_of_join" xml:space="preserve">
+    <value>Ngày vào</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Day_off" xml:space="preserve">
+    <value>Ngày nghỉ việc</value>
+  </data>
+  <data name="Decentralize" xml:space="preserve">
+    <value>Phân quyền</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Degree" xml:space="preserve">
+    <value>Bằng cấp</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Xóa</value>
+    <comment>public</comment>
+  </data>
+  <data name="Delete_failed" xml:space="preserve">
+    <value>Xóa thất bại</value>
+  </data>
+  <data name="Delete_leave_failed" xml:space="preserve">
+    <value>Xóa phép thất bại</value>
+  </data>
+  <data name="Delete_leave_successfully" xml:space="preserve">
+    <value>Xóa phép thành công</value>
+  </data>
+  <data name="Delete_successfully" xml:space="preserve">
+    <value>Xóa thành công</value>
+  </data>
+  <data name="Del_salary_history_fail" xml:space="preserve">
+    <value>Xóa lịch sử lương thất bại</value>
+  </data>
+  <data name="Del_salary_history_success" xml:space="preserve">
+    <value>Xóa lịch sử lương thành công</value>
+  </data>
+  <data name="Del_work_process_fail" xml:space="preserve">
+    <value>Xóa quá trình công tác thất bại</value>
+  </data>
+  <data name="Del_work_process_success" xml:space="preserve">
+    <value>Xóa quá trình công tác thành công</value>
+  </data>
+  <data name="Deny" xml:space="preserve">
+    <value>Từ chối</value>
+    <comment>public</comment>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Phòng ban</value>
+    <comment>public</comment>
+  </data>
+  <data name="Department_manager" xml:space="preserve">
+    <value>Quản lý phòng ban</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Detail" xml:space="preserve">
+    <value>Chi tiết</value>
+    <comment>public</comment>
+  </data>
+  <data name="Division" xml:space="preserve">
+    <value>Chi nhánh</value>
+  </data>
+  <data name="Edit_emp_info" xml:space="preserve">
+    <value>Chỉnh sửa thông tin nhân viên</value>
+  </data>
+  <data name="Edit_work_process_fail" xml:space="preserve">
+    <value>Chỉnh sửa quá trình công tác thất bại</value>
+  </data>
+  <data name="Edit_work_process_success" xml:space="preserve">
+    <value>Chỉnh sửa quá trình công tác thành công</value>
+  </data>
+  <data name="Education" xml:space="preserve">
+    <value>Học vấn</value>
+  </data>
+  <data name="Education_Info" xml:space="preserve">
+    <value>Thông tin học vấn</value>
+    <comment>Profile page</comment>
+  </data>
+  <data name="Effective_date" xml:space="preserve">
+    <value>Ngày hiệu lực</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="email_user name_phone number" xml:space="preserve">
+    <value>Email, tên đăng nhập, số điện thoại</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>Nhân viên</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Employee_code" xml:space="preserve">
+    <value>Mã nhân viên</value>
+    <comment>public</comment>
+  </data>
+  <data name="Employee_list_leave" xml:space="preserve">
+    <value>Danh sách phép nhân viên</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Emp_info" xml:space="preserve">
+    <value>Thông tin nhân viên</value>
+  </data>
+  <data name="Emp_request_cancel_leave" xml:space="preserve">
+    <value>Nhân viên yêu cầu hủy phép</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Đã bật</value>
+  </data>
+  <data name="End_date" xml:space="preserve">
+    <value>Ngày kết thúc</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="English_show" xml:space="preserve">
+    <value>Eng</value>
+  </data>
+  <data name="error_while_upload" xml:space="preserve">
+    <value>Lỗi khi tải lên</value>
+  </data>
+  <data name="Experience" xml:space="preserve">
+    <value>Kinh nghiệm</value>
+    <comment>Profile page</comment>
+  </data>
+  <data name="Expiration_date" xml:space="preserve">
+    <value>Ngày hết hạn</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Nữ</value>
+  </data>
+  <data name="Forgot_pass" xml:space="preserve">
+    <value>Quên mật khẩu</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Từ</value>
+  </data>
+  <data name="Fullname" xml:space="preserve">
+    <value>Họ và tên</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Giới tính</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="General_info" xml:space="preserve">
+    <value>Thông tin chung</value>
+    <comment>public</comment>
+  </data>
+  <data name="Granted_permissions_failed" xml:space="preserve">
+    <value>Cấp quyền hạn thất bại</value>
+  </data>
+  <data name="Granted_permissions_success" xml:space="preserve">
+    <value>Cấp quyền hạn thành công</value>
+  </data>
+  <data name="Health_Insurance" xml:space="preserve">
+    <value>BHYT</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Xin chào</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Trang chủ</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Home_annual_leave" xml:space="preserve">
+    <value>Phép năm</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_detail_leave" xml:space="preserve">
+    <value>Chi tiết phép</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_hello" xml:space="preserve">
+    <value>Xin chào</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_remain" xml:space="preserve">
+    <value>Còn lại</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_total" xml:space="preserve">
+    <value>Tổng cộng</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Home_used" xml:space="preserve">
+    <value>Sử dụng</value>
+    <comment>view home page</comment>
+  </data>
+  <data name="Identity_card" xml:space="preserve">
+    <value> Số CCCD</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="ID_card" xml:space="preserve">
+    <value>Mã thẻ</value>
+  </data>
+  <data name="Input_emp_code" xml:space="preserve">
+    <value>Nhập mã số nhân viên</value>
+    <comment>public</comment>
+  </data>
+  <data name="Insurance" xml:space="preserve">
+    <value>Bảo hiểm</value>
+  </data>
+  <data name="Issued_by" xml:space="preserve">
+    <value>Nơi cấp</value>
+  </data>
+  <data name="Job" xml:space="preserve">
+    <value>Công việc</value>
+  </data>
+  <data name="Job_to_do" xml:space="preserve">
+    <value>Công việc phải làm</value>
+  </data>
+  <data name="Labor_contract" xml:space="preserve">
+    <value>Hợp đồng lao động</value>
+  </data>
+  <data name="Leave" xml:space="preserve">
+    <value>Phép</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Leavel_list_add_new" xml:space="preserve">
+    <value>Thêm mới</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Leave_employee" xml:space="preserve">
+    <value>Nhân viên nghỉ phép</value>
+    <comment>view managment page</comment>
+  </data>
+  <data name="Leave_list" xml:space="preserve">
+    <value>Danh sách phép</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Leave_managment" xml:space="preserve">
+    <value>Quản lý phép</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Leave_request_list" xml:space="preserve">
+    <value>Danh sách yêu cầu duyệt phép</value>
+    <comment>notification page view</comment>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Trình độ</value>
+  </data>
+  <data name="ListEmployee" xml:space="preserve">
+    <value>Danh sách nhân viên</value>
+    <comment>decentralize view page</comment>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Đăng nhập</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Login_with_OTP" xml:space="preserve">
+    <value>Đăng nhập bằng OTP</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Login_with_password" xml:space="preserve">
+    <value>Đăng nhập bằng mật khẩu</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Logo_update_success" xml:space="preserve">
+    <value>Cập nhật logo thành công</value>
+  </data>
+  <data name="Log_list" xml:space="preserve">
+    <value>Chấm công thực tế</value>
+    <comment>log list view</comment>
+  </data>
+  <data name="Look_up_data" xml:space="preserve">
+    <value>Tra cứu dữ liệu</value>
+    <comment>pubic</comment>
+  </data>
+  <data name="Look_up_timekeep" xml:space="preserve">
+    <value>Tra cứu chấm công thực tế</value>
+    <comment>public</comment>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Nam</value>
+  </data>
+  <data name="Managment" xml:space="preserve">
+    <value>Quản lý</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Marital_Status" xml:space="preserve">
+    <value>Tình trạng</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Tháng</value>
+    <comment>public</comment>
+  </data>
+  <data name="Month_year" xml:space="preserve">
+    <value>Tháng/năm</value>
+    <comment>salary view page</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Tên</value>
+    <comment>public</comment>
+  </data>
+  <data name="Name or code" xml:space="preserve">
+    <value>Tên hoặc mã nhân viên</value>
+    <comment>view leave admin page</comment>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Kế tiếp</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="Note_contract" xml:space="preserve">
+    <value>Nếu hợp đồng VÔ THỜI HẠN thì sẽ không hiển thị ngày hết hạn của hợp đồng</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>Thông báo</value>
+    <comment>Notification view</comment>
+  </data>
+  <data name="No_data_available" xml:space="preserve">
+    <value>Không có dữ liệu</value>
+  </data>
+  <data name="No_notification" xml:space="preserve">
+    <value>Không có thông báo</value>
+  </data>
+  <data name="Ok_btn" xml:space="preserve">
+    <value>Đồng ý</value>
+    <comment>button</comment>
+  </data>
+  <data name="OTP_code_expired_please_get_code" xml:space="preserve">
+    <value>Mã OTP hết hạn, vui lòng lấy mã mới</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mật khẩu</value>
+    <comment>view login page</comment>
+  </data>
+  <data name="Payroll" xml:space="preserve">
+    <value>Kỳ lương</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Đang  chờ</value>
+    <comment>public</comment>
+  </data>
+  <data name="Personal_Info" xml:space="preserve">
+    <value>Thông tin nhân viên</value>
+    <comment>view profile page</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Số điện thoại</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Pit_No" xml:space="preserve">
+    <value>Mã số thuế</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Please_select_complete_info" xml:space="preserve">
+    <value>Vui lòng chọn đầy đủ thông tin</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Chức vụ</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Trước</value>
+  </data>
+  <data name="Probation" xml:space="preserve">
+    <value>Thử việc</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Hồ sơ</value>
+  </data>
+  <data name="Profile_Emloyee" xml:space="preserve">
+    <value>Hồ sơ nhân viên</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Quit_job" xml:space="preserve">
+    <value>Nghỉ việc</value>
+  </data>
+  <data name="Rank" xml:space="preserve">
+    <value>Bậc</value>
+  </data>
+  <data name="Request" xml:space="preserve">
+    <value>Yêu cầu hủy</value>
+  </data>
+  <data name="Request_approval_fail" xml:space="preserve">
+    <value>Yêu cầu phê duyệt không thành công</value>
+  </data>
+  <data name="Request_approved_success" xml:space="preserve">
+    <value>Yêu cầu được phê duyệt thành công</value>
+  </data>
+  <data name="Request_btn" xml:space="preserve">
+    <value>Gửi yêu cầu</value>
+  </data>
+  <data name="Request_sent_failed" xml:space="preserve">
+    <value>Gửi yêu cầu thất bại</value>
+  </data>
+  <data name="Request_sent_successfully" xml:space="preserve">
+    <value>Yêu cầu được gửi thành công</value>
+  </data>
+  <data name="Salary" xml:space="preserve">
+    <value>Lương</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Salary_basic" xml:space="preserve">
+    <value>Lương cơ bản</value>
+  </data>
+  <data name="Salary_employee" xml:space="preserve">
+    <value>Lương nhân viên</value>
+    <comment>salary view page</comment>
+  </data>
+  <data name="Salary_history" xml:space="preserve">
+    <value>Lịch sử lương</value>
+    <comment>public</comment>
+  </data>
+  <data name="Salary_level" xml:space="preserve">
+    <value>Cấp bậc lương</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+    <comment>public</comment>
+  </data>
+  <data name="Search_public" xml:space="preserve">
+    <value>Kiểm tra</value>
+    <comment>public view page</comment>
+  </data>
+  <data name="Section" xml:space="preserve">
+    <value>Bộ phận</value>
+  </data>
+  <data name="Security_code" xml:space="preserve">
+    <value>Mã xác thực</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="security_for_account" xml:space="preserve">
+    <value>Vui lòng sử dụng mã xác thực sau cho tài khoản Conect</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="Select_all" xml:space="preserve">
+    <value>Chọn tất cả</value>
+  </data>
+  <data name="Select_contract_type" xml:space="preserve">
+    <value>Chọn loại hợp đồng</value>
+  </data>
+  <data name="Select_department" xml:space="preserve">
+    <value>Chọn phòng ban</value>
+  </data>
+  <data name="Select_emp" xml:space="preserve">
+    <value>Chọn nhân viên</value>
+  </data>
+  <data name="Select_language" xml:space="preserve">
+    <value>Chọn ngôn ngữ</value>
+  </data>
+  <data name="Select_month_year" xml:space="preserve">
+    <value>Chọn tháng/năm</value>
+    <comment>time sheet view</comment>
+  </data>
+  <data name="Select_position" xml:space="preserve">
+    <value>Chọn chức vụ</value>
+  </data>
+  <data name="Select_section" xml:space="preserve">
+    <value>Chọn bộ phận</value>
+  </data>
+  <data name="Setup" xml:space="preserve">
+    <value>Cài đặt</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Sign_day" xml:space="preserve">
+    <value>Ngày kí</value>
+  </data>
+  <data name="Social_Insurance" xml:space="preserve">
+    <value>BHXH</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Specialize_title" xml:space="preserve">
+    <value>Chức danh chuyên môn</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Tax_code" xml:space="preserve">
+    <value>Mã số thuế</value>
+  </data>
+  <data name="Temporary_addres" xml:space="preserve">
+    <value>Địa chỉ tạm trú</value>
+    <comment>Profile view</comment>
+  </data>
+  <data name="Thanks" xml:space="preserve">
+    <value>Cảm ơn</value>
+    <comment>send otp gmail</comment>
+  </data>
+  <data name="This_emp_not_contract" xml:space="preserve">
+    <value>Nhân viên này chưa có hợp đồng</value>
+  </data>
+  <data name="This_leave_date_has_been_confirmed" xml:space="preserve">
+    <value>Ngày nghỉ phép này đã được xác nhận</value>
+  </data>
+  <data name="Timekeeping" xml:space="preserve">
+    <value>Chấm công</value>
+    <comment>left menu</comment>
+  </data>
+  <data name="Timekeep_day" xml:space="preserve">
+    <value>Chấm công ngày</value>
+  </data>
+  <data name="Time_sheet" xml:space="preserve">
+    <value>Bảng công tháng</value>
+    <comment>time sheet view</comment>
+  </data>
+  <data name="Time_sheet_day" xml:space="preserve">
+    <value>Chấm công hàng ngày</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Đến</value>
+  </data>
+  <data name="Total_annual_leave" xml:space="preserve">
+    <value>Tổng phép năm</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Total_leaves_in_month" xml:space="preserve">
+    <value>Số ngày nghỉ trong tháng</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Total_leaves_in_year" xml:space="preserve">
+    <value>Số ngày nghỉ trong năm</value>
+    <comment>view leave list page</comment>
+  </data>
+  <data name="Update_avt_success" xml:space="preserve">
+    <value>Cập nhật ảnh đại diện thành công</value>
+  </data>
+  <data name="Update_contract_fail" xml:space="preserve">
+    <value>Cập nhật hợp đồng thất bại</value>
+  </data>
+  <data name="Update_contract_success" xml:space="preserve">
+    <value>Cập nhật hợp đồng thành công</value>
+  </data>
+  <data name="Update_emp_info_fail" xml:space="preserve">
+    <value> Cập nhật thông tin nhân viên thất bại</value>
+  </data>
+  <data name="Update_emp_info_success" xml:space="preserve">
+    <value>Cập nhật thông tin nhân viên thành công</value>
+  </data>
+  <data name="Update_leave_failed" xml:space="preserve">
+    <value>Cập nhật phép thất bại!</value>
+  </data>
+  <data name="Update_leave_successful" xml:space="preserve">
+    <value>Cập nhật phép thành công!</value>
+  </data>
+  <data name="Update_salary_history_fail" xml:space="preserve">
+    <value>Cập nhật lịch sử lương thất bại</value>
+  </data>
+  <data name="Update_salary_history_success" xml:space="preserve">
+    <value>Cập nhật lịch sử lương thành công</value>
+  </data>
+  <data name="User_name" xml:space="preserve">
+    <value>Tên đăng nhập</value>
+  </data>
+  <data name="Vietnamese" xml:space="preserve">
+    <value>Tiếng việt</value>
+  </data>
+  <data name="Vietnamese_show" xml:space="preserve">
+    <value>Vie</value>
+  </data>
+  <data name="View_all_Notifications" xml:space="preserve">
+    <value>Xem tất cả thông báo</value>
+    <comment>notification topmenu</comment>
+  </data>
+  <data name="Working_process" xml:space="preserve">
+    <value>Quá trình công tác</value>
+    <comment>view profile page</comment>
+  </data>
+  <data name="Working_site" xml:space="preserve">
+    <value>Nơi làm việc</value>
+    <comment>public</comment>
+  </data>
+  <data name="Wrong_account_or_password" xml:space="preserve">
+    <value>Sai tài khoản hoặc mật khẩu</value>
+  </data>
+  <data name="Wrong_OTP_password_please_re_enter" xml:space="preserve">
+    <value>Sai mật khẩu OTP, vui lòng nhập lại</value>
+  </data>
+  <data name="Wrong_pass_please_re_enter" xml:space="preserve">
+    <value>Mật khẩu sai, vui lòng nhập lại</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Năm</value>
+    <comment>public</comment>
+  </data>
+  <data name="You_not_have_this_right" xml:space="preserve">
+    <value>Bạn không có quyền hạn này</value>
+  </data>
+</root>

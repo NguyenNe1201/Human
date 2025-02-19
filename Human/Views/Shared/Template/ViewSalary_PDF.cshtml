@@ -1,0 +1,431 @@
+﻿@model Human.Models.SalaryModel
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        body {
+            font-size: 1rem;
+        }
+        .font-italic {
+            font-style: italic !important;
+        }
+        .col-11_custom {
+            flex: 0 0 auto;
+            width: 87.666667% !important;
+        }
+        .col-12{
+            width:100%;
+            flex:0 0 auto;
+        }
+        .col-lg-4{
+            flex: 0 0 auto;
+            width:33.333%;
+        }
+        .col-md-4{
+            flex:0 0 auto;
+            width:33.33%;
+        }
+        .col-md-9 {
+            width: 75%;
+        }
+        
+        .text-white {
+            color: white;
+        }
+
+        .color-copper {
+            background-color: yellow;
+        }
+
+        .color-gray {
+            background-color: lightgray;
+        }
+
+        .color-gray-black {
+            background-color: darkslateblue;
+        }
+
+
+       
+
+        .hidden-item {
+            display: none;
+        }
+
+        .btn {
+            width: 90px;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        label {
+            font-weight: 500;
+            display:inline-block;
+            margin-bottom:5px;
+        }
+        .bold {
+            font-weight: bold;
+        }
+
+
+        .table-emp {
+            table-layout: fixed;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        .table-bordered > :not(caption) > *, .dataTable-table > :not(caption) > * {
+            border-width: 1px 0;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        .table-emp thead {
+            background: #f9f9f9;
+            display: table;
+            width: 100%;
+        }
+
+        .table-emp tbody {
+            height: 600px;
+            overflow: auto;
+            display: block;
+            width: 100%;
+        }
+
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .select-item {
+            border-radius: 5px;
+            width: 220px;
+        }
+
+        .header-child {
+            padding: 5px 0;
+        }
+
+        .custom-btn {
+            border-radius: 8px;
+            background: #74f8f1bf;
+            color: #fc070e;
+            width: 100px;
+            height: 35px;
+        }
+
+        .lbl-header-1 {
+            width: 60px;
+        }
+
+        .left {
+            float: left;
+        }
+
+        .right {
+            float: right;
+        }
+
+        tr td:nth-child(2) {
+            text-align: right;
+            padding: 0 10px 0 0;
+        }
+
+        /*Loading spin*/
+
+
+
+        .title-salary h3 {
+            font-weight: 600;
+            font-size: 2.3rem;
+            color: #0e53c3;
+        }
+
+        .col-11_custom {
+            width: 100% !important;
+            padding: 0;
+        }
+
+        h4 {
+            font-size: 1.3rem;
+        }
+
+
+        .salary_tr_SumALL {
+            height: 60px;
+            font-size: 21px;
+        }
+        /*table salary*/
+        .tb-salary {
+            margin: 20px 0;
+            border: 1px solid #969b9f;
+        }
+
+            .tb-salary tr:nth-child(1), tr:nth-child(2) {
+                background-color: antiquewhite;
+                font-style: italic;
+                font-weight: bold;
+            }
+
+        thead, tbody, tfoot, tr, td, th {
+            border-color: inherit;
+            border-style: solid;
+            border-width: 0;
+        }
+
+        .salary_td_menu {
+            font-weight: 500;
+            color: #0e53c3;
+        }
+
+        .salary_tr_SumPayment {
+            height: 50px;
+            font-weight: 600;
+        }
+
+        .salary_tr_SumALL {
+            height: 80px;
+            font-size: 28px;
+        }
+
+
+        /*end table */
+
+
+        /* scroll*/
+
+        .select-year {
+            width: 80px;
+            max-height: 200px;
+        }
+
+        .select-month {
+            width: 40px;
+        }
+
+        /*end scroll*/
+
+        .col-xl-2 {
+            width: 14%;
+        }
+
+        .pd-0 {
+            padding: 0 !important;
+        }
+
+        .mg-0 {
+            margin: 0 !important;
+        }
+
+        .salary_tr_SumALL {
+            height: 80px;
+            font-size: 28px;
+        }
+    </style>
+
+</head>
+<body>
+    @{
+        var formatString = "{0:#,#}";
+    }
+    <div class="card-body ">
+        <div class="col-12 font-16">
+            <form>
+
+                <div class="row">
+                    <div class="col-md-12 text-center title-salary"><h3>CHI TIẾT THU NHẬP THÁNG @Model.TEXT_TODATE</h3></div>
+                </div>
+                <div class="row">
+                    <div class="text-center"><h4>(CHU KỲ LƯƠNG TỪ NGÀY 26/@Model.TEXT_FROMDATE ĐẾN HẾT NGÀY 25/@Model.TEXT_TODATE)</h4></div>
+                </div>
+                <br /><br />
+                      <div class="row font-italic d-flex justify-content-center">
+                          <div class="col-11_custom">
+                              <div class="col-12 ">
+                                  <label class="col-lg-4 col-md-7  bold">Tên Nhân Viên/ Employee's name :</label>
+                                  <label class=" col-md-4 bold">@Model.Salary.FULLNAME</label>
+                              </div>
+                              <div class="col-12 ">
+                                  <label class="col-lg-4 col-md-7 ">Mã số Nhân Viên/ Employee code:</label>
+                                  <label class=" col-md-4">@Model.Salary.EMPLOYEE_CODE</label>
+                              </div>
+                              <div class="col-12 ">
+                                  <label class="col-lg-4 col-md-7 ">Phòng ban/ Department:</label>
+                                  <label class=" col-md-4">@Model.Salary.SECTION_NAME_EN</label>
+                              </div> 
+                          <div class="col-12 ">
+                                  <label class="col-lg-4 col-md-7 ">Ngày vào công ty/ Joining date:</label>
+                                  <label class=" col-md-4">@Model.Salary.HIRE_DATE.ToString("dd/MM/yyyy")</label>
+                              </div>
+                          </div> <div class="col-12">
+                              <label class="col-lg-4 col-md-7 ">Email:</label>
+                              <label class=" col-md-4">@Session["EMAIL"]</label>
+                          </div>
+                      </div>
+
+
+                <div class="row col-12 align-middle pd-0 mg-0">
+                    <div class="col-lg-1"></div>
+                    <table id="table_salary" class="table-bordered tb-salary col-lg-10 ">
+                        <tbody>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- LƯƠNG CƠ BẢN THEO HỢP ĐỒNG LAO ĐỘNG</td>
+                                <td>@String.Format(formatString, Model.Salary.BASIC_SALARY)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- TỔNG PHỤ CẤP THEO HỢP ĐỒNG LAO ĐỘNG</td>
+                                <td>@String.Format(formatString, Model.Salary.TOTAL_ALL)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Số ngày công theo tiêu chuẩn</td>
+                                <td>@String.Format(formatString, Model.Salary.DAY_WORK)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Tổng số ngày công tính lương trong chu kỳ lương </td>
+                                <td>@String.Format(formatString, Model.Salary.TOTAL_DAY)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8 salary_td_menu">A. THU NHẬP / GROSS INCOME:</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Lương cơ bản thực tế trong tháng </td>
+                                <td>@String.Format(formatString, Model.Salary.PAY_MONTH)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Tổng phụ cấp thực tế trong tháng </td>
+                                <td>@String.Format(formatString, (Model.Salary.TOTAL_ALL_PRO1 + Model.Salary.TOTAL_ALL_PRO85 + Model.Salary.TOTAL_ALL))</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Lương & Tổng phụ cấp được tính theo mức lương cũ (nếu có)</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Phụ cấp tăng ca (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.TOTAL_OT)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Phụ trội ca đêm (nếu có) </td>
+                                <td>@String.Format(formatString, Model.Salary.PAY_OT30)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Lương tháng 13 (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.BONUS)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Incentive (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.INCENTIVES)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Phụ cấp thăng chức (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.ALL_SPEC)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Truy lĩnh chênh lệch (nếu có)</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Ngày phép còn lại (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.PAY_LEAVE)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Phụ cấp khác (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.ALL_OTHER)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">
+                                    - Số tiền được khen thưởng cà nhân xuất sắc,
+                                    Sinh nhật, Thâm niên,Giftcard Lễ 01/05, Chiết khấu 10% giftcard mua
+                                    tại Quầy Treasury <b>(Cộng vào để tính số thuế thu nhập cá nhân </b>)(nếu có)
+                                </td>
+                                <td>@String.Format(formatString, Model.Salary.GIFT_CARD)</td>
+                            </tr>
+                            <tr class="salary_tr_SumPayment color-copper copper">
+                                <td class="col-md-9 col-sm-8">TỔNG THU NHẬP: (I)</td>
+                                <td>@String.Format(formatString, Model.Salary.TOTAL_PAY)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8 salary_td_menu">B. KHOẢN ĐƯỢC GIẢM TRỪ KHI TÍNH THUẾ THU NHẬP CÁ NHÂN:</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Giảm trừ bản thân người nộp thuế</td>
+                                <td>@String.Format(formatString, Model.Salary.TAX_SELF)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Giảm trừ người phụ thuộc</td>
+                                <td>@String.Format(formatString, Model.Salary.AMT)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">- Khoản Ăn Trưa <b>không chịu thuế</b> (nếu có)</td>
+                                <td>@String.Format(formatString, Model.Salary.LUNCH_MAX)</td>
+                            </tr>
+                            <tr class="salary_tr_SumPayment color-gray">
+                                <td class="col-md-9 col-sm-8">TỔNG CÁC KHOẢN GIẢM TRỪ TRƯỚC KHI TÍNH THUẾ:</td>
+                                <td>@String.Format(formatString, (Model.Salary.TAX_SELF + Model.Salary.AMT + Model.Salary.LUNCH_MAX))</td>
+                            </tr>
+                            <tr class="salary_tr_SumPayment">
+                                <td class="col-md-9 col-sm-8">Tổng thu nhập tính thuế/ Total taxable income (*):</td>
+                                <td>@String.Format(formatString, Model.Salary.FEE)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8 salary_td_menu">C. NGHĨA VỤ NHÂN VIÊN/ OBLIGATION OF EMPLOYEE:</td>
+                                <td></td>
+                            </tr>
+                            <tr class="bold">
+                                <td class="col-md-9 col-sm-8">- Thuế TNCN tạm nộp</td>
+                                <td>@String.Format(formatString, Model.Salary.MIN_TAX)</td>
+                            </tr>
+                            <tr class="bold">
+                                <td class="col-md-9 col-sm-8">- Bảo hiểm xã hội (8%)</td>
+                                <td>@String.Format(formatString, Model.Salary.E_SOCIAL_PAY)</td>
+                            </tr>
+                            <tr class="bold">
+                                <td class="col-md-9 col-sm-8">- Bảo hiểm y tế (1.5%)</td>
+                                <td>@String.Format(formatString, Model.Salary.E_MEDICAL_PAY)</td>
+                            </tr>
+                            <tr class="bold">
+                                <td class="col-md-9 col-sm-8">- Bảo hiểm thất nghiệp (1%)</td>
+                                <td>@String.Format(formatString, Model.Salary.E_JOB_PAY)</td>
+                            </tr>
+                            <tr class="salary_tr_SumPayment color-copper">
+                                <td class="col-md-9 col-sm-8">TỔNG CÁC KHOẢN PHẢI NỘP: (II)</td>
+                                <td>@String.Format(formatString, (Model.Salary.MIN_TAX + Model.Salary.E_SOCIAL_PAY + Model.Salary.E_MEDICAL_PAY + Model.Salary.E_JOB_PAY))</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-9 col-sm-8">
+                                    - Trừ lại khoản tiền khen thưởng cá nhân xuất sắc,sinh nhật , thâm niên,
+                                    Giftcard Lễ 01/5, Chiết khấu 10% giftcard mua tại Quầy Treasury trong tháng
+                                    <b style="color:red;font-weight:500"> DO ĐÃ ĐƯỢC NHẬN TIỀN MẶT HOẶC ĐÃ ĐƯỢC CHUYỂN KHOẢN TRƯỚC ĐÓ </b> (nếu có)
+                                </td>
+                                <td>@String.Format(formatString, Model.Salary.GIFT_CARD)</td>
+                            </tr>
+                            <tr class="salary_tr_SumPayment color-copper">
+                                <td class="col-md-9 col-sm-8">- Phí công đoàn: (III)</td>
+                                <td>@String.Format(formatString, Model.Salary.UNION_PAY)</td>
+                            </tr>
+                            <tr class="salary_tr_SumPayment salary_tr_SumALL color-gray-black  text-white ">
+                                <td class="col-md-9 col-sm-8">
+                                    LƯƠNG THỰC LÃNH/ NET INCOME
+                                    (I)	–(II) –(III)
+                                </td>
+                                <td>@String.Format(formatString, Model.Salary.REAL_PAY)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="col-lg-1"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

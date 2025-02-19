@@ -1,0 +1,892 @@
+﻿@model Human.Models.ProfileEmployeeModel
+@{
+    ViewBag.Title = "Employee";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 10;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý leave" />
+    <meta name="author" content="" />
+    <!-- datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" type="text/css">
+
+    <style>
+      /*  .table-caption {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            color: #0faef9;
+            text-align: left;
+        }*/
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+        #table-listemp > thead > tr > th {
+            text-align: center;
+        }
+        div.dataTables_wrapper div.dataTables_length label {
+            padding-left: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter label {
+            padding-right: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_info {
+            padding-left: 10px;
+            padding-bottom: 10px;
+        }
+        div.dataTables_wrapper div.dataTables_paginate {
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-radius: 0px !important;
+        }
+        div.dataTables_wrapper div.dataTables_filter input {
+            margin-bottom: 10px;
+            height: 20px;
+        }
+        .dropdown-action .dropdown-toggle {
+            pointer-events: none;
+            cursor: pointer;
+        }
+        .dropdown-action:hover .dropdown-menu {
+            display: block;
+            top: -75px !important;
+        }
+        input[type=checkbox] {
+            width: 16px !important;
+            height: 16px !important;
+        }
+        a.table-link.danger {
+            color: #fe635f;
+        }
+        .success {
+            color: #007bff !important;
+        }
+        .table-link {
+            text-decoration: none;
+            background-color: transparent;
+        }
+        a.table-link:hover {
+            text-decoration: none;
+            color: #2aa493 !important;
+        }
+        a.table-link.timekeep {
+            color: #04BE5B;
+        }
+        .select {
+            -webkit-appearance: auto !important;
+            font-size: 14px !important;
+        }
+        label {
+            font-weight: bolder !important;
+        }
+        input {
+            font-size: 14px !important;
+        }
+        textarea {
+            font-size: 14px !important;
+        }
+    </style>
+
+}
+
+@section LoadJs{
+    <script type="text/javascript" src="~/Assets/js/admin/Jquery_AddEmp.js?v=1.1"></script>
+    <script>
+        $(function () {
+            var table = $('#table-listemp').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [
+                    [10, 50, 100, -1],
+                    [10, 50, 100, "All"]
+                ],
+                "columnDefs": [
+                    { "orderable": false, "targets": [4,5, 6, 7,9] }
+                ]
+            });
+        });
+        document.getElementById('fieldset1').style.display = 'block'; // Hiển thị fieldset 1 ban đầu
+        document.getElementById('fieldset2').style.display = 'none';
+        document.getElementById('fieldset3').style.display = 'none';
+        function nextFieldset() {
+          document.getElementById('fieldset1').style.display = 'none';
+          document.getElementById('fieldset2').style.display = 'block';
+          document.getElementById('fieldset3').style.display = 'none';
+          document.querySelector('.step1').classList.remove('active');
+          document.querySelector('.step3').classList.remove('active');
+          document.querySelector('.step2').classList.add('active');
+        }
+        function prevFieldset() {
+          document.getElementById('fieldset2').style.display = 'none';
+          document.getElementById('fieldset1').style.display = 'block';
+          document.getElementById('fieldset3').style.display = 'none';
+          document.querySelector('.step3').classList.remove('active');
+          document.querySelector('.step2').classList.remove('active');
+          document.querySelector('.step1').classList.add('active');
+        }
+        function nextFieldset_Salary() {
+          document.getElementById('fieldset1').style.display = 'none';
+          document.getElementById('fieldset2').style.display = 'none';
+          document.getElementById('fieldset3').style.display = 'block';
+          document.querySelector('.step1').classList.remove('active');
+          document.querySelector('.step2').classList.remove('active');
+          document.querySelector('.step3').classList.add('active');
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var quitDateField = document.getElementById('quit_date');
+            quitDateField.disabled = true;
+            /*document.getElementById('end_date').disabled = true;*/
+            // Set giá trị ngày hiện tại
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            var todayString = yyyy + '-' + mm + '-' + dd;
+            document.getElementById('start_date').value = todayString;
+            document.getElementById('BEGIN_DATE').value = todayString;
+
+            document.getElementById('departmentSelect').addEventListener('change', function () {
+                var departmentId = this.value; // Lấy giá trị ID của phòng ban đã chọn
+                var sectionDropdown = document.getElementById('sectionSelect');
+                sectionDropdown.innerHTML = '<option value="">@Human.Resource.Language.Select_section</option>'; // Xóa các option cũ trong dropdown "Bộ phận"
+
+                var lstSections = @Html.Raw(Json.Encode(Model.LST_SECTION)); // Lấy dữ liệu LST_SECTION từ Model
+
+                for (var i = 0; i < lstSections.length; i++) {
+                  var item_s = lstSections[i];
+                  if (item_s.DEPARTMENT_ID == departmentId) {
+                      var option = document.createElement('option');
+                      option.value = item_s.SECTION_ID;
+                      option.textContent = item_s.SECTION_NAME_EN;
+                      sectionDropdown.appendChild(option);
+                  }
+                }
+            });
+        });
+        document.getElementById('salaryDropdown').addEventListener('change', function () {
+            var selectedValue = parseFloat(this.value); // Chuyển đổi giá trị sang kiểu số (nếu cần thiết)
+            var selectedOption = this.options[this.selectedIndex];
+            var selectedID = selectedOption.getAttribute('data-id');
+            var formattedValue = selectedValue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+            document.getElementById('basicSalaryInput').value = formattedValue;
+            document.getElementById('salary_level_id').value = selectedID;
+        });
+        function toggleDateField(checkbox) {
+            var quitDateField = document.getElementById('quit_date');
+
+            if (checkbox.checked) {
+                quitDateField.disabled = false;
+                // Set giá trị ngày hiện tại
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                var todayString = yyyy + '-' + mm + '-' + dd;
+                quitDateField.value = todayString;
+            } else {
+                quitDateField.disabled = true;
+                quitDateField.value = ""; // Reset giá trị khi checkbox không được chọn
+            }
+        }
+    </script>
+}
+@{
+    string name_func_emp = "";
+    string btn_func_emp = "";
+    string name_func_timekeep = "";
+    string btn_func_timekeep = "";
+    string name_func_contract = "";
+    string btn_func_contract = "";
+
+    var lst_fuction_emp1 = Session["FUNCTION_BY_EMP"] as List<Human.Models.Entities.Emp_Function_Entities>;
+    foreach (var item in lst_fuction_emp1)
+    {
+        if (item.NAME_FUNCTION == "timekeep" && (item.BTN_FUNCTION == "edit/read" || item.BTN_FUNCTION == "read"))
+        {
+            name_func_timekeep = item.NAME_FUNCTION;
+            btn_func_timekeep = item.BTN_FUNCTION;
+        }
+        else if (item.NAME_FUNCTION == "allEmployee" && (item.BTN_FUNCTION == "edit/read" || item.BTN_FUNCTION == "read"))
+        {
+            name_func_emp = item.NAME_FUNCTION;
+            btn_func_emp = item.BTN_FUNCTION;
+        }
+        else if (item.NAME_FUNCTION == "contract" && (item.BTN_FUNCTION == "edit/read" || item.BTN_FUNCTION == "read"))
+        {
+            name_func_contract = item.NAME_FUNCTION;
+            btn_func_contract = item.BTN_FUNCTION;
+        }
+        // Kiểm tra nếu tất cả các biến đã được thiết lập thì thoát khỏi vòng lặp
+        if (!string.IsNullOrEmpty(name_func_timekeep) && !string.IsNullOrEmpty(name_func_emp) && !string.IsNullOrEmpty(name_func_contract))
+        {
+            break;
+        }
+    }
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header block-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 style="font-weight:600;" class="page-title">@Human.Resource.Language.ListEmployee</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.ListEmployee</li>
+                </ul>
+                @if (lst_fuction_emp1 != null && btn_func_emp == "edit/read" && name_func_emp == "allEmployee")
+                {
+                    <div class="btn-edit-emp">
+                        <a data-bs-toggle="modal" data-bs-target="#add_employee" class="btn" href="#">+ @Human.Resource.Language.Add_employee</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+            </script>
+        </div>
+    }
+    <div class="form">
+        <div class="outer-wrapper" style="margin-bottom:50px;">
+            <div class="table-wrapper-time-keep" style="overflow-y:auto;">
+                <div class="table-caption">
+                    <div style="margin:0;padding-left:10px;">
+                        @Human.Resource.Language.ListEmployee
+                    </div>
+                </div>
+                <table style="width:100%!important;" id="table-listemp" class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                STT <br /> No.
+                            </th>
+                            <th>
+                                Mã thẻ
+                                <br />(Code)
+                            </th>
+                            <th>
+                                Họ tên
+                                <br />(Fullname)
+                            </th>
+                            <th>
+                                Bộ phận
+                                <br />(Section)
+                            </th>
+                            <th>
+                                Chức vụ
+                                <br />(Job)
+                            </th>
+                            <th>
+                                Giới tính
+                                <br />(Sex)
+                            </th>
+                            <th>
+                                Ngày sinh
+                                <br /> (Birthday)
+                            </th>
+                            <th>
+                                Điện thoại
+                                <br />(Phone)
+                            </th>
+                            <th>
+                                Ngày vào làm
+                                <br />(Hire day)
+                            </th>
+                            @* <th style="max-width:200px;">
+                                    Địa chỉ
+                                    <br />(Address)
+                                </th>*@
+                            <th>Chức năng <br /> (Function)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LST_ALL_EMPLOYEE != null && Model.LST_ALL_EMPLOYEE.Any())
+                        {
+                            int i = 1;
+
+                            foreach (var empCondition in Model.LST_ALL_EMPLOYEE)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@(string.IsNullOrEmpty(empCondition.EMP_CODE) ? "-" : empCondition.EMP_CODE)</td>
+                                    <td>@(string.IsNullOrEmpty(empCondition.FIRSTNAME) ? "-" : empCondition.FIRSTNAME)</td>
+                                    <td>@(string.IsNullOrEmpty(empCondition.SECTION_NAME_EN) ? "-" : empCondition.SECTION_NAME_EN)</td>
+                                    <td>@(string.IsNullOrEmpty(empCondition.TitleName_en) ? "-" : empCondition.TitleName_en)</td>
+                                    <td>@empCondition.SEX</td>
+                                    <td>@(empCondition.DATE_OF_BIRTH.ToString("dd/MM/yyyy") == "01/01/0001" ? "-" : empCondition.DATE_OF_BIRTH.ToString("dd/MM/yyyy"))</td>
+                                    <td>@(string.IsNullOrEmpty(empCondition.PHONE_NUMBER) ? "-" : empCondition.PHONE_NUMBER)</td>
+                                    <td>@(empCondition.HIRE_DAY.ToString("dd/MM/yyyy") == "01/01/0001" ? "-" : empCondition.HIRE_DAY.ToString("dd/MM/yyyy"))</td>
+                                    <td>
+                                        @if (lst_fuction_emp1 != null && (btn_func_emp == "edit/read" || btn_func_emp == "read") && name_func_emp == "allEmployee")
+                                        {
+                                            <a title="select" href="/Employees/InfoEmp?employee=@empCondition.EMPLOYEE_ID"
+                                               class="table-link danger">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fas fa-eye fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        }
+                                        @if (lst_fuction_emp1 != null && btn_func_emp == "edit/read" && name_func_emp == "allEmployee")
+                                        {
+                                            <a title="edit" href="/Employees/EditEmp?employee=@empCondition.EMPLOYEE_ID" class="table-link success">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        }
+                                        @* @if (Model.FUNCTION_EMP != null && (btn_func_timekeep == "edit/read" || btn_func_timekeep == "read") && name_func_timekeep == "timekeep")
+                                            {
+                                                <a title="timekeep" href="/Employees/TimekeepEmp?emp_code=@empCondition.EMP_CODE" class="table-link timekeep">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fas fa-stopwatch fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            }*@
+                                        @if (lst_fuction_emp1 != null && (btn_func_contract == "edit/read" || btn_func_contract == "read") && name_func_contract == "contract")
+                                        {
+                                            <a title="contract" href="/Employees/Contract?employee=@empCondition.EMPLOYEE_ID" class="table-link" style="color:#ffa400;">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fas fa-file-contract fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+            @* <div class="footer-table" style="border-top: 2px solid #ccc2c2;">
+                    <span class="text-color-gray btn-paging">
+                    </span>
+                </div>*@
+        </div>
+    </div>
+</div>
+<!-- Profile Modal -->
+<div class="modal custom-modal fade" id="add_employee" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="margin:auto;padding:20px 0 0 0;">
+                <h4 class="modal-title main-color-web" style="font-weight:bold;"><i class="fas fa-user-plus"></i>@Human.Resource.Language.Add_emp_info</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" style="font-size:20px;">
+                    <span aria-hidden="true" style="position:absolute; top:10px;right:10px;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:2rem;">
+                <form id="msform" method="post" class="font-14" action="/Employees/AddEmpPost">
+                    @Html.AntiForgeryToken()
+                    <!-- progressbar -->
+                    <ul id="progressbar" style="font-weight:bolder;padding-left:0px;">
+                        <li onclick="prevFieldset()" type="button" class="step1 active"> @Human.Resource.Language.General_info</li>
+                        <li onclick="nextFieldset()" type="button" class="step2"> @Human.Resource.Language.Working_process</li>
+                        <li onclick="nextFieldset_Salary()" type="button" class="step3">@Human.Resource.Language.Salary_history</li>
+                    </ul>
+                    <fieldset id="fieldset1">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style=" margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-info-circle"></i> Thông tin cá nhân</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Employee_code <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="EMP_CODE">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Fullname <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="FIRSTNAME">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Date_of_join <span class="text-danger">*</span></label>
+
+                                            <input type="date" class="form-control" name="HIRE_DAY">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Birthday <span class="text-danger">*</span></label>
+
+                                            <input type="date" class="form-control" name="DATE_OF_BIRTH">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Gender <span class="text-danger">*</span></label>
+
+                                            <select class="form-control select" name="SEX">
+                                                <option>@Human.Resource.Language.choose_gender</option>
+                                                <option value="0">@Human.Resource.Language.Male</option>
+                                                <option value="1">@Human.Resource.Language.Female</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Phone 1 <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="PHONE_NUMBER">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Phone 2 <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="MOBILE_NUMBER">
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Email <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" name="EMAIL">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Address <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="PERMANENT_ADDRESS">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Temporary_addres <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="TEMPORARY_ADDRESS">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CCCD group-->
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-id-card-alt"></i> CCCD</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Identity_card <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="ID_CARDNUMBER">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Date_Issue <span class="text-danger">*</span></label>
+
+                                            <input type="date" class="form-control" name="DATE_ISSUE">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Issued_by <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="PLACE_ISSUE">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- group bank-->
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-money-check-alt"></i> Tài khoản ngân hàng</h5>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Account_Number <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="BANKACOUNT_NUMBER">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Bank_Name <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="BANK_NAME" placeholder="Vietcombank, Vpbank, Vietinbank,...">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- group bhxh,bhyt -->
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="far fa-id-card"></i> Mã số thuế & bảo hiểm</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Pit_No <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="TAX_NUMBER">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Social_Insurance <span class="text-danger">*</span></label>
+
+                                            <input type="TEXT" class="form-control" name="SOBHXH">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Health_Insurance <span class="text-danger">*</span></label>
+
+                                            <input type="text" class="form-control" name="SOBHYT">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                @*line study*@
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fa-solid fa-graduation-cap"></i>@Human.Resource.Language.Level </h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Education <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="EDUCATION" placeholder="9/12, 12/12, Cao đẳng, Đại học..." />
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Degree <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="DEGREE">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Certificate </label>
+                                            <input type="text" class="form-control" name="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Experience </label>
+                                            <textarea rows="4" name="" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submit-section text-center">
+                                    <button onclick="nextFieldset()" type="button" style="font-size:16px !important;border-radius:5px;" class=" action-button">@Human.Resource.Language.Next <i class="fas fa-arrow-right"></i></button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </fieldset>
+                    <fieldset id="fieldset2">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @*line job*@
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-swatchbook"></i> @Human.Resource.Language.Job</h5>
+                                </div>
+                                <input type="hidden" name="DIVISION_ID" value="1" />
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Department <span class="text-danger">*</span></label>
+                                            <select class="form-control select" id="departmentSelect" name="DEPARTMENT_ID">
+                                                <option>@Human.Resource.Language.Select_department</option>
+                                                @foreach (var item_d in Model.LST_DEPARTMENT)
+                                                {
+                                                    <option value="@item_d.DEPARTMENT_ID">@item_d.DEPARTMENT_NAME_EN</option>
+                                                }
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Section <span class="text-danger">*</span></label>
+
+                                            <select class="form-control select" id="sectionSelect" name="SECTION_ID">
+                                                <option value="">@Human.Resource.Language.Select_section</option>
+                                                @foreach (var item_s in Model.LST_SECTION)
+                                                {
+                                                    <option value="@item_s.SECTION_ID">@item_s.SECTION_NAME_EN</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>
+                                                @Human.Resource.Language.Position <span class="text-danger">*</span>
+                                            </label>
+
+                                            <select class="form-control select" name="JOBTITLE_ID">
+                                                <option>@Human.Resource.Language.Select_position</option>
+                                                @foreach (var item_cv in Model.LST_JOBTITLE)
+                                                {
+                                                    <option value="@item_cv.JobTitle_ID">@item_cv.TitleName_en</option>
+                                                }
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                @*line công tác*@
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-plane-departure"></i> @Human.Resource.Language.Working_process</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Status <span class="text-danger">*</span></label>
+                                            <div style="border: 1px solid rgba(0, 0, 0, 0.125); border-radius: 0.25rem; padding: 4px 0px; text-align: center;">
+                                                <div class="inlineblock">
+                                                    <input type="checkbox" name="PROBATION" value="1" />
+                                                    <label style="margin:0px;">@Human.Resource.Language.Probation</label>
+                                                </div>
+                                                <div class="inlineblock" style="margin-left:10px;">
+                                                    @*   <input style="display:none;" type="radio" name="Job_status" id="nghiviec" class="with-gap" value="2">*@
+                                                    <input type="checkbox" id="select_quit" name="QUIT" value="1" onchange="toggleDateField(this)" />
+                                                    <label style="margin:0px;">@Human.Resource.Language.Quit_job</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Effective_date <span class="text-danger">*</span></label>
+                                            <input type="hidden" name="CONGTAC" value="1" />
+                                            <input id="start_date" type="date" class="form-control" name="CONGTACTU" />
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Ngày kết thúc </label>
+                                                <input id="end_date" type="date" class="form-control" name="CONGTACDEN" />
+                                            </div>
+                                        </div>*@
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Day_off</label>
+                                            <input type="date" class="form-control" name="DATE_QUIT" id="quit_date" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Note</label>
+                                            <textarea rows="4" class="form-control" name="QUIT_REASON"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submit-section text-center">
+
+                                    <button onclick="prevFieldset()" type="button" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fas fa-arrow-left"></i>@Human.Resource.Language.Previous</button>
+                                    <button onclick="nextFieldset_Salary()" type="button" style="font-size:16px !important;border-radius:5px;" class=" action-button">@Human.Resource.Language.Next <i class="fas fa-arrow-right"></i></button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset id="fieldset3">
+                        <div class="col-md-12">
+
+                            @*line lịch sử lương*@
+                            <div style="margin-top: 10px;">
+                                <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px; "><i class="fas fa-search-dollar"></i> @Human.Resource.Language.Salary_history</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Effective_date <span class="text-danger">*</span></label>
+                                        <input type="date" id="BEGIN_DATE" name="BEGIN_DATE" class="form-control" />
+                                    </div>
+                                </div>
+                                @* <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Ngày kết thúc <span class="text-danger">*</span></label>
+                                            <input disabled type="date" name="END_DATE" class="form-control" />
+                                        </div>
+                                    </div>*@
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Rank <span class="text-danger">*</span></label>
+
+                                        <select id="salaryDropdown" class="form-control select" name="BASIC_SALARY">
+                                            <option>@Human.Resource.Language.Salary_level</option>
+                                            @foreach (var item in Model.LST_SALARY_LEVEL)
+                                            {
+                                                <option value="@item.SALARY_VALUE" data-id="@item.ID">@item.SALARY_CODE | @string.Format("{0:N0} VND", item.SALARY_VALUE)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Salary_basic</label>
+                                        <input id="basicSalaryInput" type="text" disabled class="form-control" min="1000" placeholder="VND" value="" name="" />
+
+                                        <input type="hidden" id="salary_level_id" name="SALARY_CAT_ID" />
+                                    </div>
+                                </div>
+                                @*<div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Phụ cấp kỹ thuật</label>
+                                            <select class="form-control select" name="ID_PCKYTHUAT">
+                                                <option>Chọn phụ cấp</option>
+                                                @foreach (var item in Model.LST_PC.Where(o => o.SALARY_CODE == "PC KY THUAT"))
+                                                {
+                                                    <option value="@item.ID">@item.SALARY_LEVEL | @string.Format("{0:N0} VND", item.ALLOWANCE)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>*@
+                            </div>
+                            <div class="row">
+                                @*  <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Phụ cấp chức vụ</label>
+                                            <select class="form-control select" name="ID_PCCHUCVU">
+                                                <option>Chọn phụ cấp</option>
+                                                @foreach (var item in Model.LST_PC.Where(o => o.SALARY_CODE == "PC CHUC VU"))
+                                                {
+                                                    <option value="@item.ID">@item.SALARY_LEVEL | @string.Format("{0:N0} VND", item.ALLOWANCE)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>*@
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_job</label>
+                                        <input name="ALLOWANCE_JOB" type="number" min="1000" class="form-control" placeholder="VND" />
+                                        @*<select class="form-control select" name="ID_PCCONGVIEC">
+                                                <option>Chọn phụ cấp</option>
+                                                @foreach (var item in Model.LST_PC.Where(o => o.SALARY_CODE == "PC CONG VIEC"))
+                                                {
+                                                    <option value="@item.ID">@item.SALARY_LEVEL | @string.Format("{0:N0} VND", item.ALLOWANCE)</option>
+                                                }
+                                            </select>*@
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_phone</label>
+                                        <input type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_PHONE" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_petrol</label>
+                                        <input type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_PETROL" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_meal</label>
+                                        <input type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_MEAL" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_cashier</label>
+                                        <input type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_CASHIER" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_house</label>
+                                        <input type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_HOUSE" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Allowance_other</label>
+                                        <input type="number" class="form-control" min="1000" placeholder="VND" name="ALLOWANCE_SUPPORT" />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>@Human.Resource.Language.Note</label>
+                                    <textarea rows="4" name="NOTE" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="submit-section text-center">
+                                <button onclick="nextFieldset()" type="button" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fas fa-arrow-left"></i> @Human.Resource.Language.Previous</button>
+                                <button style="font-size:16px;border-radius:5px;" type="submit" class="action-button"> @Human.Resource.Language.btn_Add</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

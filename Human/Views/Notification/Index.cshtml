@@ -1,0 +1,311 @@
+﻿﻿@model Human.Models.AdminLeaveModel
+@{
+    ViewBag.Title = "Notification";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 7;
+}
+
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <style>
+        .table-caption {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            color: #0faef9;
+            text-align: left;
+        }
+
+        .color-success {
+            background-color: #55ce63;
+            color: white;
+        }
+
+        #layoutSidenav #layoutSidenav_content {
+            display: flow !important;
+        }
+    </style>
+}
+@section LoadJs{
+     <script>
+        function Check_all() {
+            const chk_all = document.getElementById('chk_all');
+            var chkall_item = document.querySelectorAll('.checkall-item');
+            if (chk_all.checked) {
+                chkall_item.forEach(element => {
+                    element.checked = true;
+                })
+            }
+            else {
+                chkall_item.forEach(element => {
+                    element.checked = false;
+                })
+            }
+            handleCheckboxClick();
+        }
+        function anyCheckboxChecked() {
+            const checkboxes = document.querySelectorAll('.checkall-item');
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //function show/hide button on checkbox
+        function toggleButtonVisibily() {
+            const btnHeader = document.getElementById('btn_header');
+            if (anyCheckboxChecked()) {
+                btnHeader.classList.remove('hidden-item');
+            }
+            else {
+                btnHeader.classList.add('hidden-item');
+            }
+        }
+        // Function to handle checkbox click event
+        function handleCheckboxClick() {
+            toggleButtonVisibily();
+        }
+        function SendListCheck(status) {
+            var table = document.getElementById('tbl-request-leave');
+            var rows = table.getElementsByTagName('tr');
+            var lst_leaveId = [];
+
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                var check_item = row.querySelector('.checkall-item');
+                var id_leave = row.cells[0].textContent;
+
+                if (check_item.checked) {
+                    lst_leaveId.push(id_leave);
+                }
+            }
+            CancelByList(lst_leaveId);
+            var table_headerBtn = document.getElementById('btn_header');
+            table_headerBtn.classList.add('hidden-item');
+        }
+        function CancelByList(Lst_LeaveID) {
+            $.ajax({
+                url: "/LeaveAdmin/CancelByList",
+                type: "POST",
+                data: JSON.stringify({ LST_LEAVEID: Lst_LeaveID }),
+                contentType: "application/json",
+                type: "json",
+                success: function () {
+                    Swal.fire({
+                        position: 'center-center',
+                        icon: 'success',
+                        title: 'Duyệt yêu cầu thành công!',
+                        showConfirmButton: false,
+                        timer: 3000
+                    }).then(function () {
+                        location.reload(); // Reload sau khi người dùng đóng thông báo
+                    });
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+}
+@{
+    var lst_fuction_emp = Session["FUNCTION_BY_EMP"] as List<Human.Models.Entities.Emp_Function_Entities>;
+    string btn_fun = "";
+    string name_fun = "";
+    foreach (var item_p in lst_fuction_emp)
+    {
+        if (item_p.BTN_FUNCTION == "edit/read" && item_p.NAME_FUNCTION == "leave")
+        {
+            btn_fun = item_p.BTN_FUNCTION;
+            name_fun = item_p.NAME_FUNCTION;
+            break;
+        }
+    }
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title" style="font-weight:600;">@Human.Resource.Language.Notification</h3>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Category_lookup</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Notification</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div class="Authority">
+                <script>
+                    document.addEventListener("DOMContentLoaded", function (event) {
+                        Swal.fire({
+                            position: 'center-center',
+                            icon: '@TempData["AlertType"]',
+                            title: '@TempData["AlertMessage"]',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    });
+                </script>
+            </div>
+        }
+        <div class="outer-wrapper" style="margin-bottom:50px">
+            <div class="table-wrapper-time-keep">
+                <div class="table-caption">
+                    <div>
+                        @Human.Resource.Language.Leave_request_list
+                        <div id="btn_header" class="hidden-item" style="justify-content:flex-start;">
+                            @if (lst_fuction_emp.Count > 0 && btn_fun == "edit/read" && name_fun == "leave")
+                            {
+                                <button style="width:auto;" class="btn color-green " type="button" onclick="SendListCheck(3)">@Human.Resource.Language.Ok_btn</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <table id="tbl-request-leave" style="width:100%;" class="table-hover">
+                    <thead>
+                        <tr>
+                            <th class="hidden-item"> LEAVE_ID </th>
+                            <th>
+                                <div class="mr-0 form-check-inline">
+                                    <input type="checkbox" id="chk_all" class="form-check-input mr-0" onclick="Check_all()" />
+                                </div>
+                            </th>
+                            <th>
+                                NGÀY<br>(DATE)
+                            </th>
+                            <th>
+                                MÃ<br>(CODE)
+                            </th>
+                            <th>
+                                HỌ TÊN<br>(FULLNAME)
+                            </th>
+                            <th>
+                                NGÀNH<br>(SECTION)
+                            </th>
+
+                            <th>
+                                TỔNG NGÀY<br>(TOTAL DAY)
+                            </th>
+
+                            <th style="justify-content:center;width:10%;">TRẠNG THÁI <br />(STATUS)</th>
+                            <th>###</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model.LST_LEAVEVIEW != null && Model.LST_LEAVEVIEW.Any())
+                        {
+                            var accept_text = Human.Resource.Language.Accept;
+                            var ok_btn = Human.Resource.Language.Ok_btn;
+                            var deny_text = Human.Resource.Language.Deny;
+                            var cancel_text = Human.Resource.Language.Cancel;
+                            var pending_text = Human.Resource.Language.Pending;
+                            var delete_text = Human.Resource.Language.Delete;
+                            var request_text = Human.Resource.Language.Request;
+                            foreach (var item in Model.LST_LEAVEVIEW)
+                            {
+                                var checkCancel = "";
+                                var classCancel = "";
+                                if (item.STATUS_L == 3)
+                                {
+                                    checkCancel = "disabled";
+                                    classCancel = "cancel-cell";
+                                }
+                                <tr>
+                                    @{
+                                        var position = Session["EMP_POS"].ToString();
+
+                                        var SupCheck = 1;
+                                        var ManCheck = 1;
+                                        var SelCheck = 1;
+
+                                        if (item.SUP_STATUS > 0)
+                                        {
+                                            if (item.DIR_STATUS > 0 || item.MAN_STATUS > 0)
+                                            {
+                                                SupCheck = 0;
+                                            }
+                                        }
+                                        if (item.MAN_STATUS > 0)
+                                        {
+                                            if (item.DIR_STATUS > 0)
+                                            {
+                                                ManCheck = 0;
+                                            }
+                                        }
+                                        if (position == "SUP")
+                                        {
+                                            if (item.MAN_STATUS > 0 || item.DIR_STATUS > 0)
+                                            {
+                                                SelCheck = 0;
+                                            }
+                                        }
+                                        else if (position == "MAN")
+                                        {
+                                            if (item.DIR_STATUS > 0)
+                                            {
+                                                SelCheck = 0;
+                                            }
+                                        }
+                                    }
+
+                                    <td class="hidden-item leave_id">@item.LEAVE_ID</td>
+                                    <td>
+                                        <div class="mr-0 form-check-inline">
+                                            <input type="checkbox" class="checkall-item form-check-input mr-0" onclick="handleCheckboxClick()" />
+                                        </div>
+                                    </td>
+                                    <td class="@classCancel">@item.LEAVE_STARTDATE.ToString("dd/MM/yyyy")</td>
+                                    <td class="@classCancel">@item.EMP_CODE</td>
+                                    <td class="@classCancel">@item.FULLNAME</td>
+                                    <td class="@classCancel">@item.SECTION_NAME_EN</td>
+                                    <td class="@classCancel">@(item.HOURS / 8)</td>
+
+                                    <td class="status">
+                                        @{
+                                            var classStatus = "";
+                                            var textStatus = "";
+                                            switch (item.STATUS_L)
+                                            {
+
+                                                case 1: classStatus = "active"; textStatus = accept_text; break;
+                                                case 2: classStatus = "deny"; textStatus = deny_text; break;
+                                                case 3: classStatus = "cancel"; textStatus = cancel_text; break;
+                                                case 4: classStatus = "request"; textStatus = request_text; break;
+                                                default: classStatus = "waiting"; textStatus = pending_text; break;
+                                            }
+                                        }
+                                        <span class="@classStatus">@textStatus</span>
+                                    </td>
+                                    <td>
+                                        @if (lst_fuction_emp.Count > 0 && btn_fun == "edit/read" && name_fun == "leave")
+                                        {
+                                            @Html.ActionLink(ok_btn, "Cancel", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-success" })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="8" style="text-align: center; font-size:14px;"> Không có dữ liệu<br>(No matching records found)</tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="footer-table" style="border-top: 2px solid #ccc2c2;">
+                <span class="text-color-gray btn-paging">
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

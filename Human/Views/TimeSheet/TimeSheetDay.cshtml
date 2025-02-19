@@ -1,0 +1,408 @@
+﻿@model Human.Models.TimeSheetModel
+@{
+    ViewBag.Title = "TimeSheetDay";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 12;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý leave" />
+    <meta name="author" content="" />
+    <style>
+        .dataTables_length {
+            padding: 15px 0px 0px 15px;
+        }
+        .dataTables_filter {
+            padding: 15px 15px 0px 0px;
+        }
+        .dataTables_info {
+            padding-bottom: 10px;
+            padding-left: 15px;
+        }
+        .dataTables_paginate {
+            padding-bottom: 10px;
+        }
+        #layoutSidenav #layoutSidenav_content {
+            display: flow !important;
+        }
+        .edit-input-style {
+            border-radius: 15px !important;
+            height: 28px !important;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-radius: 0px !important;
+        }
+        div.dataTables_wrapper div.dataTables_filter input {
+          
+            height: 20px;
+        }
+        #timekeepday_table > thead > tr > th {
+            text-align: center;
+        }
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+    </style>
+}
+@section LoadJs{
+    <script>
+        $(function () {
+            var table = $('#timekeepday_table').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [
+                    [10, 50, 100, -1],
+                    [10, 50, 100, "All"]
+                ],
+                "ordering": false
+            });
+        });
+         document.getElementById('departmentSelect').addEventListener('change', function () {
+            var departmentId = this.value; // Lấy giá trị ID của phòng ban đã chọn
+            var sectionDropdown = document.getElementById('sectionSelect');
+            sectionDropdown.innerHTML = '<option value="0">@Human.Resource.Language.Select_all</option>'; // Xóa các option cũ trong dropdown "Bộ phận"
+            var lstSections = @Html.Raw(Json.Encode(Model.LST_SECTION)); // Lấy dữ liệu LST_SECTION từ Model
+            for (var i = 0; i < lstSections.length; i++) {
+                var item_s = lstSections[i];
+                if (item_s.DEPARTMENT_ID == departmentId) {
+                    var option = document.createElement('option');
+                    option.value = item_s.SECTION_ID;
+                    option.textContent = item_s.SECTION_NAME_EN;
+                    sectionDropdown.appendChild(option);
+                }
+            }
+         });
+        document.getElementById("input-end-date").oninput = function () {
+            var startDate = new Date(document.getElementById("input-start-date").value);
+            var selectedDate = new Date(this.value);
+            if (selectedDate < startDate) {
+                Swal.fire({
+                    title: "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!",
+                    icon: "warning",
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                this.value = '';
+            }
+        };
+    </script>
+}
+@{
+    var select_department = -1;
+    var select_section = -1;
+    var select_job = -1;
+    if (Session["SECTION_ID_SEARCH"] != null)
+    {
+        select_section = Convert.ToInt32(Session["SECTION_ID_SEARCH"]);
+    }
+    if (Session["DEPARTMENT_ID_SEARCH"] != null)
+    {
+        select_department = Convert.ToInt32(Session["DEPARTMENT_ID_SEARCH"]);
+    }
+    if (Session["JOB_ID_SEARCH"] != null)
+    {
+        select_job = Convert.ToInt32(Session["JOB_ID_SEARCH"]);
+    }
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title" style="font-weight:600;">@Human.Resource.Language.Time_sheet_day</h3>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Time_sheet_day</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+            </script>
+        </div>
+    }
+    <div class="form">
+        <div class="card-header leave-header" style="padding:0;">
+            <input type="hidden" value="" id="pos_hidden" />
+            <div class="header-leave" style="padding:5px 0px;">
+                <div class="row" style="margin:0;">
+                    <form action="/TimeSheet/SearchTimeKeepDay" class="col-lg-12" id="searchForm" method="post" style="margin:0;padding:10px;font-size:14px;">
+                        <div class="form-row">
+                            <div class="col-xl-3">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 p-r-0 mb-0 align-content-center text-center">@Human.Resource.Language.From:</label>
+                                    <div class="col-lg-8">
+                                        @if (Session["DATE_START"] != null)
+                                        {
+                                            var start_date = DateTime.Now;
+                                            start_date = Convert.ToDateTime(Session["DATE_START"]);
+                                            <input id="input-start-date" type="date" class="form-control edit-input-style" name="start_date" value="@start_date.ToString("yyyy-MM-dd")" required />
+                                        }
+                                        else
+                                        {
+                                            <input id="input-start-date" type="date" class="form-control edit-input-style" name="start_date" required />
+                                        }
+                                   
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 p-r-0 mb-0 align-content-center text-center">@Human.Resource.Language.To:</label>
+                                    <div class="col-lg-8">
+                                        @if (Session["DATE_END"] != null)
+                                        {
+                                            var end_date = DateTime.Now;
+                                            end_date = Convert.ToDateTime(Session["DATE_END"]);
+                                            <input id="input-end-date" type="date" class="form-control edit-input-style" name="end_date" value="@end_date.ToString("yyyy-MM-dd")" required />
+                                        }
+                                        else
+                                        {
+                                            <input id="input-end-date" type="date" class="form-control edit-input-style" name="end_date" required />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 p-r-0 mb-0 align-content-center text-center">@Human.Resource.Language.Department:</label>
+                                    <div class="col-lg-7">
+                                        <select id="departmentSelect" class="form-control select edit-input-style" name="select_department">
+                                            <option value="0">@Human.Resource.Language.Select_all</option>
+                                            @foreach (var item in Model.LST_DEPARTMENT)
+                                            {
+                                                <option @Html.Raw(item.DEPARTMENT_ID == select_department ? "selected" : "") value="@item.DEPARTMENT_ID">@item.DEPARTMENT_NAME_VI</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 p-r-0 mb-0 align-content-center text-center">@Human.Resource.Language.Section:</label>
+                                    <div class="col-lg-8">
+                                        <select id="sectionSelect" class="form-control select edit-input-style" name="select_section">
+                                            <option value="0">@Human.Resource.Language.Select_all</option>
+                                            @foreach (var item in Model.LST_SECTION)
+                                            {
+                                                <option @Html.Raw(item.SECTION_ID == select_section ? "selected" : "") value="@item.SECTION_ID">@item.SECTION_NAME_VI</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 p-r-0 mb-0 align-content-center text-center">@Human.Resource.Language.Job:</label>
+                                    <div class="col-lg-8">
+                                        <select class="form-control select edit-input-style" name="select_job">
+                                            <option value="0">@Human.Resource.Language.Select_all</option>
+                                            @foreach (var item in Model.LST_JOB)
+                                            {
+                                                <option @Html.Raw(item.JobTitle_ID == select_job ? "selected" : "") value="@item.JobTitle_ID">@item.TitleName_vi</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-group text-center">
+                                    <button style="width:120px;height:28px;" type="submit" class=" form-control btn">
+                                        <img class="icon-button" src="~/Assets/img/icon/search-2.png" />@Human.Resource.Language.Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        @* <button style="background-color: rgb(34 190 234); width:120px;" type="submit" class=" form-control btn input-custom">
+                            <img class="icon-button" src="~/Assets/img/icon/search-2.png" />@Human.Resource.Language.Search
+                            </button>*@
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="outer-wrapper" style="margin-bottom:50px">
+            <div class="table-wrapper-time-keep" style="overflow-y:auto;">
+                <div class="table-caption" style="padding-bottom:0px;">
+                    <div>
+                        @*@if (ViewData["SEARCH_DATE"] != null)
+                            {
+                                <div class="m-0">
+                                    Dữ liệu chấm công ngày
+                                </div>
+                            }
+                            else
+                            {*@
+                        <div class="m-0 main-color-web">
+                            @Human.Resource.Language.Daily_timesheet_data
+                        </div>
+                    </div>
+                </div>
+                <table id="timekeepday_table" class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Ngày<br />(Date)
+                            </th>
+                            <th>
+                                Mã nhân viên<br />(Code)
+                            </th>
+                            <th>
+                                Họ tên<br />(Fullname)
+                            </th>
+                            <th>Phòng ban<br />(Department)
+                            <th>
+                                Bộ phận<br />(Section)
+                            </th>
+                            <th>
+                                Chức vụ<br />(job)
+                            </th>
+                            <th>
+                                Giờ vào<br />(Checkin)
+                            </th>
+                            <th>
+                                Giờ ra<br />(Checkout)
+                            </th>
+                            <th>
+                                Giờ công<br />(Hour)
+                            </th>
+                            <th>TC 150 <br /> (OT 150)</th>
+                            <th>TC 210 <br /> (OT 210)</th>
+                            <th>
+                                Ca đêm<br />(Night)
+                            </th>
+                            <th>TC 200<br />(OT 200)</th>
+                            <th>
+                                PNăm<br />(AnL)
+                            </th>
+                            <th>
+                                Cưới,tang<br />(Wed,Ful)
+                            </th>
+                            <th>
+                                K.thai<br />(Preg)
+                            </th>
+                            <th>
+                                Khác<br />(Other)
+                            </th>
+                            <th>
+                                Lễ <br />(Hol)
+                            </th>
+                            <th>
+                                Ghi chú<br />(Remark)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LST_TIMEKEEPDAY != null && Model.LST_TIMEKEEPDAY.Any())
+                        {
+                            foreach (var item in Model.LST_TIMEKEEPDAY)
+                            {
+                                <tr>
+                                    <td>@item.DATEOFMONTH.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.EMP_CODE</td>
+                                    <td>@item.FULLNAME</td>
+                                    <td>@item.DEPARTMENT_NAME_VI</td>
+                                    <td>@item.SECTION_NAME_VI</td>
+                                    <td>@item.TitleName_vi</td>
+                                    <td>@(item.TIME_CHECKIN.ToString("HH:mm:ss")!="00:00:00"? item.TIME_CHECKIN.ToString("HH:mm:ss") : "-")</td>
+                                    <td>@(item.TIME_CHECKOUT.ToString("HH:mm:ss")!="00:00:00"?item.TIME_CHECKOUT.ToString("HH:mm:ss"): "-")</td>
+                                    @if (item.HOUR_WORK == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.HOUR_WORK</td>
+                                    }
+                                    @if (item.OT_WORK == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.OT_WORK</td>
+                                    }
+                                    @if (item.OT200_WORK == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.OT200_WORK</td>
+                                    }
+                                    @if (item.NIGHT_TIME == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.NIGHT_TIME</td>
+                                    }
+                                    <td>-</td>
+                                    @if (item.ANUAL_LEAVE == 0)
+
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.ANUAL_LEAVE</td>
+                                    }
+                                    @if (item.WED_FUL_LEAVE == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.WED_FUL_LEAVE </td>
+                                    }
+                                    <td>-</td>
+                                    @if (item.OTHER_LEAVE == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.OTHER_LEAVE</td>
+                                    }
+                                    @if (item.DAYOFF == 0)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.DAYOFF</td>
+                                    }
+                                    <td>@(string.IsNullOrEmpty(item.REMARK) ? "-" : item.REMARK)</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+            <div class="footer-table" style="border-top: 2px solid #ccc2c2;">
+                <span class="text-color-gray btn-paging">
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+

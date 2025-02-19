@@ -1,0 +1,243 @@
+﻿@{
+    var employee = Session["INFO_EMP"] as Human.Models.Entities.EmployeeView_Entities;
+
+    var Session_pos = Session["EMP_POS"];
+
+    var lstPowerByEmp = Session["POWER_BY_EMP"] as List<Human.Models.Entities.PowerView_Entities>;
+
+    var lstFuctionByEmp = Session["FUNCTION_BY_EMP"] as List<Human.Models.Entities.Emp_Function_Entities>;
+    string btn_fun_leave = "";
+    string name_fun_leave = "";
+    string btn_fun_contract = "";
+    string name_fun_contract = "";
+    string btn_fun_timekeep = "";
+    string name_fun_timekeep = "";
+    string btn_fun_allEmployee = "";
+    string name_fun_allEmployee = "";
+    string btn_fun_staffBySection = "";
+    string name_fun_staffBySection = "";
+    foreach (var item_p in lstFuctionByEmp)
+    {
+        if ((item_p.BTN_FUNCTION.ToString() == "edit/read" || item_p.BTN_FUNCTION.ToString() == "read") && item_p.NAME_FUNCTION.ToString() == "leave")
+        {
+            btn_fun_leave = item_p.BTN_FUNCTION.ToString();
+            name_fun_leave = item_p.NAME_FUNCTION.ToString();
+        }
+        else if ((item_p.BTN_FUNCTION.ToString() == "edit/read" || item_p.BTN_FUNCTION.ToString() == "read") && item_p.NAME_FUNCTION.ToString() == "timekeep")
+        {
+            btn_fun_timekeep = item_p.BTN_FUNCTION.ToString();
+            name_fun_timekeep = item_p.NAME_FUNCTION.ToString();
+        }
+        else if ((item_p.BTN_FUNCTION.ToString() == "edit/read" || item_p.BTN_FUNCTION.ToString() == "read") && item_p.NAME_FUNCTION.ToString() == "contract")
+        {
+            btn_fun_contract = item_p.BTN_FUNCTION.ToString();
+            name_fun_contract = item_p.NAME_FUNCTION.ToString();
+        }
+        else if ((item_p.BTN_FUNCTION.ToString() == "edit/read" || item_p.BTN_FUNCTION.ToString() == "read") && item_p.NAME_FUNCTION.ToString() == "allEmployee")
+        {
+            btn_fun_allEmployee = item_p.BTN_FUNCTION.ToString();
+            name_fun_allEmployee = item_p.NAME_FUNCTION.ToString();
+        }
+        else if ((item_p.BTN_FUNCTION.ToString() == "edit/read" || item_p.BTN_FUNCTION.ToString() == "read") && item_p.NAME_FUNCTION.ToString() == "allEmployee")
+        {
+            btn_fun_staffBySection = item_p.BTN_FUNCTION.ToString();
+            name_fun_staffBySection = item_p.NAME_FUNCTION.ToString();
+        }
+        if (!string.IsNullOrEmpty(name_fun_staffBySection) && !string.IsNullOrEmpty(name_fun_contract) && !string.IsNullOrEmpty(name_fun_timekeep) && !string.IsNullOrEmpty(name_fun_leave)) {
+            break;
+        }
+    }
+    var random = new Random();
+    var randomValue = random.Next().ToString();
+}
+
+<div id="layoutSidenav_nav" style="position: fixed;overflow-y:auto;">
+    <!-- Navbar Brand-->
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading d-flex justify-content-center" data-dropdown="home">
+                    <a class="" href="~/Home">
+                        <img width="134" src="~/Assets/img/logo/logo.png?random=@randomValue" alt="logo website" />
+                    </a>
+                </div>
+                @*select home view*@
+                <div class="sb-sidenav-menu-heading" data-dropdown="home">
+                    <a class="pb-0 nav-link @Html.Raw(ViewBag.active==0 ? "active":"")" href="~/Home/Index">
+                        <div class="sb-nav-link-icon">
+                            @* <img class="icon-menu" src="~/Assets/img/icon/icon-home-2.png" />*@
+                            <i class="fas fa-home icon-menu sb-nav-link-icon" style="height: 18px; padding-bottom: 2px;"></i>
+                        </div>
+                        @Human.Resource.Language.Home
+                    </a>
+                </div>
+                @*click category lookup*@
+                <div class="sb-sidenav-menu-heading nav-link cursor-pointer" onclick="dropdown(this)" data-menu="category">
+                    <ul style="padding:0px;margin:0px;">
+                        <li style="display:flex;">
+                            <i class="fa-solid fa-book icon-menu sb-nav-link-icon" style=" height: 18px; padding-bottom: 2px;"></i>
+                            <span class="menu-text" style="display:block;">@Human.Resource.Language.Category_lookup</span>
+                        </li>
+                    </ul>
+                    <div class="icon-dropdown hidden-sm "><i class="fas fa-chevron-left hidden-open "></i></div>
+                </div>
+                <div class="dropdown-menu-heading hidden-item" id="dropdown-category" data-dropdown="category">
+                    <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active==5?"active":"")" href="~/TimeKeep/ListTimeKeep">
+                        <i class="fas fa-calendar-alt icon-menu sb-nav-link-icon" style=" height: 15px; padding-bottom: 2px; margin: 0px;"></i>
+                        @Human.Resource.Language.Time_sheet
+                    </a>
+                    <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active==6?"active":"")" href="~/TimeSheet/ListTimeSheet">
+                        <i class="fa-solid fa-clock icon-menu sb-nav-link-icon" style=" height: 15px; padding-bottom: 2px; margin: 0px;"></i>
+                        @Human.Resource.Language.Log_list
+                    </a>
+                    <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active==3?"active":"")" href="~/Leave/Index">
+                        <i class="fas fa-calendar-plus icon-menu sb-nav-link-icon" style=" height: 15px; padding-bottom: 2px; margin: 0px;"></i>
+                        @Human.Resource.Language.Leave
+                    </a>
+                    <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active==2?"active":"")" href="~/Salary/Index">
+                        <i class="fas fa-money-bill-alt icon-menu sb-nav-link-icon" style=" height: 15px; padding-bottom: 2px; margin: 0px;"></i>
+                        @Human.Resource.Language.Salary
+                    </a>
+                </div>
+                @*click managment*@
+                @if (Session["EMP_POS"] != "")
+                {
+                    <div class="sb-sidenav-menu-heading nav-link cursor-pointer" onclick="dropdown(this)" data-menu="managment">
+                        <ul style="padding:0px;margin:0px;">
+                            <li style="display:flex;">
+                                <i class="fa-solid fa-bars-progress icon-menu sb-nav-link-icon" style=" height:18px;padding-bottom:2px;"></i>
+                                <span class="menu-text" style="display:block;">@Human.Resource.Language.Managment </span>
+                            </li>
+                        </ul>
+                        <div class="icon-dropdown hidden-sm "><i class="fas fa-chevron-left hidden-open "></i></div>
+                    </div>
+                    <div class="dropdown-menu-heading hidden-item" id="dropdown-managment" data-dropdown="managment">
+                        @if (lstFuctionByEmp.Count > 0 && (btn_fun_leave == "edit/read" || btn_fun_leave == "read") && name_fun_leave == "leave")
+                        {
+                            <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 4 ? "active" : "")" href="~/LeaveAdmin/Index">
+                                <i class="fas fa-calendar-check icon-menu sb-nav-link-icon" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                                @Human.Resource.Language.Leave_employee
+                            </a>
+                        }
+                        <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 7 ? "active" : "")" href="~/Notification/Index">
+                            <i class="fas fa-bullhorn icon-menu sb-nav-link-icon" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                            @Human.Resource.Language.Notification
+                        </a>
+                        @if (lstFuctionByEmp.Count > 0 && (btn_fun_allEmployee == "edit/read" || btn_fun_allEmployee == "read") && name_fun_allEmployee == "allEmployee")
+                        {
+                            <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 10 ? "active" : "")" href="~/Employees/Index">
+                                <i class="fas fa-user-tag icon-menu sb-nav-link-icon" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                                @Human.Resource.Language.Employee
+                            </a>
+                        }
+                        @if (lstFuctionByEmp.Count > 0 && (btn_fun_contract == "edit/read" || btn_fun_contract == "read") && name_fun_contract == "contract")
+                        {
+                            <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 11 ? "active" : "")" href="~/Contract/Index">
+                                <i class="fas fa-file-contract icon-menu sb-nav-link-icon" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                                @Human.Resource.Language.Contract
+                            </a>
+                        }
+                        @if (lstFuctionByEmp.Count > 0 && (btn_fun_timekeep == "edit/read" || btn_fun_timekeep == "read") && name_fun_timekeep == "timekeep")
+                        {
+                            <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 12 ? "active" : "")" href="~/TimeSheet/TimeSheetDay">
+                                <i class="fas fa-calendar-day icon-menu sb-nav-link-icon" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                                @Human.Resource.Language.Timekeep_day
+                            </a>
+                        }
+                    </div>
+                }
+                @*click setup*@
+                <div class="sb-sidenav-menu-heading nav-link cursor-pointer" onclick="dropdown(this)" data-menu="setup">
+                    <ul style="padding:0px;margin:0px;">
+                        <li style="display:flex;">
+                            <i class="fa-solid fa-gears icon-menu sb-nav-link-icon" style="height:18px;"></i>
+                            <span class="menu-text" style="display:block;">@Human.Resource.Language.Setup</span>
+                        </li>
+                    </ul>
+                    <div class="icon-dropdown hidden-sm "><i class="fas fa-chevron-left hidden-open "></i></div>
+                </div>
+                <div class="dropdown-menu-heading hidden-item" data-dropdown="setup">
+                    @* <a data-bs-toggle="modal" data-bs-target="#add_emailsms" class="nav-link cursor-pointer" href="#">
+                        <i class="fas fa-envelope icon-menu sb-nav-link-icon" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                        Email SMS
+                        </a>*@
+                    @if (Session["EMP_POS"].ToString() == "DIR")
+                    {
+                        <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 9 ? "active" : "")" href="~/Setup/Decentralize">
+                            <i class="fas fa-user-lock icon-menu sb-nav-link-ico" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                            @Human.Resource.Language.Decentralize
+                        </a>
+                    }
+                    <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 13 ? "active" : "")" href="~/Setup/Color">
+                        <i class="fas fa-palette icon-menu sb-nav-link-ico" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                        @Human.Resource.Language.Color & Logo
+                    </a>
+                    <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == 14 ? "active" : "")" href="~/Setup/Category">
+                        <i class="fas fa-bookmark icon-menu sb-nav-link-ico" style="margin: 0px;  height: 15px; padding-bottom: 2px;"></i>
+                        Khai báo danh mục
+                    </a>
+                </div>
+                @if (lstPowerByEmp.Count > 0)
+                {
+                    <div class="sb-sidenav-menu-heading nav-link cursor-pointer" onclick="dropdown(this)" data-menu="employee">
+                        <ul style="padding:0px;margin:0px;">
+                            <li style="display:flex;">
+                                <i class="fa-solid fa-users icon-menu sb-nav-link-icon" style="height:18px;padding-bottom:2px;"></i>
+                                <span class="menu-text" style="display:block;">@Human.Resource.Language.Department_manager </span>
+
+                            </li>
+                        </ul>
+                        <div class="icon-dropdown hidden-sm "><i class="fas fa-chevron-left hidden-open "></i></div>
+                    </div>
+                    <div class="dropdown-menu-heading hidden-item" id="dropdown-employee" data-dropdown="employee">
+                        @foreach (var item_p in lstPowerByEmp)
+                        {
+                            <a class="nav-link cursor-pointer @Html.Raw(ViewBag.active == Convert.ToInt32(item_p.SECTION_ID+1000) ? "active" : "")" href="/ManageBySection/ListEmp?sectionId=@item_p.SECTION_ID">
+                                <i class="fa-solid fa-building icon-menu sb-nav-link-icon" style="margin: 0px; height: 15px; padding-bottom: 2px;"></i>
+                                @item_p.SECTION_NAME_EN
+                            </a>
+                        }
+                    </div>
+                }
+
+                @*<a class="nav-link @Html.Raw(ViewBag.active == 4 ? "active":"")" href="~/DailyAttendent/Index">
+                        <div class="sb-nav-link-icon"><i class="far fa-calendar-alt"></i></div>
+                        Schedule
+                    </a>*@
+            </div>
+        </div>
+    </nav>
+</div>
+@* edit email sms modal*@
+<div class="modal custom-modal fade" id="add_emailsms" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border: 0; border-radius: 10px;">
+            <div class="modal-header" style="border-bottom:0px; justify-content:center;padding-bottom:0;padding:12px;">
+                <h5 class="modal-title" style="font-size:20px;font-weight:600;">Update Email SMS</h5>
+                <button type="button" class="close-modal" data-bs-dismiss="modal" aria-label="Close" style="margin:0px;position:absolute;right:0;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+                <form method="post" id="emailSMSForm">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label style="font-size:15px;">Email Address <span class="text-danger">*</span></label>
+                        <input id="email_address" style="font-size:14px;" class="form-control" type="email" name="email_address" placeholder="Enter email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Application Password <span class="text-danger">*</span></label>
+                        <input id="password_app" style="font-size:14px;" class="form-control" type="password" name="password_app" placeholder="Enter application password" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Confirm Password <span class="text-danger">*</span></label>
+                        <input id="password_confirm" style="font-size:14px;" class="form-control" type="password" placeholder="Enter confirm password" required>
+                    </div>
+                    <div class=" submit-section" style="text-align:center;margin-top:20px;">
+                        <button type="submit" style="font-size: 18px; font-weight: 600; min-width: 200px; background-color: rgb(34 190 234);" class="btn btn-primary submit-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

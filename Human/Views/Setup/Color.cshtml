@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "Color & Logo";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = 13;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="website color" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="~/Assets/css/default/material-design-iconic-font.min.css">
+    <style>
+        .col-form-label {
+            padding: 7px 15px 7px 15px !important;
+        }
+        select {
+            -webkit-appearance: auto !important;
+        }
+        label {
+            font-weight: bolder !important;
+            font-size: 14px;
+        }
+    </style>
+}
+@section LoadJs{
+    <script>
+        $(document).ready(function () {
+            $('#fileInput').change(function () {
+                var formData = new FormData();
+                var file = $('#fileInput')[0].files[0];
+                formData.append('file', file);
+                $.ajax({
+                    url: '/Setup/UploadLogo',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success) {
+                            var imageUrl = data.imagePath + "?random=" + Math.random();
+                            $("#img_logo").attr("src", imageUrl);
+                            Swal.fire({
+                                position: 'center-center',
+                                icon: 'success',
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }else {
+                            Swal.fire({
+                                position: 'center-center',
+                                icon: 'error',
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý lỗi nếu có
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+}
+@{
+    var random = new Random();
+    var randomValue = random.Next().ToString();
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Color</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class=" main-color-web font-weight-bold">@Human.Resource.Language.Setup</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Color</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    Swal.fire({
+                        position: 'center-center',
+                        icon: '@TempData["AlertType"]',
+                        title: '@TempData["AlertMessage"]',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+            </script>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12 font-13">
+            <div class="card" style="border-radius:15px;">
+                <div class="card-body" style="padding:1.5rem;">
+                    <div class="row">
+                        <div class="col-xl-7">
+                            <div class="form-group row">
+                                <label for="code_emp" class="col-lg-3 col-form-label">Color Skins:</label>
+                                <div class="col-lg-6">
+                                    <ul class="choose-skin list-unstyled">
+                                        <li data-theme="purple"><div class="purple"></div></li>
+                                        <li data-theme="blue"><div class="blue"></div></li>
+                                        <li data-theme="cyan"><div class="cyan"></div></li>
+                                        <li data-theme="green"><div class="green"></div></li>
+                                        <li data-theme="orange" class="active"><div class="orange"></div></li>
+                                        <li data-theme="rose"><div class="rose"></div></li>
+                                        <li data-theme="blush"><div class="blush"></div></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-10">
+                            <div class="form-group row">
+                                <label for="code_emp" class="col-lg-2 col-form-label">Logo Website:</label>
+                                <div class="col-lg-7 row d-inline-block" style="padding-left:13px;">
+                                    <div class="col-lg-7">
+                                        <div class="form-group">
+                                            <input id="fileInput" type="file" class="form-control" accept="image/*" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5 text-left mb-2">
+                                        <img id="img_logo" class="img-thumbnail" width="100" src="~/Assets/img/logo/logo.png?random=@randomValue" alt="logo website" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                            <div class="col-xl-12">
+                                <div class="form-group row">
+                                    <label class="col-lg-2 col-form-label font-13">@Human.Resource.Language.Admin_menu_settings</label>
+                                    <div class="col-lg-10 edit-form-table" style=" border: 1px solid rgba(0, 0, 0, 0.125);padding:0px;">
+                                        <table id="">
+                                            <thead style="background-color: rgb(243 236 236); ">
+                                                <tr>
+                                                    <th>
+                                                        STT/No.
+                                                    </th>
+                                                    <th>
+                                                        Menu items <br />(Mục)
+                                                    </th>
+
+                                                    <th>
+                                                        Edit/Read <br />(Chỉnh sửa/đọc)
+                                                    </th>
+                                                    <th>Read <br />(Đọc)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>@Human.Resource.Language.Timekeeping</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="timekeep_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="timekeep_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>@Human.Resource.Language.Leave</td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="leave_edit/read" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="check_input" value="leave_read" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

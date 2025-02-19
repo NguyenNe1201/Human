@@ -1,0 +1,351 @@
+﻿@model Human.Models.ManageBySectionModel
+@{
+    ViewBag.Title = "Contract";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.active = ViewBag.activecontrol;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="quản lý bảng phép" />
+    <meta name="author" content="" />
+    <style>
+        input {
+            font-size: 14px !important;
+        }
+
+        .select {
+            -webkit-appearance: auto !important;
+            font-size: 14px !important;
+        }
+
+        label {
+            font-weight: bolder !important;
+            font-size: 14px !important;
+        }
+
+        input[type="radio"] {
+            /* Kích thước mong muốn */
+            width: 18px;
+            height: 18px;
+        }
+
+        #contract_table thead tr th {
+            text-align: center;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input {
+            margin-left: 0.5em;
+            display: inline-block;
+            width: auto;
+            height: 20px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input {
+            margin-bottom: 10px;
+            height: 20px;
+        }
+        input.check-contract:disabled {
+            pointer-events: auto;
+            opacity: 1;
+        }
+    </style>
+}
+
+@section LoadJs{
+    <script type="text/javascript" src="~/Assets/js/admin/Contract.js?v=1.1"></script>
+}
+@{
+    var language = "";
+    if (Session[Human.Common.CommonConstants.CurrentCulture] != null)
+    {
+        language = Session[Human.Common.CommonConstants.CurrentCulture].ToString();
+    }
+    else
+    {
+        language = "vi";
+    }
+    string name_func_emp = "";
+    string btn_func_emp = "";
+    /*string name_func_timekeep = "";
+    string btn_func_timekeep = "";
+    string name_func_contract = "";
+    string btn_func_contract = "";*/
+    var lst_fuction_emp2 = Session["FUNCTION_BY_EMP"] as List<Human.Models.Entities.Emp_Function_Entities>;
+    foreach (var item_f in lst_fuction_emp2)
+    {
+
+        if (item_f.NAME_FUNCTION.ToString() == "staffBySection" && (item_f.BTN_FUNCTION == "edit/read" || item_f.BTN_FUNCTION == "read"))
+        {
+            name_func_emp = item_f.NAME_FUNCTION.ToString();
+            btn_func_emp = item_f.BTN_FUNCTION.ToString();
+            break;
+        }
+
+        /* if (!string.IsNullOrEmpty(name_func_timekeep) && !string.IsNullOrEmpty(name_func_emp) && !string.IsNullOrEmpty(name_func_contract))
+         {
+             break;
+         }*/
+    }
+}
+<div class="container" style="padding:10px 20px;">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title" style="font-weight:600;">@Human.Resource.Language.Labor_contract</h2>
+                <ul class="breadcrumb font-15">
+                    <li class="breadcrumb-item"><a href="#" class="main-color-web font-weight-bold">@Human.Resource.Language.Managment</a></li>
+                    <li class="breadcrumb-item"><a href="/Employees/Index" class="font-weight-bold">@Human.Resource.Language.Employee</a></li>
+                    <li class="breadcrumb-item active">@Human.Resource.Language.Labor_contract</li>
+                </ul>
+                @if (lst_fuction_emp2 != null && btn_func_emp == "edit/read" && name_func_emp== "staffBySection")
+                {
+                    <div id="btn-fieldset"></div>
+                    <div class="btn-edit-emp">
+                        <button class="btn color-green" type="button" id="btn-add"><i class="fa-solid fa-plus"></i> @Human.Resource.Language.btn_Add</button>
+                        <button class="btn color-blue" type="button" id="btn-edit"><i class="fa-solid fa-pen-to-square"></i> @Human.Resource.Language.btn_Edit</button>
+                        <button class="btn color-orange" type="button" id="btn-cancel"><i class="fa-solid fa-rotate-right"></i> @Human.Resource.Language.btn_Cancel</button>
+                        <button id="btn-del" class="btn color-redpale" type="button"><i class="fa-solid fa-trash"></i> @Human.Resource.Language.btn_Delete</button>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="Authority">
+            <script>
+              document.addEventListener("DOMContentLoaded", function (event) {
+                  Swal.fire({
+                      position: 'center-center',
+                      icon: '@TempData["AlertType"]',
+                      title: '@TempData["AlertMessage"]',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+            });
+            </script>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3" style="border-radius:15px;">
+                <div class="card-body" style="padding:1.5rem 2.5rem;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div style="margin-top: 10px;">
+                                <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px; "><i class="fas fa-id-badge"></i> @Human.Resource.Language.Emp_info</h5>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Employee_code</label>
+                                        <input type="text" class="form-control" disabled value="@Model.EMP_PROFILE.EMP_CODE" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.ID_card</label>
+                                        <input class="form-control" type="text" value="@Model.EMP_PROFILE.EMPLOYEE_ID" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Fullname </label>
+                                        <input type="text" class="form-control" value="@Model.EMP_PROFILE.FULLNAME" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Date_of_join </label>
+                                        <input type="date" class="form-control" value="@(Model.EMP_PROFILE.HIRE_DAY.ToString("dd/MM/yyyy")!="01/01/0001"?Model.EMP_PROFILE.HIRE_DAY.ToString("yyyy-MM-dd"):"")" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Department</label>
+                                        <input type="text" class="form-control" value="@Model.EMP_PROFILE.DEPARTMENT_NAME_EN" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Section </label>
+                                        <input type="text" value="@Model.EMP_PROFILE.SECTION_NAME_EN" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>@Human.Resource.Language.Job </label>
+                                        <input type="text" value="@Model.EMP_PROFILE.TitleName_en" class="form-control" disabled />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3" style="border-radius:15px;">
+                <div class="card-body" style="padding:1.5rem 2.5rem;">
+                    <form method="post" id="msform">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="emp_id_hidden" name="EMPLOYEE_ID" value="@Model.EMP_PROFILE.EMPLOYEE_ID" />
+                        <input type="hidden" name="EMP_CODE_HIDDEN" value="@Model.EMP_PROFILE.EMP_CODE" />
+                        <input type="hidden" id="contract_id_hidden" name="CONTRACT_ID" />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="margin-top: 10px;">
+                                    <h5 class="card-title main-color-web" style="font-weight: 600; margin-top: 10px;"><i class="fas fa-file-signature"></i> @Human.Resource.Language.Contract_info</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Contract_type <span class="text-danger">*</span></label>
+                                            <select class="form-control select" id="select_contractType" name="CONTRACTTYPE_ID">
+                                                <option value="">@Human.Resource.Language.Select_contract_type</option>
+                                                @if (Model.LST_CONTRACT_TYPE != null && Model.LST_CONTRACT_TYPE.Any())
+                                                {
+                                                    foreach (var item in Model.LST_CONTRACT_TYPE)
+                                                    {
+                                                        <option value="@item.CONTRACTTYPE_ID" data-period="@item.PERIOD" data-contractypename="@(language == "vi" ? item.CONTRACTNAME_VI : item.CONTRACTNAME_EN)">@Html.Raw(language == "vi" ? item.CONTRACTNAME_VI : item.CONTRACTNAME_EN) @Html.Raw(item.PERIOD != 0 ? " | " + item.PERIOD.ToString() + " tháng" : "") </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Contract_code</label>
+                                            <input id="contract_code" type="text" class="form-control" disabled />
+                                            <input id="contract_code_hidden" type="hidden" name="CONTRACT_NO" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Sign_day <span class="text-danger">*</span></label>
+                                            <input id="date_start" class="form-control" type="date" name="ISSUEDATE" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Expiration_date</label>
+                                            <input id="date_end" type="date" class="form-control" name="DEADLINE" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Specialize_title</label>
+                                            <input id="ip_specialize" class="form-control" type="text" name="BASEON" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@Human.Resource.Language.Job_to_do</label>
+                                            <input id="ip_jobToDo" type="text" class="form-control" name="BASEON_KYNGAY" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>@Human.Resource.Language.Note</label>
+                                        <input id="ip_note_contract" value="" type="text" class="form-control" name="REMARK" />
+                                    </div>
+                                </div>
+                                <div class="mb-2 font-13">
+                                    <span class="text-danger">* @Human.Resource.Language.Note_contract</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card profile-box flex-fill border-form">
+                                            <div class="card-body ">
+                                                <div id="contract_table" class="table-wrapper-time-keep" style="margin-top: 7px;overflow-y:auto;">
+                                                    <table style="width:100% !important;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>###</th>
+                                                                <th>
+                                                                    Mã số hợp đồng <br />(cotract code)
+                                                                </th>
+                                                                <th>
+                                                                    Loại hợp đồng <br />(contract type)
+                                                                </th>
+                                                                <th>
+                                                                    NGÀY Ký<br>(START DATE)
+                                                                <th>
+                                                                    NGÀY Hết hạn<br>(END DATE)
+                                                                </th>
+                                                                <th>Chức danh chuyên môn <br />(specialize)</th>
+                                                                <th>Công việc phải làm <br />(work)</th>
+                                                                <th> Ghi chú <br />(Note)</th>
+                                                        </thead>
+                                                        <tbody id="result_tbody">
+                                                            @if (Model.LST_CONTRACT_EMPID != null && Model.LST_CONTRACT_EMPID.Any())
+                                                            {
+                                                                foreach (var item in Model.LST_CONTRACT_EMPID)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <div class="form-check-inline mr-0">
+                                                                                <input type="radio" name="radio-contract" class="check-contract form-check-input mr-0" value="@item.CONTRACT_ID" />
+                                                                                <input type="hidden" class="contractType_id_hidden" value="@item.CONTRACTTYPE_ID" />
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            @item.CONTRACT_NO
+                                                                        </td>
+
+                                                                        @if (language == "vi")
+                                                                        {
+                                                                            <td>@item.CONTRACTNAME_VI</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>@item.CONTRACTNAME_EN</td>
+                                                                        }
+                                                                        <td>
+                                                                            @item.ISSUEDATE.ToString("dd/MM/yyyy")
+                                                                        </td>
+                                                                        <td>
+                                                                            @item.DEADLINE.ToString("dd/MM/yyyy")
+                                                                        </td>
+                                                                        <td>@item.BASEON</td>
+                                                                        <td>@item.BASEON_KYNGAY</td>
+                                                                        <td>
+                                                                            @item.REMARK
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="btnSave_Contract" class="submit-section text-center">
+                                    <button id="btn_save_Contract" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                                </div>
+                                <div id="btnAdd_Contract" class="submit-section text-center">
+                                    <button id="btn_add_Contract" type="submit" style="font-size:16px !important;border-radius:5px;" class=" action-button"><i class="fa-solid fa-folder-plus"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

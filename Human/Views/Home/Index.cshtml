@@ -1,0 +1,332 @@
+﻿@model Human.Models.HomeModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Home";
+    ViewBag.active = 0;
+}
+@section meta{
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="home" />
+    <meta name="author" content="" />
+    <style>
+        .text-success {
+            color: #55ce63 !important;
+        }
+
+        .table-wrapper th {
+            position: static !important;
+        }
+        /*.dropdown-menu.show {
+            left:-60px !important;
+            top:-100% !important;
+        }*/
+        #detail-leave > thead > tr > th {
+            text-align: center !important;
+        }
+        table.dataTable {
+            border-top: 2px solid #ccc2c2;
+            border-bottom: 2px solid #ccc2c2 !important;
+        }
+        .card-body table {
+            width: 100% !important;
+            /* table-layout: fixed; */
+        }
+    </style>
+}
+@section LoadJs{
+    <script>
+        $(function (e) {
+            $(document).ready(function () {
+                var table = $('#detail-leave').DataTable({
+
+                    "pageLength": 10,
+                    "lengthMenu": [
+                        [10, 50, 100, -1],
+                        [10, 50, 100, "All"]
+                    ],
+                    "ordering": false, // Tắt sắp xếp
+                    /*"bLengthChange": false,*/ // Tắt "Show entries"
+                    "searching": false // Tắt phần tìm kiếm
+                });
+
+            });
+        });
+    </script>
+}
+@{
+    var year_leave = DateTime.Now.ToString("yyyy");
+    var num = 0;
+    DateTime currentDate = DateTime.Now;
+    DateTime firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+    string firstDayString = firstDayOfMonth.ToString("dd/MM/yyyy");
+    DateTime lastDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, DateTime.DaysInMonth(currentDate.Year, currentDate.Month));
+    string lastDayString = lastDayOfMonth.ToString("dd/MM/yyyy");
+}
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="Authority">
+        <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    Swal.fire({
+                        position: 'center-center',
+                        icon: '@TempData["AlertType"]',
+                        title: '@TempData["AlertMessage"]',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+        </script>
+    </div>
+
+}
+<div class="container-fluid px-4" style="margin-bottom:50px;">
+    <!-- title top home -->
+    <div>
+        <h2 class="mt-4"></h2>
+        <ol class="breadcrumb mb-4 font-22 ">
+            <li class="breadcrumb-item active text-color-gray">
+                @Human.Resource.Language.Home_hello <b class="main-color-web" style="font-size:25px;">@Model.EMP_VIEW.FULLNAME </b>!
+                @* <p style="font-size:45px" class="text-color-copper"></p>*@
+            </li>
+
+        </ol>
+        @if (ViewBag.Content != null) {
+            <div>@ViewBag.Content</div>
+        }
+    </div>
+    <!-- card home -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4" style="border-radius:15px;">
+                <div class="card-header font-16 font-weight-bold text-center main-color-web">
+                    <i class="fas fa-calendar-day"></i>
+                    @Human.Resource.Language.Home_annual_leave - @year_leave
+                </div>
+                <div class="row col-md-12 m-0">
+                    <div class="card-body col-md-4">
+                        <div class="d-flex justify-content-between mb-3 font-15">
+                            <div>
+                                <span class="d-block">@Human.Resource.Language.Home_total</span>
+                            </div>
+                            <div>
+                                <span style="color:#ff5722 !important; ">100%</span>
+                            </div>
+                        </div>
+
+                        <h1 class="mb-3">@Model.TOTAL_LEAVE.ANUAL_LEAVE_DAY</h1>
+                        <div class="progress mb-2" style="height: 5px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 100%; background-color: #ff5722 !important;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="card-body col-md-4 border-right-left">
+                        <div class="d-flex justify-content-between mb-3 font-15">
+                            <div>
+                                <span class="d-block">@Human.Resource.Language.Home_used</span>
+                            </div>
+                            <div>
+                                @if (Model.TOTAL_LEAVE != null)
+                                {
+                                    var used_precent = string.Format("{0:F0}", (Model.TOTAL_LEAVE.TONGCONG / Model.TOTAL_LEAVE.ANUAL_LEAVE_DAY * 100));
+                                    <span style="color: #04BE5B !important;">
+                                        @used_precent%
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="color: #04BE5B !important">
+                                        0%
+                                    </span>
+                                }
+
+                            </div>
+                        </div>
+                        <h1 class="mb-3">@Model.TOTAL_LEAVE.TONGCONG</h1>
+                        <div class="progress mb-2" style="height: 5px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 100%; background-color: #04BE5B !important; " aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="card-body col-md-4">
+
+                        <div class="d-flex justify-content-between mb-3 font-15">
+                            <div>
+                                <span class="d-block">@Human.Resource.Language.Home_remain</span>
+                            </div>
+                            <div>
+                                @if (Model.TOTAL_LEAVE != null)
+                                {
+                                    var remain_percent = string.Format("{0:F0}", (Model.TOTAL_LEAVE.REMAIN / Model.TOTAL_LEAVE.ANUAL_LEAVE_DAY * 100));
+                                    <span style="color: #7460ee !important;">
+                                        @remain_percent%
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="color: #7460ee !important;">
+                                        0%
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <h1 class="mb-3">@Model.TOTAL_LEAVE.REMAIN</h1>
+                        <div class="progress mb-2" style="height: 5px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width:100%; background-color: #7460ee !important;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4" style="border-radius:15px;">
+                <div class="card-header text-center font-16 font-weight-bold text-center main-color-web">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    @Human.Resource.Language.Home_detail_leave - @year_leave
+
+                </div>
+                <div class="card-body" style="padding-top:0; font-  ize:13px;">
+                    <div class="table-wrapper-time-keep" style="margin-top: 7px; overflow-y:auto;">
+                        <table id="detail-leave" style="width:100% !important;" class="table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        STT <br /> No.
+                                    </th>
+                                    <th>
+                                        NGÀY <br /> (DATE)
+                                    </th>
+                                    <th>
+                                        LÝ DO <br /> (EASON)
+                                    </th>
+                                    <th>
+                                        TỔNG NGÀY <br /> (TOTAL DAY)
+                                    </th>
+                                    <th style="width:150px !important;"> TRẠNG THÁI <br />(STATUS)</th>
+                                    <th>
+                                        CHỨC NĂNG <br /> (FUNCTION)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.LST_LEAVE != null && Model.LST_LEAVE.Any())
+                                {
+                                    var accept_text = Human.Resource.Language.Accept;
+                                    var deny_text = Human.Resource.Language.Deny;
+                                    var cancel_text = Human.Resource.Language.Cancel;
+                                    var pending_text = Human.Resource.Language.Pending;
+                                    var delete_text = Human.Resource.Language.Delete;
+                                    var request_text = Human.Resource.Language.Request;
+                                    int i = 1;
+                                    foreach (var item in Model.LST_LEAVE)
+                                    {
+
+                                        var status = item.STATUS_L;
+                                        var classCheck = "";
+                                        // var classIcon = "";
+                                        var classCheck_td = "";
+                                        DateTime datenow = DateTime.Now;
+                                        var classStatus = "";
+                                        var textStatus = "";
+                                        //   var styleCheck = "";
+                                        switch (item.STATUS_L)
+                                        {
+                                            case 1:
+                                                classStatus = "active";
+                                                /*textStatus = "Accept";*/
+                                                textStatus = accept_text;
+                                                break;
+                                            case 2:
+                                                classCheck = "text-color-red";
+                                                classStatus = "deny";
+                                                textStatus = deny_text;
+                                                break;
+                                            case 3:
+                                                classCheck_td = "cancel-cell";
+                                                classStatus = "cancel";
+                                                textStatus = cancel_text;
+                                                break;
+                                            case 4:
+
+                                                classStatus = "request";
+                                                textStatus = request_text;
+                                                break;
+                                            default:
+                                                classStatus = "waiting"; textStatus = pending_text;
+                                                break;
+                                        }
+
+                                        <tr class="@classCheck">
+                                            <td>@i</td>
+                                            <td class="@classCheck_td">
+                                                @item.LEAVE_STARTDATE.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td class="@classCheck_td">
+                                                @(item.NAMELEAVE_VI !=null?item.NAMELEAVE_VI :"_")
+                                            </td>
+                                            <td class="@classCheck_td">
+                                                @(item.HOURS != 0 ? item.HOURS / 8 : 0)
+                                            </td>
+                                            <td class="status">
+                                                <span class="@classStatus">@textStatus</span>
+                                            </td>
+                                            <td>
+                                                @if (item.STATUS_L == 0)
+                                                {
+
+                                                    if (item.LEAVE_STARTDATE > datenow)
+                                                    {
+                                                        @Html.ActionLink(delete_text, "Delete", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" })
+
+                                                    }
+                                                    else if (item.LEAVE_STARTDATE < datenow)
+                                                    {
+                                                        @*  @Html.ActionLink(cancel_text, "Cancel", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" })
+                                                        *@
+                                                        @Html.ActionLink(Human.Resource.Language.Request_btn, "Request", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" });
+
+                                                    }
+
+                                                }
+                                                else if (item.STATUS_L == 1)
+                                                {
+                                                    if (item.LEAVE_STARTDATE < datenow)
+                                                    {
+                                                        @Html.ActionLink(Human.Resource.Language.Request_btn, "Request", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" });
+
+                                                        @*if (item.STATUS_L == 3)
+                                                            {
+                                                                @Html.ActionLink("Reback", "Cancel", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" });
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.ActionLink("Cancel", "Cancel", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" })
+
+                                                            }*@
+                                                    }
+                                                    else if (item.LEAVE_STARTDATE > datenow)
+                                                    {
+                                                        @Html.ActionLink(Human.Resource.Language.Request_btn, "Request", new { LEAVE_ID = item.LEAVE_ID }, new { @style = "border-radius: 25px;", @class = "leave-btn color-red" });
+
+                                                    }
+
+                                                }
+
+                                            </td>
+
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
