@@ -57,34 +57,34 @@ namespace Human.Controllers
             /*ClsGlobal_Entities.POS = "";*/
             Session["EMP_POS"] = "";
             // ------------------------  Key bản quyền (sử dụng gg drive)  --------------------------------
-            //CommonAPI commonAPI = new CommonAPI();
-            //CommonAPI.ContentKeyInfo contentInfo = commonAPI.Get_content_key();
-            //DateTime date;
-            //DateTime.TryParseExact(contentInfo.DateEndText_Api, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
-            //licenseKey_do = new LicenseKey_DO();
-            //var key_database = licenseKey_do.Get_LicensKey().FirstOrDefault();
-            // So sánh với DateTime.Now
-            //if (key_database.KEY_VALUE == contentInfo.KeySHA256_Api && key_database.EXPIRY_DATE.ToString("dd/MM/yyyy") == date.Date.ToString("dd/MM/yyyy"))
-            //{
-            //    if (date.Date > DateTime.Now.Date)
-            //    {
-            //        return View();
-            //    }
-            //    else if (date.Date < DateTime.Now.Date)
-            //    {
-            //        // Ngày trong tệp văn bản nhỏ hơn ngày hiện tại
-            //        return RedirectToAction("Index", "LicensKey");
-            //    }
-            //    else
-            //    {
-            //        // Ngày trong tệp văn bản = ngày hiện tại
-            //        return View();
-            //    }
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Index", "LicensKey");
-            //}
+            CommonAPI commonAPI = new CommonAPI();
+            CommonAPI.ContentKeyInfo contentInfo = commonAPI.Get_content_key();
+            DateTime date;
+            DateTime.TryParseExact(contentInfo.DateEndText_Api, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+            licenseKey_do = new LicenseKey_DO();
+            var key_database = licenseKey_do.Get_LicensKey().FirstOrDefault();
+            //So sánh với DateTime.Now
+            if (key_database.KEY_VALUE == contentInfo.KeySHA256_Api && key_database.EXPIRY_DATE.ToString("dd/MM/yyyy") == date.Date.ToString("dd/MM/yyyy"))
+            {
+               if (date.Date > DateTime.Now.Date)
+               {
+                   return View();
+               }
+               else if (date.Date < DateTime.Now.Date)
+               {
+                   // Ngày trong tệp văn bản nhỏ hơn ngày hiện tại
+                   return RedirectToAction("Index", "LicensKey");
+               }
+               else
+               {
+                   // Ngày trong tệp văn bản = ngày hiện tại
+                   return View();
+               }
+            }
+            else
+            {
+               return RedirectToAction("Index", "LicensKey");
+            }
             //----------------------- END key bản quyền -----------------------------------
             return View();
         }
