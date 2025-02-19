@@ -1043,6 +1043,15 @@ namespace Human.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Xin Chào.
+        /// </summary>
+        public static string Hi {
+            get {
+                return ResourceManager.GetString("Hi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trang chủ.
         /// </summary>
         public static string Home {
@@ -1435,6 +1444,15 @@ namespace Human.Resource {
         public static string Notification {
             get {
                 return ResourceManager.GetString("Notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
             }
         }
         

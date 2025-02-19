@@ -44,9 +44,9 @@ namespace Human.Common
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
-            // Define the folder ID and file name you want to retrieve
-            string folderId = "1D-v3q-1wlDPPcOKn7R70soVrsVQ91dXT";
-            string fileName = "API_KEY.txt";
+            // Define the folder ID and file name you want to retrieve       
+            string folderId = "1D-v3q-1wlDPPcOKn7R70soVrsVQ91dXT";  // link trỏ tới folder chứa API_KEY.txt trong drive
+            string fileName = "API_KEY.txt";  // API_KEY.txt chứa mã key bản quyền, ngày cấp, ngày hết hạn
             // Define parameters of request to list files
             FilesResource.ListRequest listRequest = service.Files.List();
             listRequest.PageSize = 10;

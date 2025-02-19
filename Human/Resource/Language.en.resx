@@ -627,10 +627,6 @@
   <data name="No_notification" xml:space="preserve">
     <value>No notification</value>
   </data>
-  <data name="Ok" xml:space="preserve">
-    <value>Ok</value>
-    <comment>button</comment>
-  </data>
   <data name="OTP_code_expired_please_get_code" xml:space="preserve">
     <value>OTP code expired, please get a new code</value>
   </data>
@@ -834,13 +830,17 @@
   <data name="Update_contract_success" xml:space="preserve">
     <value>Update contract success</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Update_emp_info_fail" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="Update_emp_info_success" xml:space="preserve">
     <value>Updat employee information success</value>
   </data>
-  <data name="update_leave_failed" xml:space="preserve">
+  <data name="Update_leave_failed" xml:space="preserve">
     <value>Update leave failed</value>
   </data>
-  <data name="update_leave_successful" xml:space="preserve">
+  <data name="Update_leave_successful" xml:space="preserve">
     <value>Update leave successful</value>
   </data>
   <data name="Update_salary_history_fail" xml:space="preserve">
@@ -884,5 +884,12 @@
   </data>
   <data name="You_not_have_this_right" xml:space="preserve">
     <value>You do not have this right</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+    <comment>button</comment>
+  </data>
+  <data name="Hi" xml:space="preserve">
+    <value>Hi</value>
   </data>
 </root>

@@ -912,4 +912,10 @@ bất kỳ công thức nào. Mã xác thực có hiệu lực trong 1 phút</va
   <data name="You_not_have_this_right" xml:space="preserve">
     <value>Bạn không có quyền hạn này</value>
   </data>
+  <data name="Ok" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Hi" xml:space="preserve">
+    <value>Xin Chào</value>
+  </data>
 </root>
